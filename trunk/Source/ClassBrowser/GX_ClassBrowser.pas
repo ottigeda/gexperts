@@ -138,6 +138,10 @@ type
     pmiBrowserPrintClassHierarchy: TMenuItem;
     pmiBrowserPrintClassReport: TMenuItem;
     pnlCode: TPanel;
+    tb_Separator2: TToolButton;
+    tb_ShowImplementation: TToolButton;
+    actViewImplementationClasses: TAction;
+    mi_ShowImplementationClasses: TMenuItem;
     procedure tvBrowseChange(Sender: TObject; Node: TTreeNode);
     procedure pnlDataResize(Sender: TObject);
     procedure lvInfoChange(Sender: TObject; Item: TListItem; Change: TItemChange);
@@ -175,6 +179,7 @@ type
     procedure edtClassFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtClassFilterChange(Sender: TObject);
     procedure timKeyDelayTimer(Sender: TObject);
+    procedure actViewImplementationClassesExecute(Sender: TObject);
   private
     FProjectNotifier: TBaseIdeNotifier;
     FIsFirstInvocation: Boolean;
@@ -198,6 +203,7 @@ type
     FLastHitTestItemIdx: Integer;
     FLastHitTestSubItemIdx: Integer;
     FTreeFilter: string;
+    FShowImplementationClasses: Boolean;
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     FColWidths: array of Integer;
 {$ENDIF}
@@ -421,10 +427,27 @@ begin
 end;
 
 procedure TfmClassBrowser.LoadClassTree(Item: TClassItem; ONode: TTreeNode);
+
+  function GetImgIdx(AClassItem: TBrowseClassInfoCollection): Integer;
+  begin
+    if not AClassItem.IsInInterfaceSection then begin
+      if AClassItem.ObjectType = cieClass then
+        Result := ImageIndexGearImpl
+      else
+        Result := ImageIndexInterfaceImpl;
+    end else begin
+      if AClassItem.ObjectType = cieClass then
+        Result := ImageIndexGear
+      else
+        Result := ImageIndexInterface;
+    end;
+  end;
+
 var
   TempClassList: TStrings;
   Node: TTreeNode;
   i: Integer;
+  ImgIdx: Integer;
 
   procedure AddObjects(INode: TTreeNode);
   var
@@ -440,6 +463,13 @@ var
 
       if SameText(AClassItem.ObjectDerivedFrom, TBrowseClassInfoCollection(INode.Data).Name) then
       begin
+        if not AClassItem.IsInInterfaceSection and not FShowImplementationClasses then
+        begin
+          TempClassList.Delete(j);
+          j := TempClassList.Count-1;
+          Continue;
+        end;
+
         if FViewUnitNames then
         begin
           NodeText := AClassItem.SourceName + '.' + AClassItem.FullName;
@@ -448,13 +478,9 @@ var
           NodeText := AClassItem.FullName;
 
         ANode := tvBrowse.Items.AddChildObject(INode, NodeText, AClassItem);
-        if AClassItem.ObjectType = cieClass then begin
-          ANode.ImageIndex := ImageIndexGear;
-          ANode.SelectedIndex := ImageIndexGear;
-        end else begin
-          ANode.ImageIndex := ImageIndexInterface;
-          ANode.SelectedIndex := ImageIndexInterface;
-        end;
+        ImgIdx := GetImgIdx(AClassItem);
+        ANode.ImageIndex := ImgIdx;
+        ANode.SelectedIndex := ImgIdx;
 
         TempClassList.Delete(j);
 
@@ -486,6 +512,13 @@ begin
 
       if Item.ObjectByName(ClassInfoCollItem.ObjectDerivedFrom) = nil then
       begin
+        if not ClassInfoCollItem.IsInInterfaceSection and not FShowImplementationClasses then
+        begin
+          TempClassList.Delete(i);
+          i := TempClassList.Count-1;
+          Continue;
+        end;
+
         // This is a root item - ObjectDerivedFrom = nil --> no ancestor.
         if FViewUnitNames then
         begin
@@ -495,13 +528,9 @@ begin
           NodeText := ClassInfoCollItem.FullName;
 
         Node := tvBrowse.Items.AddChildObject(ONode, NodeText, ClassInfoCollItem);
-        if ClassInfoCollItem.ObjectType = cieClass then begin
-          Node.ImageIndex := ImageIndexGear;
-          Node.SelectedIndex := ImageIndexGear;
-        end else begin
-          Node.ImageIndex := ImageIndexInterface;
-          Node.SelectedIndex := ImageIndexInterface;
-        end;
+        ImgIdx := GetImgIdx(ClassInfoCollItem);
+        Node.ImageIndex := ImgIdx;
+        Node.SelectedIndex := ImgIdx;
 
         TempClassList.Delete(i);
 
@@ -531,23 +560,31 @@ var
   i: Integer;
   NodeText: string;
   ClassInfo: TBrowseClassInfoCollection;
+  ImgIdx: Integer;
 begin
   for i := 0 to Item.ClassCount-1 do
   begin
     ClassInfo := Item.ClassItem[i];
+    if not ClassInfo.IsInInterfaceSection and not FShowImplementationClasses then
+      Continue;
     if (FTreeFilter='') or StrContains(FTreeFilter, ClassInfo.FullName, False) then begin
       if FViewUnitNames then
         NodeText := ClassInfo.SourceName + '.' + ClassInfo.FullName
       else
         NodeText := ClassInfo.FullName;
       INode := tvBrowse.Items.AddChildObject(ONode, NodeText, ClassInfo);
-      if ClassInfo.ObjectType = cieClass then begin
-        INode.ImageIndex := ImageIndexGear;
-        INode.SelectedIndex := ImageIndexGear;
-      end else begin
-        INode.ImageIndex := ImageIndexInterface;
-        INode.SelectedIndex := ImageIndexInterface;
+      if ClassInfo.ObjectType = cieClass then
+        ImgIdx := ImageIndexGear
+      else
+        ImgIdx := ImageIndexInterface;
+      if not ClassInfo.IsInInterfaceSection then begin
+        if ClassInfo.ObjectType = cieClass then
+          ImgIdx := ImageIndexGearImpl
+        else
+          ImgIdx := ImageIndexInterfaceImpl;
       end;
+      INode.ImageIndex := ImgIdx;
+      INode.SelectedIndex := ImgIdx;
     end;
   end;
 end;
@@ -1202,6 +1239,7 @@ begin
   Settings.WriteBool('ParseRecursing', FParseRecursing);
   Settings.WriteBool('AutomaticallyHideBrowser', FAutomaticallyHideBrowser);
   Settings.WriteBool('UnitNames', FViewUnitNames);
+  Settings.WriteBool('ShowImplementationClasses', FShowImplementationClasses);
   Settings.WriteInteger('ClassHierarchyFontSize', FClassHierarchyFontSize);
   Settings.WriteInteger('ClassHierarchyBoxWidth', FClassHierarchyBoxWidth);
   Settings.WriteInteger('ClassHierarchyBoxSpace', FClassHierarchyBoxSpace);
@@ -1229,6 +1267,8 @@ begin
     tvBrowse.Width := 100;
   FInfoViewMode := TInfoViewMode(Settings.ReadInteger('ViewMode', Ord(FInfoViewMode)));
   FViewUnitNames := Settings.ReadBool('UnitNames', False);
+  FShowImplementationClasses := Settings.ReadBool('ShowImplementationClasses', False);
+  actViewImplementationClasses.Checked := FShowImplementationClasses;
   FClassHierarchyFontSize := Settings.ReadInteger('ClassHierarchyFontSize', 8);
   FClassHierarchyBoxWidth := Settings.ReadInteger('ClassHierarchyBoxWidth', 25);
   FClassHierarchyBoxSpace := Settings.ReadInteger('ClassHierarchyBoxSpace', 10);
@@ -1611,6 +1651,8 @@ begin
 
   InitDpiScaler;
 
+  GExpertsInst.EnsureImplementationIcons;
+
   FPrimitiveTop := False;
   FStayInPackage := False;
   FParseRecursing := False;
@@ -1987,6 +2029,48 @@ begin
   if (ActiveControl = tvBrowse) then
     ViewBrowserDetails;
 end;
+
+procedure TfmClassBrowser.actViewImplementationClassesExecute(Sender: TObject);
+var
+  SelectedClassName: string;
+  Node, BestNode: TTreeNode;
+begin
+  // Remember the selected class name before rebuilding the tree
+  SelectedClassName := '';
+  if Assigned(tvBrowse.Selected) and Assigned(tvBrowse.Selected.Data)
+    and (TObject(tvBrowse.Selected.Data) is TBrowseClassInfoCollection) then
+    SelectedClassName := TBrowseClassInfoCollection(tvBrowse.Selected.Data).Name;
+
+  FShowImplementationClasses := not FShowImplementationClasses;
+  actViewImplementationClasses.Checked := FShowImplementationClasses;
+  LoadAllObjects;
+
+  // Try to re-select the same class, or the alphabetically preceding visible one
+  if SelectedClassName <> '' then begin
+    BestNode := nil;
+    Node := tvBrowse.Items.GetFirstNode;
+    while Assigned(Node) do begin
+      if Assigned(Node.Data) and (TObject(Node.Data) is TBrowseClassInfoCollection) then begin
+        if SameText(TBrowseClassInfoCollection(Node.Data).Name, SelectedClassName) then begin
+          BestNode := Node;
+          Break;
+        end;
+        if CompareText(TBrowseClassInfoCollection(Node.Data).Name, SelectedClassName) < 0 then begin
+          if (BestNode = nil)
+            or (CompareText(TBrowseClassInfoCollection(Node.Data).Name,
+                            TBrowseClassInfoCollection(BestNode.Data).Name) > 0) then
+            BestNode := Node;
+        end;
+      end;
+      Node := Node.GetNext;
+    end;
+    if Assigned(BestNode) then begin
+      tvBrowse.Selected := BestNode;
+      BestNode.MakeVisible;
+    end;
+  end;
+end;
+
 
 procedure TfmClassBrowser.actHelpHelpExecute(Sender: TObject);
 begin

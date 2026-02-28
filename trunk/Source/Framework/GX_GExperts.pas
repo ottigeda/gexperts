@@ -56,6 +56,7 @@ type
     function GetScaledSharedImages(_Dpi: Integer): TImageList;
     function GetScaledSharedDisabledImages(_Dpi: Integer): TImageList;
     function GetSharedImages: TImageList;
+    procedure EnsureImplementationIcons;
     function GetExpertList: TList;
     procedure TimedCloseMessageView;
   end;
@@ -339,6 +340,12 @@ begin
   Result := nil;
   if Assigned(SharedImages) then
     Result := SharedImages.GetScaledDisabledImages(_Dpi);
+end;
+
+procedure TGExperts.EnsureImplementationIcons;
+begin
+  if Assigned(SharedImages) then
+    SharedImages.EnsureImplementationIcons;
 end;
 
 function TGExperts.GetState: TWizardState;

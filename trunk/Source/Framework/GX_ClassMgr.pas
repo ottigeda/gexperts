@@ -79,6 +79,7 @@ type
     FObjectType: TClassInterfaceEnum;
     FContainingClassName: string;
     FTokenIndex: Integer;
+    FIsInInterfaceSection: Boolean;
     procedure GetMethods(Parser: TmPasParser);
     function GetItem(Index: Integer): TBrowseMethodInfoItem;
     procedure SetText(const New: string);
@@ -102,6 +103,7 @@ type
     property ContainingClassName: string read FContainingClassName;
     function FullName: string;
     property ObjectType: TClassInterfaceEnum read FObjectType;
+    property IsInInterfaceSection: Boolean read FIsInInterfaceSection;
   end;
 
   TClassItem = class(TCollectionItem)
@@ -117,8 +119,8 @@ type
     function GetClassCount: Integer;
     function GetClassItem(Index: Integer): TBrowseClassInfoCollection;
     procedure LoadClasses(const FileName: string);
-    procedure AddClassesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList);
-    procedure AddInterfacesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList);
+    procedure AddClassesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList; ImplIndex: Longint);
+    procedure AddInterfacesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList; ImplIndex: Longint);
     procedure DetectNesting(Parser: TmEPTokenList; StartIdx: Integer);
   public
     constructor Create(ACollection: TCollection); override;
@@ -477,6 +479,7 @@ var
   Parser: TmEPTokenList;
   LocalEditReader: TEditReader;
   PrevCount: Integer;
+  ImplIndex: Longint;
 begin
   if not IsPascalSourceFile(FileName) then
     Exit;
@@ -493,16 +496,17 @@ begin
   Parser := TmEPTokenList.Create;
   try
     Parser.SetOrigin(@FileContent[1], Length(FileContent));
-    AddClassesFromList(FileName, Parser, Parser.Searcher.ClassList);
+    ImplIndex := Parser.Searcher.GetImplementationsIndex;
+    AddClassesFromList(FileName, Parser, Parser.Searcher.ClassList, ImplIndex);
     Parser.Searcher.FillInterfaceList;
-    AddInterfacesFromList(FileName, Parser, Parser.Searcher.InterfaceList);
+    AddInterfacesFromList(FileName, Parser, Parser.Searcher.InterfaceList, ImplIndex);
     DetectNesting(Parser, PrevCount);
   finally
     FreeAndNil(Parser);
   end;
 end;
 
-procedure TClassItem.AddClassesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList);
+procedure TClassItem.AddClassesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList; ImplIndex: Longint);
 var
   j: Integer;
   ObjectInfo: TBrowseClassInfoCollection;
@@ -520,6 +524,7 @@ begin
           FOList.Add(ObjectInfo);
           ObjectInfo.ClassList := TClassList(Collection);
           ObjectInfo.FTokenIndex := List[j];
+          ObjectInfo.FIsInInterfaceSection := (ImplIndex < 0) or (List[j] < ImplIndex);
           p1 := 0;
           for i := 1 to Length(Parser.Info.Data) do
           begin
@@ -543,7 +548,7 @@ begin
   end;
 end;
 
-procedure TClassItem.AddInterfacesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList);
+procedure TClassItem.AddInterfacesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList; ImplIndex: Longint);
 var
   j: Integer;
   ObjectInfo: TBrowseClassInfoCollection;
@@ -564,6 +569,7 @@ begin
           FOList.Add(ObjectInfo);
           ObjectInfo.ClassList := TClassList(Collection);
           ObjectInfo.FTokenIndex := List[j];
+          ObjectInfo.FIsInInterfaceSection := (ImplIndex < 0) or (List[j] < ImplIndex);
           p1 := 0;
           for i := 1 to Length(Parser.Info.Data) do
           begin
@@ -760,6 +766,8 @@ begin
      sl.Add(s + 'Filename=' + ci.Filename);
      if ci.ContainingClassName <> '' then
        sl.Add(s + 'ContainingClassName=' + ci.ContainingClassName);
+     if not ci.IsInInterfaceSection then
+       sl.Add(s + 'IsInImplementation=1');
     end;
     sl.SaveToFile(FileName);
   finally
@@ -808,6 +816,7 @@ begin
           OInfo.FLineNo := StrToIntDef(IniFile.ReadString('Classes', s + 'LineNo', ''), 0); // do not localize
           OInfo.FFilename:= IniFile.ReadString('Classes', s + 'Filename', ''); // do not localize
           OInfo.FContainingClassName := IniFile.ReadString('Classes', s + 'ContainingClassName', ''); // do not localize
+          OInfo.FIsInInterfaceSection := not IniFile.ReadBool('Classes', s + 'IsInImplementation', False); // do not localize
         end;
       end;
     end else begin
@@ -837,6 +846,7 @@ begin
   inherited Create(TBrowseMethodInfoItem);
   FObjectType := ObjectType;
   FTokenIndex := -1;
+  FIsInInterfaceSection := True;
 end;
 
 function TBrowseClassInfoCollection.FullName: string;

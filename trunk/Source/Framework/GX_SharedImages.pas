@@ -25,6 +25,7 @@ type
     FDisabledScaler: TImageListScaler;
 {$ENDIF}
   public
+    procedure EnsureImplementationIcons;
     function GetScaledImages(_DPI: Integer): TImageList;
     function GetScaledDisabledImages(_DPI: Integer): TImageList;
   end;
@@ -60,6 +61,9 @@ const
   ImageIndexMoveDown  = 92;
   ImageIndexMoveUp    = 93;
 
+  ImageIndexGearImpl      = 94;  // Greyed gear for implementation-section classes
+  ImageIndexInterfaceImpl = 95;  // Greyed interface for implementation-section interfaces
+
 function GetSharedImageList: TImageList;
 
 implementation
@@ -78,6 +82,23 @@ begin
 end;
 
 { TdmSharedImages }
+
+procedure TdmSharedImages.EnsureImplementationIcons;
+var
+  Bmp: Graphics.TBitmap;
+begin
+  if Images.Count > ImageIndexInterfaceImpl then
+    Exit;
+  Bmp := Graphics.TBitmap.Create;
+  try
+    DisabledImages.GetBitmap(ImageIndexGear, Bmp);
+    Images.Add(Bmp, nil);
+    DisabledImages.GetBitmap(ImageIndexInterface, Bmp);
+    Images.Add(Bmp, nil);
+  finally
+    Bmp.Free;
+  end;
+end;
 
 function TdmSharedImages.GetScaledDisabledImages(_DPI: Integer): TImageList;
 begin

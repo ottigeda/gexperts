@@ -22,7 +22,7 @@ object fmClassBrowser: TfmClassBrowser
   PixelsPerInch = 96
   TextHeight = 14
   object Splitter1: TSplitter
-    Left = 233
+    Left = 250
     Top = 0
     Width = 3
     Height = 444
@@ -39,9 +39,9 @@ object fmClassBrowser: TfmClassBrowser
     UseSystemFont = False
   end
   object pnlData: TPanel
-    Left = 236
+    Left = 253
     Top = 0
-    Width = 384
+    Width = 367
     Height = 444
     Align = alClient
     BevelOuter = bvNone
@@ -51,7 +51,7 @@ object fmClassBrowser: TfmClassBrowser
     object pcMain: TPageControl
       Left = 0
       Top = 0
-      Width = 384
+      Width = 367
       Height = 444
       ActivePage = tshMembers
       Align = alClient
@@ -63,7 +63,7 @@ object fmClassBrowser: TfmClassBrowser
         object Splitter2: TSplitter
           Left = 0
           Top = 351
-          Width = 376
+          Width = 359
           Height = 4
           Cursor = crVSplit
           Align = alBottom
@@ -71,7 +71,7 @@ object fmClassBrowser: TfmClassBrowser
         object pnlMethod: TPanel
           Left = 0
           Top = 355
-          Width = 376
+          Width = 359
           Height = 60
           Align = alBottom
           BevelOuter = bvNone
@@ -83,7 +83,7 @@ object fmClassBrowser: TfmClassBrowser
         object lvInfo: TListView
           Left = 0
           Top = 25
-          Width = 376
+          Width = 359
           Height = 326
           Align = alClient
           Columns = <
@@ -128,7 +128,7 @@ object fmClassBrowser: TfmClassBrowser
         object tbInfo: TToolBar
           Left = 0
           Top = 0
-          Width = 376
+          Width = 359
           Height = 25
           Caption = 'tbInfo'
           DisabledImages = dmSharedImages.DisabledImages
@@ -191,15 +191,15 @@ object fmClassBrowser: TfmClassBrowser
             Action = actViewProperties
           end
           object tbnSeparator3: TToolButton
-            Left = 215
+            Left = 0
             Top = 0
             Width = 8
             ImageIndex = 53
             Style = tbsSeparator
           end
           object edtMemberFilter: TEdit
-            Left = 223
-            Top = 0
+            Left = 0
+            Top = 30
             Width = 146
             Height = 22
             TabOrder = 0
@@ -239,7 +239,7 @@ object fmClassBrowser: TfmClassBrowser
   object pnlBrowse: TPanel
     Left = 0
     Top = 0
-    Width = 233
+    Width = 250
     Height = 444
     Align = alLeft
     BevelOuter = bvNone
@@ -247,7 +247,7 @@ object fmClassBrowser: TfmClassBrowser
     object tvBrowse: TTreeView
       Left = 0
       Top = 25
-      Width = 233
+      Width = 250
       Height = 419
       Align = alClient
       HideSelection = False
@@ -265,7 +265,7 @@ object fmClassBrowser: TfmClassBrowser
     object tbBrowse: TToolBar
       Left = 0
       Top = 0
-      Width = 233
+      Width = 250
       Height = 25
       Caption = 'tbBrowse'
       DisabledImages = dmSharedImages.DisabledImages
@@ -310,6 +310,19 @@ object fmClassBrowser: TfmClassBrowser
         Left = 198
         Top = 0
         Action = actEditFind
+      end
+      object tb_Separator2: TToolButton
+        Left = 221
+        Top = 0
+        Width = 8
+        ImageIndex = 15
+        Style = tbsSeparator
+      end
+      object tb_ShowImplementation: TToolButton
+        Left = 229
+        Top = 0
+        Action = actViewImplementationClasses
+        Style = tbsCheck
       end
     end
   end
@@ -372,6 +385,9 @@ object fmClassBrowser: TfmClassBrowser
         Tag = 1
         Action = actViewTree
         RadioItem = True
+      end
+      object mi_ShowImplementationClasses: TMenuItem
+        Action = actViewImplementationClasses
       end
       object mitViewSep1: TMenuItem
         Caption = '-'
@@ -703,6 +719,13 @@ object fmClassBrowser: TfmClassBrowser
       Hint = 'Published'
       ImageIndex = 56
       OnExecute = actGenericViewNewFilterExecute
+    end
+    object actViewImplementationClasses: TAction
+      Category = 'View'
+      Caption = 'Show &Implementation Classes'
+      Hint = 'Show/hide classes from implementation section'
+      ImageIndex = 94
+      OnExecute = actViewImplementationClassesExecute
     end
   end
   object timKeyDelay: TTimer
