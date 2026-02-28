@@ -33,7 +33,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, ToolsAPI, Dialogs,
+  SysUtils, Windows, Menus, ToolsAPI, Dialogs,
   u_dzVclUtils,
   GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert,
   GX_RenameIdentifier;
@@ -134,7 +134,7 @@ end;
 
 function TRenameIdentifierExpert.GetDefaultShortCut: TShortCut;
 begin
-  Result := scCtrl + scAlt + Ord('R');
+  Result := Menus.ShortCut(VK_F2, [ssShift]);
 end;
 
 function TRenameIdentifierExpert.HasConfigOptions: Boolean;
@@ -154,48 +154,64 @@ var
   OccurrenceCount: Integer;
   Dlg: TfmRenameIdentifier;
   NewName: string;
+  Step: string;
 begin
-  if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
-    Exit;
-
-  EditRead := TEditReader.Create(SourceEditor.FileName);
+  Step := 'GetSourceEditor';
   try
-    Src := EditRead.GetText;
-    CharPos := EditRead.GetCurrentCharPos;
-  finally
-    FreeAndNil(EditRead);
-  end;
-
-  Src := AdjustLineBreaks(Src, tlbsCRLF);
-  CursorCharIdx := LinePosToCharPos(Point(CharPos.CharIndex + 1, CharPos.Line), Src);
-
-  // Preview mode: get identifier info without renaming
-  if not RenameIdentifierInSource(Src, CursorCharIdx, '',
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
-    MessageBeep($FFFFFFFF);
-    Exit;
-  end;
-
-  Dlg := TfmRenameIdentifier.Create(nil);
-  try
-    SetFormIcon(Dlg);
-    Dlg.SetInfo(OldName, ScopeDesc, OccurrenceCount);
-    if Dlg.ShowModal <> mrOk then
+    if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
       Exit;
-    NewName := Dlg.GetNewName;
-  finally
-    FreeAndNil(Dlg);
-  end;
 
-  // Perform the rename
-  if not RenameIdentifierInSource(Src, CursorCharIdx, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
-    ShowError(ErrorMsg);
-    Exit;
-  end;
+    Step := 'ReadSource';
+    EditRead := TEditReader.Create(SourceEditor.FileName);
+    try
+      Src := EditRead.GetText;
+      CharPos := EditRead.GetCurrentCharPos;
+    finally
+      FreeAndNil(EditRead);
+    end;
 
-  Ota.ReplaceEditorText(SourceEditor, RenamedSource);
-  IncCallCount;
+    Step := 'ConvertCursorPos (Line=' + IntToStr(CharPos.Line)
+      + ', Col=' + IntToStr(CharPos.CharIndex) + ')';
+    Src := AdjustLineBreaks(Src, tlbsCRLF);
+    CursorCharIdx := LinePosToCharPos(Point(CharPos.CharIndex + 1, CharPos.Line), Src);
+
+    Step := 'PreviewRename (CursorCharIdx=' + IntToStr(CursorCharIdx)
+      + ', SrcLen=' + IntToStr(Length(Src)) + ')';
+    // Preview mode: get identifier info without renaming
+    if not RenameIdentifierInSource(Src, CursorCharIdx, '',
+      RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
+      MessageBeep($FFFFFFFF);
+      Exit;
+    end;
+
+    Step := 'ShowDialog';
+    Dlg := TfmRenameIdentifier.Create(nil);
+    try
+      SetFormIcon(Dlg);
+      Dlg.SetInfo(OldName, ScopeDesc, OccurrenceCount);
+      if Dlg.ShowModal <> mrOk then
+        Exit;
+      NewName := Dlg.GetNewName;
+    finally
+      FreeAndNil(Dlg);
+    end;
+
+    Step := 'PerformRename (OldName=' + OldName + ', NewName=' + NewName + ')';
+    // Perform the rename
+    if not RenameIdentifierInSource(Src, CursorCharIdx, NewName,
+      RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
+      ShowError(ErrorMsg);
+      Exit;
+    end;
+
+    Step := 'ReplaceEditorText';
+    Ota.ReplaceEditorText(SourceEditor, RenamedSource);
+    IncCallCount;
+  except
+    on E: Exception do
+      ShowError('Rename Identifier error at step: ' + Step + sLineBreak
+        + E.ClassName + ': ' + E.Message);
+  end;
 end;
 
 initialization
