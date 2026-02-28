@@ -100,6 +100,8 @@ uses
   GX_ePasteAs in '..\..\source\Editor\GX_ePasteAs.pas' {fmPasteAsConfig},
   GX_ePopupMenu in '..\..\Source\Editor\GX_ePopupMenu.pas' {fmEditorPopupMenuExpertConfig},
   GX_ePrevNextIdentifier in '..\..\source\Editor\GX_ePrevNextIdentifier.pas',
+  GX_eRenameIdentifier in '..\..\source\Editor\GX_eRenameIdentifier.pas' {fmRenameIdentifier},
+  GX_RenameIdentifier in '..\..\source\Editor\GX_RenameIdentifier.pas',
   GX_eRemoveMatchingLines in '..\..\Source\Editor\GX_eRemoveMatchingLines.pas' {fmRemoveMatchingLinesExpertConfig},
   GX_eReverseStatement in '..\..\source\ReverseStatement\GX_eReverseStatement.pas',
   GX_ReverseStatementUtils in '..\..\source\ReverseStatement\GX_ReverseStatementUtils.pas',

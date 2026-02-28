@@ -225,6 +225,8 @@
             <Form>fmEditorPopupMenuExpertConfig</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
         </DCCReference>

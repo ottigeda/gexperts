@@ -264,6 +264,8 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmEditorPopupMenuExpertConfig</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
         </DCCReference>
@@ -396,6 +398,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_GExperts.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_HintWindow.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_InspectionServer.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_KbdShortCutBroker.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_KibitzComp.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_LibrarySource.pas"/>
@@ -644,6 +647,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\UsesExpert\GX_UsesSortGroups.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
