@@ -8,6 +8,15 @@ uses
   GX_ConfigurationInfo, GX_Actions;
 
 type
+  TExpertContext = (ecCodeEditor, ecFormDesigner, ecOther);
+  TExpertContexts = set of TExpertContext;
+
+const
+  AllExpertContexts: TExpertContexts = [ecCodeEditor, ecFormDesigner, ecOther];
+
+function GetCurrentExpertContext: TExpertContext;
+
+type
   TGX_BaseExpert = class(TObject)
   private
 {$IF Declared(SendDebugWarning)}
@@ -118,6 +127,9 @@ type
     // Defaults to True
     function IsDefaultActive: Boolean; virtual;
     procedure ClearCallCounts;
+    // Returns the IDE contexts in which this expert's shortcut should be active.
+    // Default: all contexts (backward compatible).
+    function GetShortCutContexts: TExpertContexts; virtual;
     property Active: Boolean read FActive write SetActive;
     property ShortCut: TShortCut read GetShortCut write SetShortCut;
     property CallCount: Integer read FCallCount;
@@ -130,9 +142,25 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, GX_GxUtils, GX_MessageBox, GX_IconMessageBox;
+  SysUtils, Dialogs, GX_GxUtils, GX_MessageBox, GX_IconMessageBox,
+  GX_OtaUtils;
+
+function GetCurrentExpertContext: TExpertContext;
+begin
+  if Ota.CurrentEditorIsSourceEditor then
+    Result := ecCodeEditor
+  else if GxOtaCurrentlyEditingForm then
+    Result := ecFormDesigner
+  else
+    Result := ecOther;
+end;
 
 { TGX_BaseExpert }
+
+function TGX_BaseExpert.GetShortCutContexts: TExpertContexts;
+begin
+  Result := AllExpertContexts;
+end;
 
 constructor TGX_BaseExpert.Create;
 begin

@@ -81,8 +81,15 @@ uses
 { TGX_Expert }
 
 procedure TGX_Expert.ActionOnUpdate(Sender: TObject);
+var
+  Contexts: TExpertContexts;
 begin
   DoUpdateAction;
+  Contexts := GetShortCutContexts;
+  if Contexts <> AllExpertContexts then
+    if FActionInt.GetAction.Enabled then
+      if not (GetCurrentExpertContext in Contexts) then
+        FActionInt.GetAction.Enabled := False;
 end;
 
 // Note: Don't call LoadSettings in Create.  This is done for you

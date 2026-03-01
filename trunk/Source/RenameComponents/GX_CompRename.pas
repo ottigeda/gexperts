@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ToolsAPI, ComCtrls, Buttons,
-  GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, Contnrs, Messages,
+  GX_BaseExpert, GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, Contnrs, Messages,
   Types, GX_BaseForm, GX_CheckButton;
 
 type
@@ -185,6 +185,7 @@ type
     procedure Configure(_Owner: TWinControl; const _Selected: string); reintroduce; overload;
     function GetActionCaption: string; override;
     function GetDefaultShortCut: TShortCut; override;
+    function GetShortCutContexts: TExpertContexts; override;
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
     procedure SetActive(New: Boolean); override;
@@ -1147,6 +1148,11 @@ end;
 function TRenameComponentsExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := Menus.ShortCut(VK_F2, [ssShift]);
+end;
+
+function TRenameComponentsExpert.GetShortCutContexts: TExpertContexts;
+begin
+  Result := [ecFormDesigner];
 end;
 
 class function TRenameComponentsExpert.GetName: string;
