@@ -29,6 +29,8 @@ type
     procedure TestRenameConstParam;
     procedure TestRenameVarParam;
     procedure TestRenameOutParam;
+    procedure TestRenameMethodParam;
+    procedure TestRenameMethodParamFromImpl;
   end;
 
   TTestRenameClassMember = class(TTestCase)
@@ -431,6 +433,92 @@ begin
     'begin'#13#10 +
     '  AOutput := 42;'#13#10 +
     'end;'#13#10
+  );
+end;
+
+procedure TTestRenameParam.TestRenameMethodParam;
+begin
+  // Rename parameter in class method declaration — should also rename
+  // in implementation signature and body
+  DoRename(
+    'unit TestUnit;'#13#10 +
+    #13#10 +
+    'interface'#13#10 +
+    #13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoWork({|}AValue: Integer);'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'implementation'#13#10 +
+    #13#10 +
+    'procedure TMyClass.DoWork(AValue: Integer);'#13#10 +
+    'begin'#13#10 +
+    '  WriteLn(AValue);'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'end.'#13#10,
+    'ANewValue',
+    'unit TestUnit;'#13#10 +
+    #13#10 +
+    'interface'#13#10 +
+    #13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoWork(ANewValue: Integer);'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'implementation'#13#10 +
+    #13#10 +
+    'procedure TMyClass.DoWork(ANewValue: Integer);'#13#10 +
+    'begin'#13#10 +
+    '  WriteLn(ANewValue);'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'end.'#13#10
+  );
+end;
+
+procedure TTestRenameParam.TestRenameMethodParamFromImpl;
+begin
+  // Cursor on parameter in implementation method signature — should also rename
+  // in class declaration and body
+  DoRename(
+    'unit TestUnit;'#13#10 +
+    #13#10 +
+    'interface'#13#10 +
+    #13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoWork(AValue: Integer);'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'implementation'#13#10 +
+    #13#10 +
+    'procedure TMyClass.DoWork({|}AValue: Integer);'#13#10 +
+    'begin'#13#10 +
+    '  WriteLn(AValue);'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'end.'#13#10,
+    'ANewValue',
+    'unit TestUnit;'#13#10 +
+    #13#10 +
+    'interface'#13#10 +
+    #13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoWork(ANewValue: Integer);'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'implementation'#13#10 +
+    #13#10 +
+    'procedure TMyClass.DoWork(ANewValue: Integer);'#13#10 +
+    'begin'#13#10 +
+    '  WriteLn(ANewValue);'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'end.'#13#10
   );
 end;
 

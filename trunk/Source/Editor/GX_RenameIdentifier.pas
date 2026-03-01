@@ -536,12 +536,85 @@ begin
   end;
 end;
 
+function IsInMethodParamList(const Tokens: TTokenArray; TokenIdx: Integer;
+  ClassDeclStart: Integer; out MethodName: string): Boolean;
+// Walk backward from TokenIdx to check if it's inside a method parameter list
+// within a class declaration. If so, return the method name.
+var
+  I, ParenLevel, NameI, PrevI: Integer;
+begin
+  Result := False;
+  MethodName := '';
+  ParenLevel := 0;
+  I := TokenIdx;
+  while I >= ClassDeclStart do begin
+    if Tokens[I].Kind = tkRoundClose then
+      Inc(ParenLevel)
+    else if Tokens[I].Kind = tkRoundOpen then begin
+      if ParenLevel > 0 then
+        Dec(ParenLevel)
+      else begin
+        // Found the opening paren containing our token
+        NameI := PrevNonJunk(Tokens, I);
+        if (NameI >= ClassDeclStart) and (Tokens[NameI].Kind in IdentDirect) then begin
+          PrevI := PrevNonJunk(Tokens, NameI);
+          if (PrevI >= ClassDeclStart) and IsProcKeyword(Tokens[PrevI].Kind) then begin
+            MethodName := Tokens[NameI].Text;
+            Result := True;
+          end;
+        end;
+        Exit;
+      end;
+    end;
+    Dec(I);
+  end;
+end;
+
+procedure CollectMethodParamOccurrences(const Tokens: TTokenArray;
+  const Cls: TClassScope; const MethodName, IdentName: string;
+  Occurrences: TList);
+// Scan the class declaration for the named method's parameter list and
+// add matching identifier occurrences to the list.
+var
+  I, NameI, ParenLevel: Integer;
+begin
+  I := Cls.DeclStart;
+  while I <= Cls.DeclEnd do begin
+    if IsProcKeyword(Tokens[I].Kind) then begin
+      NameI := NextNonJunk(Tokens, I);
+      if (NameI <= Cls.DeclEnd) and (Tokens[NameI].Kind in IdentDirect) and
+         SameText(Tokens[NameI].Text, MethodName) then begin
+        I := NextNonJunk(Tokens, NameI);
+        if (I <= Cls.DeclEnd) and (Tokens[I].Kind = tkRoundOpen) then begin
+          ParenLevel := 1;
+          Inc(I);
+          while (I <= Cls.DeclEnd) and (ParenLevel > 0) do begin
+            if Tokens[I].Kind = tkRoundOpen then
+              Inc(ParenLevel)
+            else if Tokens[I].Kind = tkRoundClose then begin
+              Dec(ParenLevel);
+              if ParenLevel = 0 then
+                Break;
+            end;
+            if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, IdentName) then
+              Occurrences.Add(Pointer(I));
+            Inc(I);
+          end;
+        end;
+        Exit;
+      end;
+    end;
+    Inc(I);
+  end;
+end;
+
 function DetectScope(const Tokens: TTokenArray; CursorTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
   const Classes: TClassScopeArray): TRenameScope;
 var
   EnclosingProcs: TProcScopeArray;
   I, J: Integer;
+  MethodName: string;
 begin
   Result.Kind := skUnit;
   Result.Description := 'unit-level';
@@ -590,6 +663,19 @@ begin
   // 4. Check if cursor is directly inside a class declaration
   for I := 0 to High(Classes) do begin
     if (CursorTokenIdx >= Classes[I].DeclStart) and (CursorTokenIdx <= Classes[I].DeclEnd) then begin
+      // Check if cursor is on a method parameter (not a class member)
+      if IsInMethodParamList(Tokens, CursorTokenIdx, Classes[I].DeclStart, MethodName) then begin
+        // Find the corresponding implementation proc
+        for J := 0 to High(Procs) do begin
+          if SameText(Procs[J].ClassName, Classes[I].Name) and
+             SameText(Procs[J].Name, MethodName) then begin
+            Result.Kind := skProcedure;
+            Result.ProcIndex := J;
+            Result.Description := 'parameter of ' + Classes[I].Name + '.' + MethodName;
+            Exit;
+          end;
+        end;
+      end;
       Result.Kind := skClass;
       Result.ClassIndex := I;
       Result.Description := 'member of ' + Classes[I].Name;
@@ -634,6 +720,17 @@ begin
     skProcedure: begin
       ProcIdx := Scope.ProcIndex;
       if (ProcIdx >= 0) and (ProcIdx <= High(Procs)) then begin
+        // For class methods, also collect from the class declaration's method param list
+        if Procs[ProcIdx].ClassName <> '' then begin
+          for J := 0 to High(Classes) do begin
+            if SameText(Classes[J].Name, Procs[ProcIdx].ClassName) then begin
+              CollectMethodParamOccurrences(Tokens, Classes[J],
+                Procs[ProcIdx].Name, IdentName, Result);
+              Break;
+            end;
+          end;
+        end;
+        // Collect from the implementation proc's range
         for I := Procs[ProcIdx].HeaderStart to Procs[ProcIdx].BodyEnd do begin
           if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, IdentName) then
             Result.Add(Pointer(I));

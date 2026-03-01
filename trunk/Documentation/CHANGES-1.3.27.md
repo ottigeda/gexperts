@@ -32,6 +32,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 
 ## Bug Fixes
 
+- Rename Identifier: Fixed renaming method parameters not propagating between class declaration and implementation (feature #182)
+
 - Uses Clause Manager: Line wrapping now respects IDE Right Margin setting instead of hardcoded 80 columns
 
 - Reverse Statement: Fixed regex matching bare-dot expressions like `.ReadInteger()` which produced invalid code (feature #14)
