@@ -29,6 +29,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Class Browser: Added toolbar toggle to show/hide implementation-section classes, with greyed icons to distinguish them from interface-section classes (bug #24)
 - Rename Identifier: New scope-aware editor expert (Ctrl+Alt+R) that renames identifiers within a single unit, supporting local, class, and unit-level scopes with shadowing protection (feature #182)
 - Framework: Added context-aware shortcut dispatch so experts sharing the same shortcut (e.g. Shift+F2) dispatch correctly based on IDE context (code editor vs form designer)
+- Rename Identifier: Renaming a component field in source now also renames the component in the form designer (with warning label in dialog)
+- Rename Components: After renaming a component, source code references are also renamed (optional, controlled by new checkbox in config)
 
 ## Bug Fixes
 
