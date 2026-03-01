@@ -22,26 +22,26 @@ object fmCompRenameConfig: TfmCompRenameConfig
   TextHeight = 14
   object pnlFooter: TPanel
     Left = 0
-    Top = 292
+    Top = 272
     Width = 409
-    Height = 76
+    Height = 96
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
       409
-      76)
+      96)
     object pnlButtonsRight: TPanel
       Left = 136
       Top = 0
       Width = 273
-      Height = 76
+      Height = 96
       Align = alRight
       BevelOuter = bvNone
-      TabOrder = 2
+      TabOrder = 3
       object btnOK: TButton
         Left = 32
-        Top = 48
+        Top = 68
         Width = 75
         Height = 25
         Action = acOK
@@ -51,7 +51,7 @@ object fmCompRenameConfig: TfmCompRenameConfig
       end
       object btnClose: TButton
         Left = 112
-        Top = 48
+        Top = 68
         Width = 75
         Height = 25
         Action = acCancel
@@ -60,7 +60,7 @@ object fmCompRenameConfig: TfmCompRenameConfig
       end
       object btnHelp: TButton
         Left = 192
-        Top = 48
+        Top = 68
         Width = 75
         Height = 25
         Cancel = True
@@ -68,15 +68,6 @@ object fmCompRenameConfig: TfmCompRenameConfig
         TabOrder = 2
         OnClick = btnHelpClick
       end
-    end
-    object chkAutoAdd: TCheckBox
-      Left = 8
-      Top = 24
-      Width = 393
-      Height = 17
-      Anchors = [akLeft, akRight, akBottom]
-      Caption = 'Auto-add rules for new components'
-      TabOrder = 1
     end
     object chkShowDialog: TCheckBox
       Left = 8
@@ -87,13 +78,33 @@ object fmCompRenameConfig: TfmCompRenameConfig
       Caption = 'Show rename dialog for new components'
       TabOrder = 0
     end
-    object b_Tools: TButton
+    object chkAutoAdd: TCheckBox
+      Left = 8
+      Top = 24
+      Width = 393
+      Height = 17
+      Anchors = [akLeft, akRight, akBottom]
+      Caption = 'Auto-add rules for new components'
+      TabOrder = 1
+    end
+    object chkRenameSourceRefs: TCheckBox
       Left = 8
       Top = 48
+      Width = 393
+      Height = 17
+      Anchors = [akLeft, akRight, akBottom]
+      Caption = 'Also rename source code references'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+    object b_Tools: TButton
+      Left = 8
+      Top = 68
       Width = 75
       Height = 25
       Caption = 'Tools >'
-      TabOrder = 3
+      TabOrder = 4
       OnClick = b_ToolsClick
     end
   end

@@ -80,6 +80,17 @@ type
     procedure TestTypeNameAndConstructorCall;
   end;
 
+  TTestRenameAllTokenOccurrences = class(TTestCase)
+  published
+    procedure TestBasicRename;
+    procedure TestNoFalsePositiveInStrings;
+    procedure TestNoFalsePositiveInComments;
+    procedure TestCaseInsensitiveMatch;
+    procedure TestNoMatchReturnsSameSource;
+    procedure TestSameNameReturnsSameSource;
+    procedure TestMultipleOccurrences;
+  end;
+
 implementation
 
 uses
@@ -1448,6 +1459,143 @@ begin
   );
 end;
 
+{ TTestRenameAllTokenOccurrences }
+
+procedure TTestRenameAllTokenOccurrences.TestBasicRename;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  Button1.Enabled := True;'#13#10 +
+    '  Button1.Caption := ''OK'';'#13#10 +
+    'end;'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'Button1', 'btnOK', Count);
+  CheckEquals(2, Count, 'Occurrence count');
+  CheckEquals(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  btnOK.Enabled := True;'#13#10 +
+    '  btnOK.Caption := ''OK'';'#13#10 +
+    'end;'#13#10,
+    Result, 'Renamed source');
+end;
+
+procedure TTestRenameAllTokenOccurrences.TestNoFalsePositiveInStrings;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := 1;'#13#10 +
+    '  WriteLn(''X'');'#13#10 +
+    'end;'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'X', 'Y', Count);
+  CheckEquals(1, Count, 'Only identifier X should be renamed, not string');
+  Check(Pos('''X''', Result) > 0, 'String ''X'' should be preserved');
+end;
+
+procedure TTestRenameAllTokenOccurrences.TestNoFalsePositiveInComments;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := 1; // X is a variable'#13#10 +
+    '  {X := old value}'#13#10 +
+    '  (* X in block *)'#13#10 +
+    'end;'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'X', 'Y', Count);
+  CheckEquals(1, Count, 'Only the identifier X should be renamed');
+  Check(Pos('// X is a variable', Result) > 0, 'Line comment should be preserved');
+  Check(Pos('{X := old value}', Result) > 0, 'Brace comment should be preserved');
+  Check(Pos('(* X in block *)', Result) > 0, 'Block comment should be preserved');
+end;
+
+procedure TTestRenameAllTokenOccurrences.TestCaseInsensitiveMatch;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  button1.Enabled := True;'#13#10 +
+    '  Button1.Caption := ''OK'';'#13#10 +
+    '  BUTTON1.Visible := False;'#13#10 +
+    'end;'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'Button1', 'btnOK', Count);
+  CheckEquals(3, Count, 'All case variants should be renamed');
+  Check(Pos('button1', Result) = 0, 'No lowercase variant should remain');
+  Check(Pos('BUTTON1', Result) = 0, 'No uppercase variant should remain');
+end;
+
+procedure TTestRenameAllTokenOccurrences.TestNoMatchReturnsSameSource;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := 1;'#13#10 +
+    'end;'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'Button1', 'btnOK', Count);
+  CheckEquals(0, Count, 'No occurrences should be found');
+  CheckEquals(Src, Result, 'Source should be unchanged');
+end;
+
+procedure TTestRenameAllTokenOccurrences.TestSameNameReturnsSameSource;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := 1;'#13#10 +
+    'end;'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'X', 'X', Count);
+  CheckEquals(0, Count, 'Same name should produce zero count');
+  CheckEquals(Src, Result, 'Source should be unchanged');
+end;
+
+procedure TTestRenameAllTokenOccurrences.TestMultipleOccurrences;
+var
+  Src, Result: string;
+  Count: Integer;
+begin
+  Src :=
+    'unit TestUnit;'#13#10 +
+    #13#10 +
+    'interface'#13#10 +
+    #13#10 +
+    'type'#13#10 +
+    '  TMyForm = class(TForm)'#13#10 +
+    '    Edit1: TEdit;'#13#10 +
+    '    procedure FormCreate(Sender: TObject);'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'implementation'#13#10 +
+    #13#10 +
+    'procedure TMyForm.FormCreate(Sender: TObject);'#13#10 +
+    'begin'#13#10 +
+    '  Edit1.Text := ''Hello'';'#13#10 +
+    '  Edit1.Enabled := True;'#13#10 +
+    '  Edit1.Color := clRed;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'end.'#13#10;
+  Result := RenameAllTokenOccurrences(Src, 'Edit1', 'edtName', Count);
+  CheckEquals(4, Count, 'Field declaration + 3 body references');
+end;
+
 initialization
   RegisterTest(TTestRenameLocalVar.Suite);
   RegisterTest(TTestRenameParam.Suite);
@@ -1455,5 +1603,6 @@ initialization
   RegisterTest(TTestRenameUnitLevel.Suite);
   RegisterTest(TTestRenameShadowing.Suite);
   RegisterTest(TTestRenameEdgeCases.Suite);
+  RegisterTest(TTestRenameAllTokenOccurrences.Suite);
 
 end.

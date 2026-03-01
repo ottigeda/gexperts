@@ -14,6 +14,7 @@ type
     lblScope: TLabel;
     lblScopeValue: TLabel;
     lblOccurrences: TLabel;
+    lblComponentWarning: TLabel;
     lblNewName: TLabel;
     edtNewName: TEdit;
     btnOK: TButton;
@@ -25,6 +26,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     procedure SetInfo(const _OldName, _ScopeDesc: string; _OccurrenceCount: Integer);
+    procedure SetIsComponent(Value: Boolean);
     function GetNewName: string;
   end;
 
@@ -71,6 +73,11 @@ begin
   edtNewName.Text := _OldName;
   edtNewName.SelectAll;
   ValidateInput;
+end;
+
+procedure TfmRenameIdentifier.SetIsComponent(Value: Boolean);
+begin
+  lblComponentWarning.Visible := Value;
 end;
 
 function TfmRenameIdentifier.GetNewName: string;
@@ -155,6 +162,9 @@ var
   Dlg: TfmRenameIdentifier;
   NewName: string;
   Step: string;
+  FormEditor: IOTAFormEditor;
+  Component: IOTAComponent;
+  IsComponent: Boolean;
 begin
   Step := 'GetSourceEditor';
   try
@@ -184,11 +194,30 @@ begin
       Exit;
     end;
 
+    // Check if identifier is a component in the form designer
+    Step := 'DetectComponent';
+    IsComponent := False;
+    FormEditor := GxOtaGetFormEditorFromModule(GxOtaGetCurrentModule);
+    if Assigned(FormEditor) then begin
+      // Block renaming the form's name or type (e.g. Form1 or TForm1)
+      Component := FormEditor.GetRootComponent;
+      if Assigned(Component) then begin
+        if SameText(OldName, Ota.GetComponentName(Component))
+          or SameText(OldName, Component.GetComponentType) then begin
+          ShowError('Cannot rename the form type here. Use the Object Inspector to rename the form.');
+          Exit;
+        end;
+      end;
+      Component := FormEditor.FindComponent(OldName);
+      IsComponent := Assigned(Component);
+    end;
+
     Step := 'ShowDialog';
     Dlg := TfmRenameIdentifier.Create(nil);
     try
       SetFormIcon(Dlg);
       Dlg.SetInfo(OldName, ScopeDesc, OccurrenceCount);
+      Dlg.SetIsComponent(IsComponent);
       if Dlg.ShowModal <> mrOk then
         Exit;
       NewName := Dlg.GetNewName;
@@ -196,16 +225,38 @@ begin
       FreeAndNil(Dlg);
     end;
 
-    Step := 'PerformRename (OldName=' + OldName + ', NewName=' + NewName + ')';
-    // Perform the rename
-    if not RenameIdentifierInSource(Src, CursorCharIdx, NewName,
-      RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
-      ShowError(ErrorMsg);
-      Exit;
+    if IsComponent then begin
+      // Component path: rename in DFM first, then update body references
+      Step := 'RenameComponent (OldName=' + OldName + ', NewName=' + NewName + ')';
+      if not Ota.SetComponentName(Component, NewName) then begin
+        ShowError('Failed to rename component in form designer.');
+        Exit;
+      end;
+      // IDE has renamed DFM + field declaration; re-read source
+      Step := 'ReReadSource';
+      EditRead := TEditReader.Create(SourceEditor.FileName);
+      try
+        Src := EditRead.GetText;
+      finally
+        FreeAndNil(EditRead);
+      end;
+      Src := AdjustLineBreaks(Src, tlbsCRLF);
+      // Rename remaining body references
+      Step := 'RenameBodyReferences';
+      RenamedSource := RenameAllTokenOccurrences(Src, OldName, NewName, OccurrenceCount);
+      if OccurrenceCount > 0 then
+        Ota.ReplaceEditorText(SourceEditor, RenamedSource);
+    end else begin
+      // Normal non-component path
+      Step := 'PerformRename (OldName=' + OldName + ', NewName=' + NewName + ')';
+      if not RenameIdentifierInSource(Src, CursorCharIdx, NewName,
+        RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
+        ShowError(ErrorMsg);
+        Exit;
+      end;
+      Step := 'ReplaceEditorText';
+      Ota.ReplaceEditorText(SourceEditor, RenamedSource);
     end;
-
-    Step := 'ReplaceEditorText';
-    Ota.ReplaceEditorText(SourceEditor, RenamedSource);
     IncCallCount;
   except
     on E: Exception do

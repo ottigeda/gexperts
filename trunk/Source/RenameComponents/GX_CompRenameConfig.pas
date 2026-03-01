@@ -50,6 +50,7 @@ type
   TfmCompRenameConfig = class(TfmBaseForm)
     chkShowDialog: TCheckBox;
     chkAutoAdd: TCheckBox;
+    chkRenameSourceRefs: TCheckBox;
     grpNames: TGroupBox;
     pnlRules: TPanel;
     pnlRight: TPanel;
@@ -144,9 +145,9 @@ type
     procedure SortByClass;
     procedure SortByRule;
     procedure GetData(_ValueListVcl, _ValueListFmx: TStringList; out _AutoShow, _AutoAdd: Boolean;
-      out _FormWidth, _FormHeight: Integer);
+      out _RenameSourceRefs: Boolean; out _FormWidth, _FormHeight: Integer);
     procedure SetData(_ValueListVcl, _ValueListFmx: TStringList; _AutoShow, _AutoAdd: Boolean;
-      _FormWidth, _FormHeight: Integer; const _Selected: string);
+      _RenameSourceRefs: Boolean; _FormWidth, _FormHeight: Integer; const _Selected: string);
     procedure SetLists(_ValueListVcl, _ValueListFmx: TStringList);
     procedure HandleOnGridClick(_Sender: TObject);
     procedure UpdateOtherProps;
@@ -163,7 +164,8 @@ type
     destructor Destroy; override;
     class function Execute(_Owner: TWinControl; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
       _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
-      var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
+      var _AutoAdd: Boolean; var _RenameSourceRefs: Boolean;
+      var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
   end;
 
 implementation
@@ -200,7 +202,8 @@ end;
 
 class function TfmCompRenameConfig.Execute(_Owner: TWinControl; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
   _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
-  var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
+  var _AutoAdd: Boolean; var _RenameSourceRefs: Boolean;
+  var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
 var
   frm: TfmCompRenameConfig;
 begin
@@ -209,11 +212,13 @@ begin
     TForm_CenterOn(frm, _Owner);
     frm.FOnImport := _OnImport;
     frm.FOnExport := _OnExport;
-    frm.SetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _FormWidth, _FormHeight, _Selected);
+    frm.SetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _RenameSourceRefs,
+      _FormWidth, _FormHeight, _Selected);
 
     Result := (frm.ShowModal = mrOK);
     if Result then
-      frm.GetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _FormWidth, _FormHeight);
+      frm.GetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _RenameSourceRefs,
+        _FormWidth, _FormHeight);
   finally
     FreeAndNil(frm);
   end;
@@ -261,7 +266,8 @@ begin
 end;
 
 procedure TfmCompRenameConfig.SetData(_ValueListVcl, _ValueListFmx: TStringList;
-  _AutoShow, _AutoAdd: Boolean; _FormWidth, _FormHeight: Integer; const _Selected: string);
+  _AutoShow, _AutoAdd: Boolean; _RenameSourceRefs: Boolean;
+  _FormWidth, _FormHeight: Integer; const _Selected: string);
 begin
   // These checks should not be necessary because we set the minimum constraints, but
   // that didn't work in Delphi 2007 and 2009 in GExperts. I could not reproduce the behaviour
@@ -273,6 +279,7 @@ begin
 
   chkShowDialog.Checked := _AutoShow;
   chkAutoAdd.Checked := _AutoAdd;
+  chkRenameSourceRefs.Checked := _RenameSourceRefs;
 
   SetLists(_ValueListVcl, _ValueListFmx);
 
@@ -317,7 +324,8 @@ begin
 end;
 
 procedure TfmCompRenameConfig.GetData(_ValueListVcl, _ValueListFmx: TStringList;
-  out _AutoShow: Boolean; out _AutoAdd: Boolean; out _FormWidth, _FormHeight: Integer);
+  out _AutoShow: Boolean; out _AutoAdd: Boolean; out _RenameSourceRefs: Boolean;
+  out _FormWidth, _FormHeight: Integer);
 begin
   CopyGridToValues(FGridVcl, FValueListVcl);
   CopyGridToValues(FGridFmx, FValueListFmx);
@@ -325,6 +333,7 @@ begin
   _FormHeight := Height;
   _AutoShow := chkShowDialog.Checked;
   _AutoAdd := chkAutoAdd.Checked;
+  _RenameSourceRefs := chkRenameSourceRefs.Checked;
   CopyValueList(FValueListVcl, _ValueListVcl);
   CopyValueList(FValueListFmx, _ValueListFmx);
 end;

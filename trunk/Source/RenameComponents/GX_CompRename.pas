@@ -115,7 +115,8 @@ uses
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzTypeInfoUtils,
   Themes,
 {$IFOPT D+}GX_DbugIntf, {$ENDIF}
-  GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils;
+  GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils,
+  GX_EditReader, GX_RenameIdentifier;
 
 type
   TRenameComponentsExpert = class;
@@ -155,7 +156,9 @@ type
     FFormEditor: IOTAFormEditor;
     FFormWidth: Integer;
     FFormHeight: Integer;
+    FRenameSourceReferences: Boolean;
     function DoRename(const Component: IOTAComponent; UseRules: Boolean): Boolean;
+    procedure RenameSourceReferencesAfterComponentRename(const OldCompName, NewCompName: string);
     procedure HandleOnExport(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList);
     procedure HandleOnImport(_Sender: TObject; const _fn: string;
       _RulesListVcl, _RulesListFmx: TStringList);
@@ -852,7 +855,7 @@ begin
   FRenameRuleListFmx.Sort;
   if TfmCompRenameConfig.Execute(_Owner, HandleOnImport, HandleOnExport,
     FRenameRuleListVcl, FRenameRuleListFmx, FShowDialog, FAutoAddClasses,
-    FFormWidth, FFormHeight, _Selected) then
+    FRenameSourceReferences, FFormWidth, FFormHeight, _Selected) then
     SaveSettings;
 end;
 
@@ -971,6 +974,42 @@ begin
   inherited;
 end;
 
+procedure TRenameComponentsExpert.RenameSourceReferencesAfterComponentRename(
+  const OldCompName, NewCompName: string);
+var
+  Module: IOTAModule;
+  SourceEditor: IOTASourceEditor;
+  EditRead: TEditReader;
+  Src, RenamedSrc: string;
+  OccurrenceCount: Integer;
+begin
+  if not Assigned(FFormEditor) then
+    Exit;
+
+  if SameText(OldCompName, NewCompName) then
+    Exit;
+
+  Module := GxOtaGetModule(GxOtaGetBaseModuleFileName(FFormEditor.FileName));
+  if not Assigned(Module) then
+    Exit;
+
+  SourceEditor := GxOtaGetSourceEditorFromModule(Module);
+  if not Assigned(SourceEditor) then
+    Exit;
+
+  EditRead := TEditReader.Create(SourceEditor.FileName);
+  try
+    Src := EditRead.GetText;
+  finally
+    FreeAndNil(EditRead);
+  end;
+  Src := AdjustLineBreaks(Src, tlbsCRLF);
+
+  RenamedSrc := RenameAllTokenOccurrences(Src, OldCompName, NewCompName, OccurrenceCount);
+  if OccurrenceCount > 0 then
+    Ota.ReplaceEditorText(SourceEditor, RenamedSrc);
+end;
+
 function TRenameComponentsExpert.DoRename(const Component: IOTAComponent; UseRules: Boolean): Boolean;
 var
   i: Integer;
@@ -986,6 +1025,7 @@ var
   OtherProps: TStringList;
   Index: Integer;
   RenameRuleList: TStringList;
+  OldCompName: string;
 begin
   Assert(Assigned(Component));
   Assert(Assigned(FFormEditor));
@@ -994,6 +1034,8 @@ begin
   CompName := Ota.GetComponentName(Component);
   if CompName = '' then
     Exit; //==>
+
+  OldCompName := CompName;
 
   // Get the component class name
   ClassName := Component.GetComponentType;
@@ -1030,6 +1072,8 @@ begin
         OtherProps := nil;
       Result := TfmCompRename.Execute(nil, Component, RenameRule, OtherProps, UseRules,
         IsValidComponentName);
+      if Result and FRenameSourceReferences then
+        RenameSourceReferencesAfterComponentRename(OldCompName, Ota.GetComponentName(Component));
     end else begin
       // Try to find a new name without user interaction
       CompName := '';
@@ -1051,8 +1095,11 @@ begin
           Break;
         end;
       end;
-      if Length(CompName) > 0 then
+      if Length(CompName) > 0 then begin
         Ota.SetComponentName(Component, CompName);
+        if FRenameSourceReferences then
+          RenameSourceReferencesAfterComponentRename(OldCompName, CompName);
+      end;
 
       if UseRules then
       begin
@@ -1213,6 +1260,7 @@ begin
   inherited InternalLoadSettings(_Settings);
   FShowDialog := _Settings.ReadBool('ShowDialog', False);
   FAutoAddClasses := _Settings.ReadBool('AutoAdd', True);
+  FRenameSourceReferences := _Settings.ReadBool('RenameSourceReferences', True);
 
   FFormWidth := _Settings.ReadInteger('Width', 0);
   FFormHeight := _Settings.ReadInteger('Height', 0);
@@ -1285,6 +1333,7 @@ begin
 
   _Settings.WriteBool('ShowDialog', FShowDialog);
   _Settings.WriteBool('AutoAdd', FAutoAddClasses);
+  _Settings.WriteBool('RenameSourceReferences', FRenameSourceReferences);
 
   SaveRules(_Settings, 'vcl', FRenameRuleListVcl);
   SaveRules(_Settings, 'fmx', FRenameRuleListFmx);

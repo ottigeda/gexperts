@@ -23,6 +23,13 @@ function RenameIdentifierInSource(
   out ErrorMsg: string
 ): Boolean;
 
+/// Renames all occurrences of OldName to NewName in Source using lexer-based
+/// tokenization. Only identifier tokens are replaced (not strings, comments,
+/// or compiler directives). Matching is case-insensitive.
+/// Returns the modified source and the number of replacements made.
+function RenameAllTokenOccurrences(const Source, OldName, NewName: string;
+  out OccurrenceCount: Integer): string;
+
 implementation
 
 uses
@@ -822,6 +829,51 @@ begin
       Result := Result + Parts[I];
   finally
     Parts.Free;
+  end;
+end;
+
+function RenameAllTokenOccurrences(const Source, OldName, NewName: string;
+  out OccurrenceCount: Integer): string;
+var
+  Lexer: TmwPasLex;
+  Parts: TStringList;
+  LastPos, TokPos, TokLen: Integer;
+begin
+  OccurrenceCount := 0;
+  if SameText(OldName, NewName) and (OldName = NewName) then begin
+    Result := Source;
+    Exit;
+  end;
+
+  Lexer := TmwPasLex.Create;
+  Parts := TStringList.Create;
+  try
+    LastPos := 1;
+    Lexer.Origin := PChar(Source);
+    while Lexer.TokenID <> tkNull do begin
+      if (Lexer.TokenID in IdentDirect) and SameText(Lexer.Token, OldName) then begin
+        TokPos := Lexer.TokenPos + 1; // 1-based
+        TokLen := Lexer.RunPos - Lexer.TokenPos;
+        if TokPos > LastPos then
+          Parts.Add(Copy(Source, LastPos, TokPos - LastPos));
+        Parts.Add(NewName);
+        LastPos := TokPos + TokLen;
+        Inc(OccurrenceCount);
+      end;
+      Lexer.Next;
+    end;
+    if LastPos <= Length(Source) then
+      Parts.Add(Copy(Source, LastPos, Length(Source) - LastPos + 1));
+
+    Result := '';
+    if OccurrenceCount > 0 then begin
+      for TokLen := 0 to Parts.Count - 1 do
+        Result := Result + Parts[TokLen];
+    end else
+      Result := Source;
+  finally
+    Parts.Free;
+    Lexer.Free;
   end;
 end;
 
