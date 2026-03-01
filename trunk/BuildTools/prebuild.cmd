@@ -6,14 +6,12 @@
 @echo %0
 @echo running in %CD%
 
-set PROJECTPATH="%1"
-rem remove quotes
-set PROJECTPATH=%PROJECTPATH:"=%
+if "%~1"=="" goto NeedPara
+
+set PROJECTPATH=%~1
 rem echo PROJECTPATH=%PROJECTPATH%
 
 subwcrev "%~dp0\.." "%~dp0\templates\SVN_Version_template.ini" "%~dp0\..\SVN_Version.ini"
-
-if "%PROJECTPATH%"=="" goto NeedPara
 rem echo PROJECTPATH=%PROJECTPATH%
 call :DelExt %1
 echo RESULT=%RESULT%
