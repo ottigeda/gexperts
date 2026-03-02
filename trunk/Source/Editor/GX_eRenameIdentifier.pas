@@ -141,7 +141,10 @@ end;
 
 function TRenameIdentifierExpert.GetDefaultShortCut: TShortCut;
 begin
-  Result := Menus.ShortCut(VK_F2, [ssShift]);
+  // No default shortcut: Rename Components (TGX_Expert) owns Shift+F2
+  // and forwards to us when the code editor is active.
+  // Having two actions with the same shortcut breaks older Delphi versions.
+  Result := 0;
 end;
 
 function TRenameIdentifierExpert.HasConfigOptions: Boolean;

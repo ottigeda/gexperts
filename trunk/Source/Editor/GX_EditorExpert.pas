@@ -20,7 +20,6 @@ type
     destructor Destroy; override;
     // returns true
     function CanHaveShortCut: boolean; override;
-    function GetShortCutContexts: TExpertContexts; override;
     procedure DoExecute(Sender: TObject);
     // you usually don't need to override this
     class function GetOptionsBaseRegistryKey: string; override;
@@ -136,11 +135,6 @@ begin
   Result := True;
 end;
 
-function TEditorExpert.GetShortCutContexts: TExpertContexts;
-begin
-  Result := [ecCodeEditor];
-end;
-
 var
   PrivateEditorExpertClassList: TList;
 
@@ -157,18 +151,11 @@ begin
   SendingAction := Sender as TCustomAction;
   Assert(Assigned(SendingAction));
 
-  SendingAction.Enabled := GetCurrentExpertContext in GetShortCutContexts;
+  SendingAction.Enabled := GxOtaGetTopMostEditView <> nil;
 end;
 
 procedure TEditorExpert.DoExecute(Sender: TObject);
 begin
-  if not (GetCurrentExpertContext in GetShortCutContexts) then begin
-    // since apparently ActionOnUpdate isn't reliably called,
-    // we prevent editor actions from being executed here,
-    // if the current context doesn't match the expert's declared contexts
-    Exit; //==>
-  end;
-
   try
     Execute(Sender);
   except

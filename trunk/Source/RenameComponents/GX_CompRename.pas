@@ -116,7 +116,8 @@ uses
   Themes,
 {$IFOPT D+}GX_DbugIntf, {$ENDIF}
   GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils,
-  GX_EditReader, GX_RenameIdentifier;
+  GX_EditReader, GX_RenameIdentifier,
+  GX_GExperts, GX_EditorExpertManager;
 
 type
   TRenameComponentsExpert = class;
@@ -188,7 +189,6 @@ type
     procedure Configure(_Owner: TWinControl; const _Selected: string); reintroduce; overload;
     function GetActionCaption: string; override;
     function GetDefaultShortCut: TShortCut; override;
-    function GetShortCutContexts: TExpertContexts; override;
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
     procedure SetActive(New: Boolean); override;
@@ -821,7 +821,18 @@ var
   SelCount: Integer;
   CurrentComponent: IOTAComponent;
   i: Integer;
+  Idx: Integer;
 begin
+  // When invoked via Shift+F2 while the code editor is focused,
+  // forward to the Rename Identifier editor expert instead.
+  if IsEditControl(Screen.ActiveControl) then begin
+    if GExpertsInst.EditorExpertManager.FindExpert('RenameIdentifier', Idx) then begin
+      if GExpertsInst.EditorExpertManager.EditorExpertList[Idx].Active then
+        GExpertsInst.EditorExpertManager.EditorExpertList[Idx].DoExecute(Sender);
+    end;
+    Exit;
+  end;
+
   if not GxOtaFormEditorHasSelectedComponent then
     Configure(nil)
   else
@@ -1195,11 +1206,6 @@ end;
 function TRenameComponentsExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := Menus.ShortCut(VK_F2, [ssShift]);
-end;
-
-function TRenameComponentsExpert.GetShortCutContexts: TExpertContexts;
-begin
-  Result := [ecFormDesigner];
 end;
 
 class function TRenameComponentsExpert.GetName: string;
