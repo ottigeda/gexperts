@@ -1438,10 +1438,10 @@ resourcestring
     PaintText: string;
     Trimmed: Integer;
     TextTop: Integer;
-    sb: TColor;
-    sf: TColor;
-    nb: TColor;
-    nf: TColor;
+    sb: TColor;  // selected, background
+    sf: TColor;  // selected, forground
+    nb: TColor;  // normal, background
+    nf: TColor;  // normal, foreground
     Match: TMatchResult;
     NextMatchStart: Integer;
     PrevMatchEnd: Integer;
@@ -1467,25 +1467,25 @@ resourcestring
       begin
         nb := gblGrepExpert.ListMatchBrushColor;
         nf := gblGrepExpert.ListMatchTextColor;
-        sb := clWindow;
-        sf := gblGrepExpert.ListFont.Color;
+        sb := GetThemedColor(clWindow);
+        sf := GetThemedColor(gblGrepExpert.ListFont.Color);
       end;
     end
     else
     begin
       if gblGrepExpert.ListUseDefaultColors then
       begin
-        sb := GetThemedColor(clHighLight);
-        sf := GetThemedColor(clHighLightText);
         nb := GetThemedColor(clWindow);
         nf := GetThemedColor(clWindowText);
+        sb := GetThemedColor(clHighLight);
+        sf := GetThemedColor(clHighLightText);
       end
       else
       begin
+        nb := GetThemedColor(clWindow);
+        nf := GetThemedColor(gblGrepExpert.ListFont.Color);
         sb := gblGrepExpert.ListMatchBrushColor;
         sf := gblGrepExpert.ListMatchTextColor;
-        nb := GetThemedColor(clWindow);
-        nf := gblGrepExpert.ListFont.Color;
       end;
     end;
 
@@ -2505,7 +2505,7 @@ begin
     end
     else
     begin
-      cnv.Font.Color := gblGrepExpert.ListFont.Color;
+      cnv.Font.Color := GetThemedColor(gblGrepExpert.ListFont.Color);
       cnv.Brush.Color := GetThemedColor(clWindow);
     end;
   end;
