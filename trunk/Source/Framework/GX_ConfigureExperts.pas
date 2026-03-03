@@ -79,6 +79,11 @@ type
     FExpertControls: array of TExpertControlsRec;
     FVisibleExpertsCount: Integer;
     FIsInitializing: Boolean;
+    FOnShortcutChanged: TNotifyEvent;
+    FShortcutCheckTimer: TTimer;
+    procedure ShortcutChanged(_Sender: TObject);
+    procedure RestartShortcutCheckTimer;
+    procedure ShortcutCheckTimerFired(_Sender: TObject);
     procedure ConfigureExpertClick(_Sender: TObject);
     procedure FilterVisibleExperts;
     procedure SetAllEnabled(_Value: Boolean);
@@ -97,6 +102,8 @@ type
 {$ENDIF}
     procedure Init(_Experts: TList);
     procedure SaveExperts;
+    procedure CollectShortcuts(_List: TStrings);
+    property OnShortcutChanged: TNotifyEvent read FOnShortcutChanged write FOnShortcutChanged;
   end;
 
 implementation
@@ -141,6 +148,11 @@ constructor TfrConfigureExperts.Create(_Owner: TComponent);
 begin
   inherited;
   FExperts := TList.Create;
+
+  FShortcutCheckTimer := TTimer.Create(Self);
+  FShortcutCheckTimer.Enabled := False;
+  FShortcutCheckTimer.Interval := 200;
+  FShortcutCheckTimer.OnTimer := ShortcutCheckTimerFired;
 
   pnlExpertsFilter.FullRepaint := False;
 
@@ -362,12 +374,15 @@ var
   i: Integer;
   AControl: TControl;
 begin
-  if MessageDlg(SWarning, mtWarning, [mbYes, mbCancel], 0) = mrYes then
+  if MessageDlg(SWarning, mtWarning, [mbYes, mbCancel], 0) = mrYes then begin
     for i := 0 to sbxExperts.ComponentCount - 1 do begin
       AControl := sbxExperts.Components[i] as TControl;
       if AControl is TPanel then
         GetHotkeyCtrl(AControl as TPanel).HotKey := 0;
     end;
+    if Assigned(FOnShortcutChanged) then
+      FOnShortcutChanged(Self);
+  end;
 end;
 
 procedure TfrConfigureExperts.btnSetAllDefaultClick(Sender: TObject);
@@ -379,7 +394,7 @@ var
   AControl: TControl;
   AnExpert: TGX_BaseExpert;
 begin
-  if (MessageDlg(SWarning, mtWarning, [mbYes, mbCancel], 0) = mrYes) then
+  if (MessageDlg(SWarning, mtWarning, [mbYes, mbCancel], 0) = mrYes) then begin
     for i := 0 to sbxExperts.ComponentCount - 1 do begin
       AControl := sbxExperts.Components[i] as TControl;
       if AControl is TPanel then begin
@@ -387,6 +402,9 @@ begin
         THotkey_SetHotkey(GetHotkeyCtrl(AControl as TPanel), AnExpert.GetDefaultShortCut);
       end;
     end;
+    if Assigned(FOnShortcutChanged) then
+      FOnShortcutChanged(Self);
+  end;
 end;
 
 procedure TfrConfigureExperts.ConfigureExpertClick(_Sender: TObject);
@@ -407,10 +425,13 @@ begin
   Idx := (_Sender as TButton).Tag;
   AnExpert := FExperts[Idx];
   THotkey_SetHotkey(GetHotkeyCtrl(GetPanel(sbxExperts, Idx)), AnExpert.GetDefaultShortCut);
+  if Assigned(FOnShortcutChanged) then
+    FOnShortcutChanged(Self);
 end;
 
 type
   THotKeyHack = class(THotKey)
+    FOwnerFrame: TfrConfigureExperts;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
 {$IFDEF GX_SUPPORTS_THEMING}
@@ -514,6 +535,8 @@ begin
   SendDebugFmt('KeyUp(Key: %4x, Shift: [%s], ShortCut: %s, Modifiers: [%s]',
     [Key, ShiftStateToStr(Shift), ShortCutToText(HotKey), ModifierStr(Modifiers)]);
 {$ENDIF}
+  if Assigned(FOwnerFrame) then
+    FOwnerFrame.RestartShortcutCheckTimer;
 end;
 
 procedure TfrConfigureExperts.Init(_Experts: TList);
@@ -588,6 +611,8 @@ begin
       hk.Modifiers := [hkAlt];
       THotkey_SetHotkey(hk, AnExpert.ShortCut);
       hk.Visible := AnExpert.CanHaveShortCut;
+      hk.OnExit := ShortcutChanged;
+      hk.FOwnerFrame := Self;
       hk.Tag := i;
 
       btn := TButton.Create(pnl);
@@ -794,6 +819,38 @@ procedure TfrConfigureExperts.FrameResize(Sender: TObject);
 begin
   tim_Resize.Enabled := False;
   tim_Resize.Enabled := True;
+end;
+
+procedure TfrConfigureExperts.ShortcutChanged(_Sender: TObject);
+begin
+  if Assigned(FOnShortcutChanged) then
+    FOnShortcutChanged(Self);
+end;
+
+procedure TfrConfigureExperts.RestartShortcutCheckTimer;
+begin
+  FShortcutCheckTimer.Enabled := False;
+  FShortcutCheckTimer.Enabled := True;
+end;
+
+procedure TfrConfigureExperts.ShortcutCheckTimerFired(_Sender: TObject);
+begin
+  FShortcutCheckTimer.Enabled := False;
+  if Assigned(FOnShortcutChanged) then
+    FOnShortcutChanged(Self);
+end;
+
+procedure TfrConfigureExperts.CollectShortcuts(_List: TStrings);
+var
+  i: Integer;
+  AnExpert: TGX_BaseExpert;
+begin
+  for i := 0 to Length(FExpertControls) - 1 do begin
+    if FExpertControls[i].hk.HotKey <> 0 then begin
+      AnExpert := FExperts[i];
+      _List.Add(IntToStr(FExpertControls[i].hk.HotKey) + '=' + AnExpert.GetDisplayName);
+    end;
+  end;
 end;
 
 { TScrollBox }

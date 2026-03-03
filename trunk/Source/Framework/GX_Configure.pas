@@ -110,6 +110,7 @@ type
     chkSplitterVisibility: TCheckBox;
     chkProgressTransparency: TCheckBox;
     chkIsThemingEnabled: TCheckBox;
+    lblShortcutWarning: TLabel;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure lb_DesktopsDblClick(Sender: TObject);
@@ -164,6 +165,7 @@ type
     procedure SaveAllSettings;
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
     procedure InitDesktopList;
+    procedure CheckShortcutConflicts(_Sender: TObject);
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeGeneralTab;
   protected
@@ -263,6 +265,10 @@ begin
   FConfigExpertsFrame.Align := alClient;
   AdjustMinSize(FConfigExpertsFrame);
   FConfigExpertsFrame.Init(GExpertsInst.GetExpertList);
+
+  FConfigExpertsFrame.OnShortcutChanged := CheckShortcutConflicts;
+  FConfigEditorExpertsFrame.OnShortcutChanged := CheckShortcutConflicts;
+  CheckShortcutConflicts(nil);
 
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   if TryGetIdeDesktops(Desktops) then
@@ -949,6 +955,59 @@ end;
 procedure TfmConfiguration.chkEnhanceDialogsClick(Sender: TObject);
 begin
   UpdateIdeDialogCheckboxes;
+end;
+
+procedure TfmConfiguration.CheckShortcutConflicts(_Sender: TObject);
+var
+  sl: TStringList;
+  i, j, k: Integer;
+  ConflictText: string;
+  GroupText: string;
+  ConflictCount: Integer;
+  p: Integer;
+begin
+  sl := TStringList.Create;
+  try
+    FConfigExpertsFrame.CollectShortcuts(sl);
+    FConfigEditorExpertsFrame.CollectShortcuts(sl);
+    sl.Sort;
+    ConflictText := '';
+    ConflictCount := 0;
+    i := 0;
+    while i < sl.Count do begin
+      j := i + 1;
+      while (j < sl.Count) and (sl.Names[j] = sl.Names[i]) do
+        Inc(j);
+      if j - i > 1 then begin
+        // Build group: "Shift+F2: Expert A, Expert B"
+        GroupText := ShortCutToText(StrToIntDef(sl.Names[i], 0)) + ': ';
+        for k := i to j - 1 do begin
+          if k > i then
+            GroupText := GroupText + ', ';
+          p := Pos('=', sl[k]);
+          GroupText := GroupText + Copy(sl[k], p + 1, MaxInt);
+        end;
+        if ConflictText <> '' then
+          ConflictText := ConflictText + '; ';
+        ConflictText := ConflictText + GroupText;
+        Inc(ConflictCount);
+      end;
+      i := j;
+    end;
+    if ConflictText <> '' then begin
+      if ConflictCount = 1 then
+        GroupText := '1 conflicting keyboard shortcut'
+      else
+        GroupText := IntToStr(ConflictCount) + ' conflicting keyboard shortcuts';
+      lblShortcutWarning.Caption := GroupText + ': ' + ConflictText;
+      lblShortcutWarning.Hint := GroupText + ':' + #13#10
+        + StringReplace(ConflictText, '; ', #13#10, [rfReplaceAll]);
+      lblShortcutWarning.Visible := True;
+    end else
+      lblShortcutWarning.Visible := False;
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TfmConfiguration.UpdateIdeDialogCheckboxes;

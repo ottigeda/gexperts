@@ -852,6 +852,22 @@ object fmConfiguration: TfmConfiguration
       TabOrder = 1
       OnClick = btnUsageClick
     end
+    object lblShortcutWarning: TLabel
+      Left = 140
+      Top = 5
+      Width = 397
+      Height = 14
+      Anchors = [akLeft, akRight]
+      AutoSize = False
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clRed
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ShowHint = True
+      Visible = False
+    end
   end
   object dlgUIFont: TFontDialog
     Font.Charset = ANSI_CHARSET
