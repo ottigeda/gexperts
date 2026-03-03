@@ -780,19 +780,19 @@ object fmConfiguration: TfmConfiguration
     FullRepaint = False
     TabOrder = 1
     object pnlButtonsRight: TPanel
-      Left = 497
+      Left = 544
       Top = 0
-      Width = 287
+      Width = 240
       Height = 34
       Align = alRight
       BevelOuter = bvNone
       FullRepaint = False
       TabOrder = 0
       DesignSize = (
-        287
+        240
         34)
       object btnOK: TButton
-        Left = 48
+        Left = 1
         Top = 0
         Width = 75
         Height = 25
@@ -803,7 +803,7 @@ object fmConfiguration: TfmConfiguration
         OnClick = btnOKClick
       end
       object btnCancel: TButton
-        Left = 128
+        Left = 81
         Top = 0
         Width = 75
         Height = 25
@@ -814,7 +814,7 @@ object fmConfiguration: TfmConfiguration
         TabOrder = 1
       end
       object btnHelp: TButton
-        Left = 208
+        Left = 161
         Top = 0
         Width = 75
         Height = 25
@@ -865,6 +865,7 @@ object fmConfiguration: TfmConfiguration
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
+      ParentShowHint = False
       ShowHint = True
       Visible = False
     end
