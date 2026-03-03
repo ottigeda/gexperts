@@ -82,6 +82,7 @@ type
     FOnShortcutChanged: TNotifyEvent;
     FShortcutCheckTimer: TTimer;
     procedure ShortcutChanged(_Sender: TObject);
+    procedure ExpertEnabledChanged(_Sender: TObject);
     procedure RestartShortcutCheckTimer;
     procedure ShortcutCheckTimerFired(_Sender: TObject);
     procedure ConfigureExpertClick(_Sender: TObject);
@@ -599,6 +600,7 @@ begin
       chk.BoundsRect := chkExpert.BoundsRect;
       chk.Caption := AnExpert.GetDisplayName;
       chk.Checked := AnExpert.Active;
+      chk.OnClick := ExpertEnabledChanged;
       chk.Tag := i;
 
       hk := THotKeyHack.Create(pnl);
@@ -827,6 +829,11 @@ begin
     FOnShortcutChanged(Self);
 end;
 
+procedure TfrConfigureExperts.ExpertEnabledChanged(_Sender: TObject);
+begin
+  RestartShortcutCheckTimer;
+end;
+
 procedure TfrConfigureExperts.RestartShortcutCheckTimer;
 begin
   FShortcutCheckTimer.Enabled := False;
@@ -846,7 +853,7 @@ var
   AnExpert: TGX_BaseExpert;
 begin
   for i := 0 to Length(FExpertControls) - 1 do begin
-    if FExpertControls[i].hk.HotKey <> 0 then begin
+    if FExpertControls[i].chk.Checked and (FExpertControls[i].hk.HotKey <> 0) then begin
       AnExpert := FExperts[i];
       _List.Add(IntToStr(FExpertControls[i].hk.HotKey) + '=' + AnExpert.GetDisplayName);
     end;
