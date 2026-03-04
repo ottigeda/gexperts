@@ -32,6 +32,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Rename Identifier: New scope-aware editor expert (Ctrl+Alt+R) that renames identifiers within a single unit, supporting local, class, and unit-level scopes with shadowing protection (feature #182)
 - Rename Components: Shift+F2 now forwards to Rename Identifier when the code editor is focused, so the same shortcut works in both the form designer and code editor
 - Rename Identifier: Renaming a component field in source now also renames the component in the form designer (with warning label in dialog)
+- Rename Identifier: Dialog now shows identifier kind (variable, constant, type, parameter, field, property, method), declared type, and scope with interface/implementation distinction (feature #182)
+- Rename Identifier: Conflict detection warns when the new name clashes with a visible identifier (200ms debounce, informational only) (feature #182)
 - Rename Components: After renaming a component, source code references are also renamed (optional, controlled by new checkbox in config)
 
 ## Bug Fixes
