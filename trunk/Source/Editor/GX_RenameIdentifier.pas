@@ -7,6 +7,19 @@ unit GX_RenameIdentifier;
 
 interface
 
+type
+  TIdentifierKind = (
+    ikUnknown, ikVariable, ikConstant, ikType, ikParameter,
+    ikField, ikProperty, ikProcedure, ikExternalIdent
+  );
+
+  TIdentifierInfo = record
+    Kind: TIdentifierKind;
+    TypeName: string;    // declared type, empty if N/A (procs, types, untyped consts)
+    KindDesc: string;    // e.g. "local variable", "field of TMyClass", "parameter"
+    ScopeDesc: string;   // e.g. "local in DoSomething", "unit-level (interface)"
+  end;
+
 /// Renames the identifier at CursorPos in Source to NewName.
 /// CursorPos is 1-based character position in Source.
 /// If NewName is empty, runs in "preview" mode: returns scope info and
@@ -20,7 +33,17 @@ function RenameIdentifierInSource(
   out OccurrenceCount: Integer;
   out OldName: string;
   out ScopeDesc: string;
+  out IdentInfo: TIdentifierInfo;
   out ErrorMsg: string
+): Boolean;
+
+/// Checks if NewName conflicts with any visible identifier at the cursor position.
+/// Returns True if a conflict is found, with a description in ConflictDesc.
+function CheckNameConflict(
+  const Source: string;
+  CursorPos: Integer;
+  const NewName: string;
+  out ConflictDesc: string
 ): Boolean;
 
 /// Renames all occurrences of OldName to NewName in Source using lexer-based
@@ -87,7 +110,7 @@ begin
       Tok.Kind := Lexer.TokenID;
       Tok.Pos := Lexer.TokenPos;
       Tok.Len := Lexer.RunPos - Lexer.TokenPos;
-      if Tok.Kind in IdentDirect then
+      if (Tok.Kind in IdentDirect) or (Tok.Kind in [tkString, tkInteger]) then
         Tok.Text := Lexer.Token
       else
         Tok.Text := '';
@@ -794,6 +817,589 @@ begin
   end;
 end;
 
+function FindImplementationToken(const Tokens: TTokenArray): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(Tokens) do begin
+    if Tokens[I].Kind = tkImplementation then begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function IsPropertySpecifier(Kind: TTokenKind): Boolean;
+begin
+  Result := Kind in [tkRead, tkWrite, tkDefault, tkNodefault, tkStored, tkImplements];
+end;
+
+function IsBuiltinType(Kind: TTokenKind): Boolean;
+begin
+  Result := Kind in [tkString, tkInteger];
+end;
+
+function ExtractTypeAfterColon(const Tokens: TTokenArray; ColonIdx: Integer): string;
+var
+  I, AngleLevel: Integer;
+  GotFirstIdent: Boolean;
+begin
+  Result := '';
+  GotFirstIdent := False;
+  I := NextNonJunk(Tokens, ColonIdx);
+  if I > High(Tokens) then
+    Exit;
+  // Handle 'array of Type'
+  if Tokens[I].Kind = tkArray then begin
+    Result := 'array';
+    I := NextNonJunk(Tokens, I);
+    if (I <= High(Tokens)) and (Tokens[I].Kind = tkOf) then begin
+      Result := Result + ' of';
+      I := NextNonJunk(Tokens, I);
+    end;
+  end;
+  // Collect type name tokens (identifiers, dots, angle brackets for generics)
+  AngleLevel := 0;
+  while I <= High(Tokens) do begin
+    if (Tokens[I].Kind in IdentDirect) or IsBuiltinType(Tokens[I].Kind) then begin
+      // Stop at property specifiers (read, write, default, etc.) after the type name
+      if GotFirstIdent and (AngleLevel = 0) and IsPropertySpecifier(Tokens[I].Kind) then
+        Break;
+      GotFirstIdent := True;
+      if Result <> '' then
+        Result := Result + Tokens[I].Text
+      else
+        Result := Tokens[I].Text;
+    end else if (Tokens[I].Kind = tkPoint) then begin
+      Result := Result + '.';
+    end else if (Tokens[I].Kind = tkLower) then begin
+      Result := Result + '<';
+      Inc(AngleLevel);
+    end else if (Tokens[I].Kind = tkGreater) then begin
+      Result := Result + '>';
+      Dec(AngleLevel);
+      if AngleLevel <= 0 then begin
+        I := NextNonJunk(Tokens, I);
+        Break;
+      end;
+    end else if Tokens[I].Kind = tkComma then begin
+      if AngleLevel > 0 then
+        Result := Result + ', '
+      else
+        Break;
+    end else if not (Tokens[I].Kind in [tkSpace, tkCRLF, tkCRLFCo,
+        tkAnsiComment, tkBorComment, tkSlashesComment, tkCompDirect]) then
+      Break;
+    Inc(I);
+  end;
+end;
+
+function DetectIdentifierKind(const Tokens: TTokenArray; const Scope: TRenameScope;
+  const Procs: TProcScopeArray; const Classes: TClassScopeArray;
+  const IdentName: string; CursorTokenIdx: Integer): TIdentifierInfo;
+var
+  I, NI, ParenLevel, ImplToken: Integer;
+  InVarSection, InConstSection, InTypeSection, InParamList: Boolean;
+  Proc: TProcScope;
+  Cls: TClassScope;
+  PrevI: Integer;
+begin
+  Result.Kind := ikUnknown;
+  Result.TypeName := '';
+  Result.KindDesc := '';
+  Result.ScopeDesc := Scope.Description;
+  ImplToken := FindImplementationToken(Tokens);
+
+  case Scope.Kind of
+    skProcedure: begin
+      if (Scope.ProcIndex < 0) or (Scope.ProcIndex > High(Procs)) then
+        Exit;
+      Proc := Procs[Scope.ProcIndex];
+
+      // Check if ident is the proc name itself
+      if SameText(IdentName, Proc.Name) then begin
+        Result.Kind := ikProcedure;
+        if Proc.ClassName <> '' then
+          Result.KindDesc := 'method of ' + Proc.ClassName
+        else
+          Result.KindDesc := 'procedure';
+        Exit;
+      end;
+
+      // Walk the header+locals to find the declaration
+      InVarSection := False;
+      InConstSection := False;
+      InTypeSection := False;
+      InParamList := False;
+      ParenLevel := 0;
+
+      I := Proc.HeaderStart;
+      while (I <= High(Tokens)) and ((Proc.BodyStart < 0) or (I < Proc.BodyStart)) do begin
+        case Tokens[I].Kind of
+          tkRoundOpen: begin
+            if ParenLevel = 0 then
+              InParamList := True;
+            Inc(ParenLevel);
+          end;
+          tkRoundClose: begin
+            Dec(ParenLevel);
+            if ParenLevel = 0 then
+              InParamList := False;
+          end;
+          tkVar: begin
+            if not InParamList then begin
+              InVarSection := True;
+              InConstSection := False;
+              InTypeSection := False;
+            end;
+          end;
+          tkConst: begin
+            if not InParamList then begin
+              InConstSection := True;
+              InVarSection := False;
+              InTypeSection := False;
+            end;
+          end;
+          tkType: begin
+            if not InParamList then begin
+              InTypeSection := True;
+              InVarSection := False;
+              InConstSection := False;
+            end;
+          end;
+          tkBegin, tkAsm:
+            Break;
+        end;
+
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, IdentName) then begin
+          NI := NextNonJunk(Tokens, I);
+          if InParamList then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma, tkSemiColon, tkRoundClose]) then begin
+              Result.Kind := ikParameter;
+              if Proc.ClassName <> '' then
+                Result.KindDesc := 'parameter of ' + Proc.ClassName + '.' + Proc.Name
+              else
+                Result.KindDesc := 'parameter of ' + Proc.Name;
+              // Find type: scan forward to colon
+              if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                Result.TypeName := ExtractTypeAfterColon(Tokens, NI)
+              else begin
+                // Multi-ident param list (A, B: Integer) — scan forward to colon
+                PrevI := I;
+                while (NI <= High(Tokens)) and (Tokens[NI].Kind <> tkColon) and
+                      (Tokens[NI].Kind <> tkSemiColon) and (Tokens[NI].Kind <> tkRoundClose) do
+                  NI := NextNonJunk(Tokens, NI);
+                if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                  Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+              end;
+              Exit;
+            end;
+          end else if InVarSection then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma]) then begin
+              Result.Kind := ikVariable;
+              Result.KindDesc := 'local variable';
+              if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                Result.TypeName := ExtractTypeAfterColon(Tokens, NI)
+              else begin
+                while (NI <= High(Tokens)) and (Tokens[NI].Kind <> tkColon) and
+                      (Tokens[NI].Kind <> tkSemiColon) do
+                  NI := NextNonJunk(Tokens, NI);
+                if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                  Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+              end;
+              Exit;
+            end;
+          end else if InConstSection then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkEqual]) then begin
+              Result.Kind := ikConstant;
+              Result.KindDesc := 'local constant';
+              if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+              Exit;
+            end;
+          end else if InTypeSection then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkEqual) then begin
+              Result.Kind := ikType;
+              Result.KindDesc := 'local type';
+              Exit;
+            end;
+          end;
+        end;
+
+        Inc(I);
+      end;
+    end;
+
+    skClass: begin
+      if (Scope.ClassIndex < 0) or (Scope.ClassIndex > High(Classes)) then
+        Exit;
+      Cls := Classes[Scope.ClassIndex];
+
+      // Scan the class body to determine kind
+      I := Cls.DeclStart;
+      while I <= Cls.DeclEnd do begin
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, IdentName) then begin
+          // Look backward for context
+          PrevI := PrevNonJunk(Tokens, I);
+
+          // Check if preceded by a proc keyword → method
+          if (PrevI >= Cls.DeclStart) and IsProcKeyword(Tokens[PrevI].Kind) then begin
+            Result.Kind := ikProcedure;
+            Result.KindDesc := 'method of ' + Cls.Name;
+            // Check for return type (function)
+            NI := NextNonJunk(Tokens, I);
+            // Skip param list
+            if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkRoundOpen) then begin
+              ParenLevel := 1;
+              Inc(NI);
+              while (NI <= Cls.DeclEnd) and (ParenLevel > 0) do begin
+                if Tokens[NI].Kind = tkRoundOpen then Inc(ParenLevel)
+                else if Tokens[NI].Kind = tkRoundClose then Dec(ParenLevel);
+                Inc(NI);
+              end;
+              NI := NextNonJunk(Tokens, NI - 1);
+            end;
+            if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkColon) then
+              Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+            Exit;
+          end;
+
+          // Check if preceded by 'property' keyword
+          if (PrevI >= Cls.DeclStart) and (Tokens[PrevI].Kind = tkProperty) then begin
+            Result.Kind := ikProperty;
+            Result.KindDesc := 'property of ' + Cls.Name;
+            NI := NextNonJunk(Tokens, I);
+            // Skip index params
+            if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkSquareOpen) then begin
+              while (NI <= Cls.DeclEnd) and (Tokens[NI].Kind <> tkSquareClose) do
+                Inc(NI);
+              NI := NextNonJunk(Tokens, NI);
+            end;
+            if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkColon) then
+              Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+            Exit;
+          end;
+
+          // Check if preceded by 'class' + proc keyword
+          if (PrevI >= Cls.DeclStart) and (Tokens[PrevI].Kind = tkClass) then begin
+            // 'class function Foo' or 'class procedure Foo'
+            // Actually, in this case PrevI is 'class', need another check
+          end;
+
+          // Otherwise it's a field — check it's followed by colon (field decl)
+          NI := NextNonJunk(Tokens, I);
+          if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind in [tkColon, tkComma]) then begin
+            Result.Kind := ikField;
+            Result.KindDesc := 'field of ' + Cls.Name;
+            if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkColon) then
+              Result.TypeName := ExtractTypeAfterColon(Tokens, NI)
+            else begin
+              while (NI <= Cls.DeclEnd) and (Tokens[NI].Kind <> tkColon) and
+                    (Tokens[NI].Kind <> tkSemiColon) do
+                NI := NextNonJunk(Tokens, NI);
+              if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkColon) then
+                Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+            end;
+            Exit;
+          end;
+
+          // Could be something else (e.g. the class name in 'class of' or parent class)
+          // Keep scanning
+        end;
+        Inc(I);
+      end;
+    end;
+
+    skUnit: begin
+      // Scan unit-level declarations
+      InVarSection := False;
+      InConstSection := False;
+      InTypeSection := False;
+
+      for I := 0 to High(Tokens) do begin
+        // Skip class interiors
+        if IsTokenInsideAnyClass(I, Classes) then
+          Continue;
+        // Skip proc bodies
+        if IsProcKeyword(Tokens[I].Kind) and not IsTokenInsideAnyClass(I, Classes) then begin
+          // Skip to next relevant section
+        end;
+
+        case Tokens[I].Kind of
+          tkVar: begin
+            if not IsTokenInsideAnyClass(I, Classes) then begin
+              InVarSection := True;
+              InConstSection := False;
+              InTypeSection := False;
+            end;
+          end;
+          tkConst: begin
+            if not IsTokenInsideAnyClass(I, Classes) then begin
+              InConstSection := True;
+              InVarSection := False;
+              InTypeSection := False;
+            end;
+          end;
+          tkType: begin
+            if not IsTokenInsideAnyClass(I, Classes) then begin
+              InTypeSection := True;
+              InVarSection := False;
+              InConstSection := False;
+            end;
+          end;
+          tkProcedure, tkFunction, tkConstructor, tkDestructor: begin
+            if not IsTokenInsideAnyClass(I, Classes) then begin
+              InVarSection := False;
+              InConstSection := False;
+              InTypeSection := False;
+            end;
+          end;
+        end;
+
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, IdentName) and
+           not IsTokenInsideAnyClass(I, Classes) then begin
+          NI := NextNonJunk(Tokens, I);
+
+          if InVarSection then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma]) then begin
+              Result.Kind := ikVariable;
+              if (ImplToken >= 0) and (I >= ImplToken) then
+                Result.KindDesc := 'unit variable (implementation)'
+              else
+                Result.KindDesc := 'unit variable (interface)';
+              Result.ScopeDesc := 'unit-level';
+              if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                Result.TypeName := ExtractTypeAfterColon(Tokens, NI)
+              else begin
+                while (NI <= High(Tokens)) and (Tokens[NI].Kind <> tkColon) and
+                      (Tokens[NI].Kind <> tkSemiColon) do
+                  NI := NextNonJunk(Tokens, NI);
+                if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                  Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+              end;
+              Exit;
+            end;
+          end else if InConstSection then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkEqual]) then begin
+              Result.Kind := ikConstant;
+              if (ImplToken >= 0) and (I >= ImplToken) then
+                Result.KindDesc := 'unit constant (implementation)'
+              else
+                Result.KindDesc := 'unit constant (interface)';
+              Result.ScopeDesc := 'unit-level';
+              if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then
+                Result.TypeName := ExtractTypeAfterColon(Tokens, NI);
+              Exit;
+            end;
+          end else if InTypeSection then begin
+            if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkEqual) then begin
+              Result.Kind := ikType;
+              if (ImplToken >= 0) and (I >= ImplToken) then
+                Result.KindDesc := 'unit type (implementation)'
+              else
+                Result.KindDesc := 'unit type (interface)';
+              Result.ScopeDesc := 'unit-level';
+              Exit;
+            end;
+          end;
+
+          // Check if it's a proc name (preceding proc keyword)
+          PrevI := PrevNonJunk(Tokens, I);
+          if (PrevI >= 0) and IsProcKeyword(Tokens[PrevI].Kind) then begin
+            Result.Kind := ikProcedure;
+            if (ImplToken >= 0) and (I >= ImplToken) then
+              Result.KindDesc := 'procedure (implementation)'
+            else
+              Result.KindDesc := 'procedure (interface)';
+            Result.ScopeDesc := 'unit-level';
+            Exit;
+          end;
+        end;
+      end;
+
+      // Not found in unit-level declarations — must be external
+      if Result.Kind = ikUnknown then begin
+        Result.Kind := ikExternalIdent;
+        Result.KindDesc := 'external identifier';
+        Result.ScopeDesc := 'unit-level';
+      end;
+    end;
+  end;
+
+  // Enhance ScopeDesc with interface/implementation info for non-unit scopes
+  if (Scope.Kind <> skUnit) and (ImplToken >= 0) then begin
+    if (CursorTokenIdx >= ImplToken) then begin
+      if Pos('(implementation)', Result.ScopeDesc) = 0 then
+        // Don't add redundant info — scope description already tells the story
+    end;
+  end;
+end;
+
+function FindIdentInScope(const Tokens: TTokenArray; const NewName: string;
+  const Scope: TRenameScope; const Procs: TProcScopeArray;
+  const Classes: TClassScopeArray; CursorTokenIdx: Integer;
+  out ConflictDesc: string): Boolean;
+var
+  I, NI, ParenLevel, ProcIdx: Integer;
+  InVarSection, InConstSection, InTypeSection, InParamList: Boolean;
+  Proc: TProcScope;
+  Cls: TClassScope;
+  J, PrevI: Integer;
+  EnclosingProcs: TProcScopeArray;
+begin
+  Result := False;
+  ConflictDesc := '';
+
+  case Scope.Kind of
+    skProcedure: begin
+      ProcIdx := Scope.ProcIndex;
+      if (ProcIdx < 0) or (ProcIdx > High(Procs)) then
+        Exit;
+      Proc := Procs[ProcIdx];
+
+      // Check proc locals/params
+      InVarSection := False;
+      InConstSection := False;
+      InTypeSection := False;
+      InParamList := False;
+      ParenLevel := 0;
+
+      I := Proc.HeaderStart;
+      while (I <= High(Tokens)) and ((Proc.BodyStart < 0) or (I < Proc.BodyStart)) do begin
+        case Tokens[I].Kind of
+          tkRoundOpen: begin
+            if ParenLevel = 0 then InParamList := True;
+            Inc(ParenLevel);
+          end;
+          tkRoundClose: begin
+            Dec(ParenLevel);
+            if ParenLevel = 0 then InParamList := False;
+          end;
+          tkVar: if not InParamList then begin InVarSection := True; InConstSection := False; InTypeSection := False; end;
+          tkConst: if not InParamList then begin InConstSection := True; InVarSection := False; InTypeSection := False; end;
+          tkType: if not InParamList then begin InTypeSection := True; InVarSection := False; InConstSection := False; end;
+          tkBegin, tkAsm: Break;
+        end;
+
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, NewName) then begin
+          NI := NextNonJunk(Tokens, I);
+          if InParamList and (NI <= High(Tokens)) and
+             (Tokens[NI].Kind in [tkColon, tkComma, tkSemiColon, tkRoundClose]) then begin
+            ConflictDesc := '''' + NewName + ''' already exists as a parameter';
+            Result := True;
+            Exit;
+          end;
+          if InVarSection and (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma]) then begin
+            ConflictDesc := '''' + NewName + ''' already exists as a local variable';
+            Result := True;
+            Exit;
+          end;
+          if InConstSection and (NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkEqual]) then begin
+            ConflictDesc := '''' + NewName + ''' already exists as a local constant';
+            Result := True;
+            Exit;
+          end;
+          if InTypeSection and (NI <= High(Tokens)) and (Tokens[NI].Kind = tkEqual) then begin
+            ConflictDesc := '''' + NewName + ''' already exists as a local type';
+            Result := True;
+            Exit;
+          end;
+        end;
+        Inc(I);
+      end;
+
+      // Check class members if method
+      if Proc.ClassName <> '' then begin
+        for J := 0 to High(Classes) do begin
+          if SameText(Classes[J].Name, Proc.ClassName) then begin
+            for I := Classes[J].DeclStart to Classes[J].DeclEnd do begin
+              if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, NewName) then begin
+                NI := NextNonJunk(Tokens, I);
+                PrevI := PrevNonJunk(Tokens, I);
+                if ((NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma, tkEqual, tkRoundOpen, tkSemiColon])) or
+                   ((PrevI >= 0) and (IsProcKeyword(Tokens[PrevI].Kind) or (Tokens[PrevI].Kind = tkProperty))) then begin
+                  ConflictDesc := '''' + NewName + ''' already exists as a member of ' + Classes[J].Name;
+                  Result := True;
+                  Exit;
+                end;
+              end;
+            end;
+            Break;
+          end;
+        end;
+      end;
+
+      // Check unit-level identifiers
+      for I := 0 to High(Tokens) do begin
+        if IsTokenInsideAnyClass(I, Classes) then Continue;
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, NewName) then begin
+          NI := NextNonJunk(Tokens, I);
+          PrevI := PrevNonJunk(Tokens, I);
+          // Skip if inside any proc
+          for J := 0 to High(Procs) do begin
+            if (Procs[J].BodyEnd >= 0) and (I >= Procs[J].HeaderStart) and (I <= Procs[J].BodyEnd) then begin
+              // Inside a proc — skip it
+              NI := -1; // mark as skipped
+              Break;
+            end;
+          end;
+          if NI = -1 then Continue;
+          if ((NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma, tkEqual])) or
+             ((PrevI >= 0) and IsProcKeyword(Tokens[PrevI].Kind)) then begin
+            ConflictDesc := '''' + NewName + ''' already exists at unit level';
+            Result := True;
+            Exit;
+          end;
+        end;
+      end;
+    end;
+
+    skClass: begin
+      if (Scope.ClassIndex < 0) or (Scope.ClassIndex > High(Classes)) then
+        Exit;
+      Cls := Classes[Scope.ClassIndex];
+      // Check other members
+      for I := Cls.DeclStart to Cls.DeclEnd do begin
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, NewName) then begin
+          NI := NextNonJunk(Tokens, I);
+          PrevI := PrevNonJunk(Tokens, I);
+          if ((NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma, tkEqual, tkRoundOpen, tkSemiColon])) or
+             ((PrevI >= 0) and (IsProcKeyword(Tokens[PrevI].Kind) or (Tokens[PrevI].Kind = tkProperty))) then begin
+            ConflictDesc := '''' + NewName + ''' already exists as a member of ' + Cls.Name;
+            Result := True;
+            Exit;
+          end;
+        end;
+      end;
+    end;
+
+    skUnit: begin
+      for I := 0 to High(Tokens) do begin
+        if IsTokenInsideAnyClass(I, Classes) then Continue;
+        if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, NewName) then begin
+          NI := NextNonJunk(Tokens, I);
+          PrevI := PrevNonJunk(Tokens, I);
+          // Skip if inside any proc body
+          for J := 0 to High(Procs) do begin
+            if (Procs[J].BodyEnd >= 0) and (I >= Procs[J].HeaderStart) and (I <= Procs[J].BodyEnd) then begin
+              NI := -1;
+              Break;
+            end;
+          end;
+          if NI = -1 then Continue;
+          if ((NI <= High(Tokens)) and (Tokens[NI].Kind in [tkColon, tkComma, tkEqual])) or
+             ((PrevI >= 0) and IsProcKeyword(Tokens[PrevI].Kind)) then begin
+            ConflictDesc := '''' + NewName + ''' already exists at unit level';
+            Result := True;
+            Exit;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
 function ApplyReplacements(const Source: string; const Tokens: TTokenArray;
   Occurrences: TList; const NewName: string): string;
 var
@@ -885,6 +1491,7 @@ function RenameIdentifierInSource(
   out OccurrenceCount: Integer;
   out OldName: string;
   out ScopeDesc: string;
+  out IdentInfo: TIdentifierInfo;
   out ErrorMsg: string
 ): Boolean;
 var
@@ -900,6 +1507,10 @@ begin
   OccurrenceCount := 0;
   OldName := '';
   ScopeDesc := '';
+  IdentInfo.Kind := ikUnknown;
+  IdentInfo.TypeName := '';
+  IdentInfo.KindDesc := '';
+  IdentInfo.ScopeDesc := '';
   ErrorMsg := '';
 
   Tokens := TokenizeSource(Source);
@@ -928,6 +1539,8 @@ begin
   Scope := DetectScope(Tokens, CursorTokenIdx, OldName, Procs, Classes);
   ScopeDesc := Scope.Description;
 
+  IdentInfo := DetectIdentifierKind(Tokens, Scope, Procs, Classes, OldName, CursorTokenIdx);
+
   Occurrences := CollectOccurrences(Tokens, OldName, Scope, Procs, Classes);
   try
     OccurrenceCount := Occurrences.Count;
@@ -947,6 +1560,45 @@ begin
   finally
     Occurrences.Free;
   end;
+end;
+
+function CheckNameConflict(
+  const Source: string;
+  CursorPos: Integer;
+  const NewName: string;
+  out ConflictDesc: string
+): Boolean;
+var
+  Tokens: TTokenArray;
+  Procs: TProcScopeArray;
+  Classes: TClassScopeArray;
+  CursorTokenIdx: Integer;
+  OldName: string;
+  Scope: TRenameScope;
+begin
+  Result := False;
+  ConflictDesc := '';
+
+  if NewName = '' then
+    Exit;
+
+  Tokens := TokenizeSource(Source);
+  if Length(Tokens) = 0 then
+    Exit;
+
+  CursorTokenIdx := FindTokenAtCursor(Tokens, CursorPos - 1);
+  if CursorTokenIdx < 0 then
+    Exit;
+
+  OldName := Tokens[CursorTokenIdx].Text;
+  if SameText(NewName, OldName) then
+    Exit;
+
+  Classes := BuildClassScopes(Tokens);
+  Procs := BuildProcScopes(Tokens, Classes);
+  Scope := DetectScope(Tokens, CursorTokenIdx, OldName, Procs, Classes);
+
+  Result := FindIdentInScope(Tokens, NewName, Scope, Procs, Classes, CursorTokenIdx, ConflictDesc);
 end;
 
 end.

@@ -91,6 +91,40 @@ type
     procedure TestMultipleOccurrences;
   end;
 
+  TTestIdentifierInfo = class(TTestCase)
+  private
+    procedure DoCheckInfo(const Source: string; ExpectedKind: TIdentifierKind;
+      const ExpectedKindDesc, ExpectedTypeName: string);
+  published
+    procedure TestLocalVariable;
+    procedure TestLocalConstant;
+    procedure TestLocalType;
+    procedure TestParameter;
+    procedure TestMethodParameter;
+    procedure TestClassField;
+    procedure TestClassProperty;
+    procedure TestClassMethod;
+    procedure TestUnitVariable;
+    procedure TestUnitConstant;
+    procedure TestUnitType;
+    procedure TestUnitProcedure;
+    procedure TestExternalIdent;
+    procedure TestUnitVarImplSection;
+  end;
+
+  TTestConflictDetection = class(TTestCase)
+  private
+    procedure DoCheckConflict(const Source, NewName: string;
+      ExpectConflict: Boolean; const ExpectedSubstr: string = '');
+  published
+    procedure TestNoConflict;
+    procedure TestLocalVarConflict;
+    procedure TestParamConflict;
+    procedure TestClassMemberConflict;
+    procedure TestUnitLevelConflict;
+    procedure TestMethodSeesClassMember;
+  end;
+
 implementation
 
 uses
@@ -116,11 +150,12 @@ procedure TTestRenameLocalVar.DoRename(const Source, NewName, Expected: string);
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'RenameIdentifierInSource failed: ' + ErrorMsg);
   CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
 end;
@@ -378,11 +413,12 @@ procedure TTestRenameParam.DoRename(const Source, NewName, Expected: string);
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'RenameIdentifierInSource failed: ' + ErrorMsg);
   CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
 end;
@@ -539,11 +575,12 @@ procedure TTestRenameClassMember.DoRename(const Source, NewName, Expected: strin
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'RenameIdentifierInSource failed: ' + ErrorMsg);
   CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
 end;
@@ -869,11 +906,12 @@ procedure TTestRenameUnitLevel.DoRename(const Source, NewName, Expected: string)
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'RenameIdentifierInSource failed: ' + ErrorMsg);
   CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
 end;
@@ -997,11 +1035,12 @@ procedure TTestRenameShadowing.DoRename(const Source, NewName, Expected: string)
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'RenameIdentifierInSource failed: ' + ErrorMsg);
   CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
 end;
@@ -1174,11 +1213,12 @@ procedure TTestRenameEdgeCases.DoRename(const Source, NewName, Expected: string)
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'RenameIdentifierInSource failed: ' + ErrorMsg);
   CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
 end;
@@ -1187,11 +1227,12 @@ procedure TTestRenameEdgeCases.DoRenameExpectError(const Source: string);
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src := Source;
   CursorPos := FindAndRemoveMarker(Src);
   CheckFalse(RenameIdentifierInSource(Src, CursorPos, '',
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'Expected RenameIdentifierInSource to fail');
 end;
 
@@ -1277,6 +1318,7 @@ procedure TTestRenameEdgeCases.TestNewNameSameAsOld;
 var
   Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
   CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
 begin
   Src :=
     'procedure Foo;'#13#10 +
@@ -1286,7 +1328,7 @@ begin
     'end;'#13#10;
   CursorPos := FindAndRemoveMarker(Src);
   CheckFalse(RenameIdentifierInSource(Src, CursorPos, 'X',
-    RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg),
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
     'Expected failure for same name');
 end;
 
@@ -1596,6 +1638,315 @@ begin
   CheckEquals(4, Count, 'Field declaration + 3 body references');
 end;
 
+{ TTestIdentifierInfo }
+
+procedure TTestIdentifierInfo.DoCheckInfo(const Source: string;
+  ExpectedKind: TIdentifierKind; const ExpectedKindDesc, ExpectedTypeName: string);
+var
+  Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
+  CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
+begin
+  Src := Source;
+  CursorPos := FindAndRemoveMarker(Src);
+  CheckTrue(RenameIdentifierInSource(Src, CursorPos, '',
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
+    'RenameIdentifierInSource failed: ' + ErrorMsg);
+  CheckEquals(Ord(ExpectedKind), Ord(IdentInfo.Kind),
+    'IdentifierKind mismatch: expected ' + ExpectedKindDesc);
+  CheckEquals(ExpectedKindDesc, IdentInfo.KindDesc, 'KindDesc mismatch');
+  CheckEquals(ExpectedTypeName, IdentInfo.TypeName, 'TypeName mismatch');
+end;
+
+procedure TTestIdentifierInfo.TestLocalVariable;
+begin
+  DoCheckInfo(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  {|}X: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X := 1;'#13#10 +
+    'end;'#13#10,
+    ikVariable, 'local variable', 'Integer');
+end;
+
+procedure TTestIdentifierInfo.TestLocalConstant;
+begin
+  DoCheckInfo(
+    'procedure Foo;'#13#10 +
+    'const'#13#10 +
+    '  {|}MaxVal = 100;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10,
+    ikConstant, 'local constant', '');
+end;
+
+procedure TTestIdentifierInfo.TestLocalType;
+begin
+  DoCheckInfo(
+    'procedure Foo;'#13#10 +
+    'type'#13#10 +
+    '  {|}TMyInt = Integer;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10,
+    ikType, 'local type', '');
+end;
+
+procedure TTestIdentifierInfo.TestParameter;
+begin
+  DoCheckInfo(
+    'procedure Foo({|}AValue: Integer);'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10,
+    ikParameter, 'parameter of Foo', 'Integer');
+end;
+
+procedure TTestIdentifierInfo.TestMethodParameter;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoWork(AValue: Integer);'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'procedure TMyClass.DoWork({|}AValue: Integer);'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    ikParameter, 'parameter of TMyClass.DoWork', 'Integer');
+end;
+
+procedure TTestIdentifierInfo.TestClassField;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    {|}FValue: Integer;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    ikField, 'field of TMyClass', 'Integer');
+end;
+
+procedure TTestIdentifierInfo.TestClassProperty;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    FValue: Integer;'#13#10 +
+    '    property {|}Value: Integer read FValue;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    ikProperty, 'property of TMyClass', 'Integer');
+end;
+
+procedure TTestIdentifierInfo.TestClassMethod;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure {|}DoWork;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'procedure TMyClass.DoWork;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    ikProcedure, 'method of TMyClass', '');
+end;
+
+procedure TTestIdentifierInfo.TestUnitVariable;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'var'#13#10 +
+    '  {|}GlobalX: Integer;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    ikVariable, 'unit variable (interface)', 'Integer');
+end;
+
+procedure TTestIdentifierInfo.TestUnitConstant;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'const'#13#10 +
+    '  {|}MaxItems = 50;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    ikConstant, 'unit constant (interface)', '');
+end;
+
+procedure TTestIdentifierInfo.TestUnitType;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  {|}TMyRecord = record'#13#10 +
+    '    X: Integer;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    ikType, 'unit type (interface)', '');
+end;
+
+procedure TTestIdentifierInfo.TestUnitProcedure;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'procedure {|}DoSomething;'#13#10 +
+    'implementation'#13#10 +
+    'procedure DoSomething;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    ikProcedure, 'procedure (interface)', '');
+end;
+
+procedure TTestIdentifierInfo.TestExternalIdent;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'uses SysUtils;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'implementation'#13#10 +
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  {|}IntToStr(42);'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    ikExternalIdent, 'external identifier', '');
+end;
+
+procedure TTestIdentifierInfo.TestUnitVarImplSection;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'implementation'#13#10 +
+    'var'#13#10 +
+    '  {|}ImplVar: string;'#13#10 +
+    'end.'#13#10,
+    ikVariable, 'unit variable (implementation)', 'string');
+end;
+
+{ TTestConflictDetection }
+
+procedure TTestConflictDetection.DoCheckConflict(const Source, NewName: string;
+  ExpectConflict: Boolean; const ExpectedSubstr: string);
+var
+  Src, ConflictDesc: string;
+  CursorPos: Integer;
+  HasConflict: Boolean;
+begin
+  Src := Source;
+  CursorPos := FindAndRemoveMarker(Src);
+  HasConflict := CheckNameConflict(Src, CursorPos, NewName, ConflictDesc);
+  if ExpectConflict then begin
+    CheckTrue(HasConflict, 'Expected conflict but none found');
+    if ExpectedSubstr <> '' then
+      Check(Pos(ExpectedSubstr, ConflictDesc) > 0,
+        'Expected conflict description to contain "' + ExpectedSubstr +
+        '" but got "' + ConflictDesc + '"');
+  end else
+    CheckFalse(HasConflict, 'Unexpected conflict: ' + ConflictDesc);
+end;
+
+procedure TTestConflictDetection.TestNoConflict;
+begin
+  DoCheckConflict(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  {|}X: Integer;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10,
+    'Y', False);
+end;
+
+procedure TTestConflictDetection.TestLocalVarConflict;
+begin
+  DoCheckConflict(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  {|}X: Integer;'#13#10 +
+    '  Y: string;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10,
+    'Y', True, 'local variable');
+end;
+
+procedure TTestConflictDetection.TestParamConflict;
+begin
+  DoCheckConflict(
+    'procedure Foo(A: Integer; {|}B: string);'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10,
+    'A', True, 'parameter');
+end;
+
+procedure TTestConflictDetection.TestClassMemberConflict;
+begin
+  DoCheckConflict(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    {|}FValue: Integer;'#13#10 +
+    '    FName: string;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    'FName', True, 'member of TMyClass');
+end;
+
+procedure TTestConflictDetection.TestUnitLevelConflict;
+begin
+  DoCheckConflict(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'var'#13#10 +
+    '  {|}Foo: Integer;'#13#10 +
+    'const'#13#10 +
+    '  Bar = 1;'#13#10 +
+    'implementation'#13#10 +
+    'end.'#13#10,
+    'Bar', True, 'unit level');
+end;
+
+procedure TTestConflictDetection.TestMethodSeesClassMember;
+begin
+  DoCheckConflict(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    FValue: Integer;'#13#10 +
+    '    procedure DoWork;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'procedure TMyClass.DoWork;'#13#10 +
+    'var'#13#10 +
+    '  {|}X: Integer;'#13#10 +
+    'begin'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    'FValue', True, 'member of TMyClass');
+end;
+
 initialization
   RegisterTest(TTestRenameLocalVar.Suite);
   RegisterTest(TTestRenameParam.Suite);
@@ -1604,5 +1955,7 @@ initialization
   RegisterTest(TTestRenameShadowing.Suite);
   RegisterTest(TTestRenameEdgeCases.Suite);
   RegisterTest(TTestRenameAllTokenOccurrences.Suite);
+  RegisterTest(TTestIdentifierInfo.Suite);
+  RegisterTest(TTestConflictDetection.Suite);
 
 end.

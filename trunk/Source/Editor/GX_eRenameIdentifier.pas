@@ -5,27 +5,40 @@ unit GX_eRenameIdentifier;
 interface
 
 uses
-  Classes, StdCtrls, Controls, Forms, GX_BaseForm;
+  Classes, StdCtrls, Controls, Forms, ExtCtrls, GX_BaseForm,
+  GX_RenameIdentifier;
 
 type
   TfmRenameIdentifier = class(TfmBaseForm)
     lblCurrentName: TLabel;
     lblCurrentNameValue: TLabel;
+    lblKind: TLabel;
+    lblKindValue: TLabel;
+    lblType: TLabel;
+    lblTypeValue: TLabel;
     lblScope: TLabel;
     lblScopeValue: TLabel;
     lblOccurrences: TLabel;
     lblComponentWarning: TLabel;
     lblNewName: TLabel;
+    lblConflictWarning: TLabel;
     edtNewName: TEdit;
     btnOK: TButton;
     btnCancel: TButton;
   private
     FOldName: string;
+    FSource: string;
+    FCursorPos: Integer;
+    FConflictTimer: TTimer;
     procedure edtNewNameChange(Sender: TObject);
     procedure ValidateInput;
+    procedure ConflictTimerFired(Sender: TObject);
   public
     constructor Create(_Owner: TComponent); override;
-    procedure SetInfo(const _OldName, _ScopeDesc: string; _OccurrenceCount: Integer);
+    destructor Destroy; override;
+    procedure SetInfo(const _OldName: string; const _IdentInfo: TIdentifierInfo;
+      _OccurrenceCount: Integer);
+    procedure SetSource(const _Source: string; _CursorPos: Integer);
     procedure SetIsComponent(Value: Boolean);
     function GetNewName: string;
   end;
@@ -37,8 +50,7 @@ implementation
 uses
   SysUtils, Windows, Menus, ToolsAPI, Dialogs,
   u_dzVclUtils,
-  GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert,
-  GX_RenameIdentifier;
+  GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert;
 
 type
   TRenameIdentifierExpert = class(TEditorExpert)
@@ -58,14 +70,33 @@ begin
   inherited;
   InitDpiScaler;
   edtNewName.OnChange := edtNewNameChange;
+  FConflictTimer := TTimer.Create(Self);
+  FConflictTimer.Enabled := False;
+  FConflictTimer.Interval := 200;
+  FConflictTimer.OnTimer := ConflictTimerFired;
 end;
 
-procedure TfmRenameIdentifier.SetInfo(const _OldName, _ScopeDesc: string;
-  _OccurrenceCount: Integer);
+destructor TfmRenameIdentifier.Destroy;
+begin
+  FConflictTimer.Free;
+  inherited;
+end;
+
+procedure TfmRenameIdentifier.SetInfo(const _OldName: string;
+  const _IdentInfo: TIdentifierInfo; _OccurrenceCount: Integer);
 begin
   FOldName := _OldName;
   lblCurrentNameValue.Caption := _OldName;
-  lblScopeValue.Caption := _ScopeDesc;
+  lblKindValue.Caption := _IdentInfo.KindDesc;
+  if _IdentInfo.TypeName <> '' then begin
+    lblType.Visible := True;
+    lblTypeValue.Visible := True;
+    lblTypeValue.Caption := _IdentInfo.TypeName;
+  end else begin
+    lblType.Visible := False;
+    lblTypeValue.Visible := False;
+  end;
+  lblScopeValue.Caption := _IdentInfo.ScopeDesc;
   if _OccurrenceCount = 1 then
     lblOccurrences.Caption := '1 occurrence will be renamed'
   else
@@ -73,6 +104,12 @@ begin
   edtNewName.Text := _OldName;
   edtNewName.SelectAll;
   ValidateInput;
+end;
+
+procedure TfmRenameIdentifier.SetSource(const _Source: string; _CursorPos: Integer);
+begin
+  FSource := _Source;
+  FCursorPos := _CursorPos;
 end;
 
 procedure TfmRenameIdentifier.SetIsComponent(Value: Boolean);
@@ -88,6 +125,25 @@ end;
 procedure TfmRenameIdentifier.edtNewNameChange(Sender: TObject);
 begin
   ValidateInput;
+  FConflictTimer.Enabled := False;
+  if (FSource <> '') and btnOK.Enabled then
+    FConflictTimer.Enabled := True
+  else
+    lblConflictWarning.Visible := False;
+end;
+
+procedure TfmRenameIdentifier.ConflictTimerFired(Sender: TObject);
+var
+  ConflictDesc: string;
+begin
+  FConflictTimer.Enabled := False;
+  if FSource = '' then
+    Exit;
+  if CheckNameConflict(FSource, FCursorPos, Trim(edtNewName.Text), ConflictDesc) then begin
+    lblConflictWarning.Caption := ConflictDesc;
+    lblConflictWarning.Visible := True;
+  end else
+    lblConflictWarning.Visible := False;
 end;
 
 procedure TfmRenameIdentifier.ValidateInput;
@@ -162,6 +218,7 @@ var
   OldName, ScopeDesc, ErrorMsg: string;
   RenamedSource: string;
   OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
   Dlg: TfmRenameIdentifier;
   NewName: string;
   Step: string;
@@ -192,7 +249,7 @@ begin
       + ', SrcLen=' + IntToStr(Length(Src)) + ')';
     // Preview mode: get identifier info without renaming
     if not RenameIdentifierInSource(Src, CursorCharIdx, '',
-      RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
+      RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg) then begin
       MessageBeep($FFFFFFFF);
       Exit;
     end;
@@ -219,7 +276,8 @@ begin
     Dlg := TfmRenameIdentifier.Create(nil);
     try
       SetFormIcon(Dlg);
-      Dlg.SetInfo(OldName, ScopeDesc, OccurrenceCount);
+      Dlg.SetInfo(OldName, IdentInfo, OccurrenceCount);
+      Dlg.SetSource(Src, CursorCharIdx);
       Dlg.SetIsComponent(IsComponent);
       if Dlg.ShowModal <> mrOk then
         Exit;
@@ -253,7 +311,7 @@ begin
       // Normal non-component path
       Step := 'PerformRename (OldName=' + OldName + ', NewName=' + NewName + ')';
       if not RenameIdentifierInSource(Src, CursorCharIdx, NewName,
-        RenamedSource, OccurrenceCount, OldName, ScopeDesc, ErrorMsg) then begin
+        RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg) then begin
         ShowError(ErrorMsg);
         Exit;
       end;
