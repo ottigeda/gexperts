@@ -97,6 +97,11 @@ begin
     lblTypeValue.Visible := False;
   end;
   lblScopeValue.Caption := _IdentInfo.ScopeDesc;
+  if SameText(_OldName, 'Result') then begin
+    lblComponentWarning.Caption :=
+      '''Result'' is a compiler-managed implicit variable. Renaming it may cause unexpected behavior.';
+    lblComponentWarning.Visible := True;
+  end;
   if _OccurrenceCount = 1 then
     lblOccurrences.Caption := '1 occurrence will be renamed'
   else
@@ -114,7 +119,10 @@ end;
 
 procedure TfmRenameIdentifier.SetIsComponent(Value: Boolean);
 begin
-  lblComponentWarning.Visible := Value;
+  if Value then
+    lblComponentWarning.Visible := True
+  else if not SameText(FOldName, 'Result') then
+    lblComponentWarning.Visible := False;
 end;
 
 function TfmRenameIdentifier.GetNewName: string;

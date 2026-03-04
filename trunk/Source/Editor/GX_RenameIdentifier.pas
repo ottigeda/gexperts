@@ -76,6 +76,7 @@ type
     HeaderStart: Integer;  // token index
     BodyStart: Integer;    // token index of 'begin' (or -1)
     BodyEnd: Integer;      // token index of matching 'end' (or -1)
+    IsFunction: Boolean;   // True for function/constructor/destructor (has implicit Result)
   end;
   TProcScopeArray = array of TProcScope;
 
@@ -308,6 +309,7 @@ begin
       NestedProc.BodyEnd := -1;
       NestedProc.Name := '';
       NestedProc.ClassName := '';
+      NestedProc.IsFunction := Tokens[J].Kind in [tkFunction, tkConstructor, tkDestructor];
 
       // Parse nested proc name
       NameJ := NextNonJunk(Tokens, J);
@@ -387,6 +389,7 @@ begin
       Proc.BodyEnd := -1;
       Proc.Name := '';
       Proc.ClassName := '';
+      Proc.IsFunction := Tokens[I].Kind in [tkFunction, tkConstructor, tkDestructor];
 
       // Find the name
       J := NextNonJunk(Tokens, I);
@@ -485,6 +488,13 @@ var
   InVarSection, InConstSection, InTypeSection, InParamList: Boolean;
 begin
   Result := False;
+
+  // Implicit Result variable: functions, constructors, and destructors have it
+  if SameText(IdentName, 'Result') and Proc.IsFunction then begin
+    Result := True;
+    Exit;
+  end;
+
   InVarSection := False;
   InConstSection := False;
   InTypeSection := False;
@@ -895,6 +905,30 @@ begin
   end;
 end;
 
+function ExtractFunctionReturnType(const Tokens: TTokenArray; const Proc: TProcScope): string;
+var
+  I, ParenLevel: Integer;
+begin
+  Result := '';
+  if not Proc.IsFunction then
+    Exit;
+  // Scan from header start, skip past param list parens, find ':' after closing paren
+  I := Proc.HeaderStart + 1;
+  ParenLevel := 0;
+  while I <= High(Tokens) do begin
+    if Tokens[I].Kind = tkRoundOpen then
+      Inc(ParenLevel)
+    else if Tokens[I].Kind = tkRoundClose then
+      Dec(ParenLevel)
+    else if (ParenLevel = 0) and (Tokens[I].Kind = tkColon) then begin
+      Result := ExtractTypeAfterColon(Tokens, I);
+      Exit;
+    end else if (ParenLevel = 0) and (Tokens[I].Kind = tkSemiColon) then
+      Exit; // no return type found (constructor/destructor)
+    Inc(I);
+  end;
+end;
+
 function DetectIdentifierKind(const Tokens: TTokenArray; const Scope: TRenameScope;
   const Procs: TProcScopeArray; const Classes: TClassScopeArray;
   const IdentName: string; CursorTokenIdx: Integer): TIdentifierInfo;
@@ -924,6 +958,14 @@ begin
           Result.KindDesc := 'method of ' + Proc.ClassName
         else
           Result.KindDesc := 'procedure';
+        Exit;
+      end;
+
+      // Check if ident is the implicit Result variable
+      if SameText(IdentName, 'Result') and Proc.IsFunction then begin
+        Result.Kind := ikVariable;
+        Result.KindDesc := 'implicit function result';
+        Result.TypeName := ExtractFunctionReturnType(Tokens, Proc);
         Exit;
       end;
 

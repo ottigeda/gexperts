@@ -112,6 +112,20 @@ type
     procedure TestUnitVarImplSection;
   end;
 
+  TTestRenameResult = class(TTestCase)
+  private
+    procedure DoRename(const Source, NewName, Expected: string);
+    procedure DoCheckInfo(const Source: string; ExpectedKind: TIdentifierKind;
+      const ExpectedKindDesc, ExpectedTypeName: string);
+  published
+    procedure TestResultInFunction;
+    procedure TestResultInNestedProcedure;
+    procedure TestResultInNestedFunction;
+    procedure TestResultTwoFunctions;
+    procedure TestResultInfoInFunction;
+    procedure TestResultInfoInConstructor;
+  end;
+
   TTestConflictDetection = class(TTestCase)
   private
     procedure DoCheckConflict(const Source, NewName: string;
@@ -1947,6 +1961,166 @@ begin
     'FValue', True, 'member of TMyClass');
 end;
 
+{ TTestRenameResult }
+
+procedure TTestRenameResult.DoRename(const Source, NewName, Expected: string);
+var
+  Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
+  CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
+begin
+  Src := Source;
+  CursorPos := FindAndRemoveMarker(Src);
+  CheckTrue(RenameIdentifierInSource(Src, CursorPos, NewName,
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
+    'RenameIdentifierInSource failed: ' + ErrorMsg);
+  CheckEquals(Expected, RenamedSource, 'Renamed source mismatch');
+end;
+
+procedure TTestRenameResult.DoCheckInfo(const Source: string;
+  ExpectedKind: TIdentifierKind; const ExpectedKindDesc, ExpectedTypeName: string);
+var
+  Src, RenamedSource, OldName, ScopeDesc, ErrorMsg: string;
+  CursorPos, OccurrenceCount: Integer;
+  IdentInfo: TIdentifierInfo;
+begin
+  Src := Source;
+  CursorPos := FindAndRemoveMarker(Src);
+  CheckTrue(RenameIdentifierInSource(Src, CursorPos, '',
+    RenamedSource, OccurrenceCount, OldName, ScopeDesc, IdentInfo, ErrorMsg),
+    'RenameIdentifierInSource failed: ' + ErrorMsg);
+  CheckEquals(Ord(ExpectedKind), Ord(IdentInfo.Kind), 'Kind mismatch');
+  CheckEquals(ExpectedKindDesc, IdentInfo.KindDesc, 'KindDesc mismatch');
+  CheckEquals(ExpectedTypeName, IdentInfo.TypeName, 'TypeName mismatch');
+end;
+
+procedure TTestRenameResult.TestResultInFunction;
+begin
+  DoRename(
+    'function Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  {|}Result := 1;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'function Bar: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 2;'#13#10 +
+    'end;'#13#10,
+    'Res',
+    'function Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Res := 1;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'function Bar: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 2;'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestResultInNestedProcedure;
+begin
+  // Result in a nested procedure (not a function) refers to the enclosing function's Result
+  DoRename(
+    'function Outer: Integer;'#13#10 +
+    '  procedure Inner;'#13#10 +
+    '  begin'#13#10 +
+    '    {|}Result := 1;'#13#10 +
+    '  end;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 42;'#13#10 +
+    'end;'#13#10,
+    'Res',
+    'function Outer: Integer;'#13#10 +
+    '  procedure Inner;'#13#10 +
+    '  begin'#13#10 +
+    '    Res := 1;'#13#10 +
+    '  end;'#13#10 +
+    'begin'#13#10 +
+    '  Res := 42;'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestResultInNestedFunction;
+begin
+  // Result in a nested function refers to the nested function's own Result
+  DoRename(
+    'function Outer: Integer;'#13#10 +
+    '  function Inner: string;'#13#10 +
+    '  begin'#13#10 +
+    '    {|}Result := ''x'';'#13#10 +
+    '  end;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 42;'#13#10 +
+    'end;'#13#10,
+    'Res',
+    'function Outer: Integer;'#13#10 +
+    '  function Inner: string;'#13#10 +
+    '  begin'#13#10 +
+    '    Res := ''x'';'#13#10 +
+    '  end;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 42;'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestResultTwoFunctions;
+begin
+  // Renaming Result in one function should not affect another
+  DoRename(
+    'function Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 1;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'function Bar: string;'#13#10 +
+    'begin'#13#10 +
+    '  {|}Result := ''hello'';'#13#10 +
+    'end;'#13#10,
+    'Res',
+    'function Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 1;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'function Bar: string;'#13#10 +
+    'begin'#13#10 +
+    '  Res := ''hello'';'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestResultInfoInFunction;
+begin
+  DoCheckInfo(
+    'function Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  {|}Result := 1;'#13#10 +
+    'end;'#13#10,
+    ikVariable, 'implicit function result', 'Integer');
+end;
+
+procedure TTestRenameResult.TestResultInfoInConstructor;
+begin
+  DoCheckInfo(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    constructor Create;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'constructor TMyClass.Create;'#13#10 +
+    'begin'#13#10 +
+    '  {|}Result := inherited Create;'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    ikVariable, 'implicit function result', '');
+end;
+
 initialization
   RegisterTest(TTestRenameLocalVar.Suite);
   RegisterTest(TTestRenameParam.Suite);
@@ -1956,6 +2130,7 @@ initialization
   RegisterTest(TTestRenameEdgeCases.Suite);
   RegisterTest(TTestRenameAllTokenOccurrences.Suite);
   RegisterTest(TTestIdentifierInfo.Suite);
+  RegisterTest(TTestRenameResult.Suite);
   RegisterTest(TTestConflictDetection.Suite);
 
 end.
