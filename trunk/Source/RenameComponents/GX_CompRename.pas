@@ -823,11 +823,13 @@ var
   i: Integer;
   Idx: Integer;
 begin
-  // When invoked via Shift+F2 while the code editor is focused,
-  // forward to the Rename Identifier editor expert instead.
+  // When invoked while the code editor is focused, forward to the
+  // Rename Identifier editor expert, but only if that expert has no
+  // shortcut of its own (otherwise the user can invoke it directly).
   if IsEditControl(Screen.ActiveControl) then begin
     if GExpertsInst.EditorExpertManager.FindExpert('RenameIdentifier', Idx) then begin
-      if GExpertsInst.EditorExpertManager.EditorExpertList[Idx].Active then
+      if GExpertsInst.EditorExpertManager.EditorExpertList[Idx].Active
+        and (GExpertsInst.EditorExpertManager.EditorExpertList[Idx].ShortCut = 0) then
         GExpertsInst.EditorExpertManager.EditorExpertList[Idx].DoExecute(Sender);
     end;
     Exit;
