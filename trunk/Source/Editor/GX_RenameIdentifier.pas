@@ -131,12 +131,12 @@ begin
   SetLength(Result, Count);
 end;
 
-function FindTokenAtCursor(const Tokens: TTokenArray; CursorPos0: Integer): Integer;
+function FindTokenAtPos(const Tokens: TTokenArray; Pos0: Integer): Integer;
 var
   I: Integer;
 begin
   for I := 0 to High(Tokens) do begin
-    if (CursorPos0 >= Tokens[I].Pos) and (CursorPos0 < Tokens[I].Pos + Tokens[I].Len) then begin
+    if (Pos0 >= Tokens[I].Pos) and (Pos0 < Tokens[I].Pos + Tokens[I].Len) then begin
       if Tokens[I].Kind in IdentDirect then begin
         Result := I;
         Exit;
@@ -146,6 +146,16 @@ begin
     end;
   end;
   Result := -1;
+end;
+
+function FindTokenAtCursor(const Tokens: TTokenArray; CursorPos0: Integer): Integer;
+begin
+  Result := FindTokenAtPos(Tokens, CursorPos0);
+  // If cursor is right after an identifier (e.g. selecting it moves cursor
+  // past the end, or cursor is on ';' or '(' following an identifier),
+  // try one position to the left.
+  if (Result < 0) and (CursorPos0 > 0) then
+    Result := FindTokenAtPos(Tokens, CursorPos0 - 1);
 end;
 
 function IsStructKeyword(Kind: TTokenKind): Boolean;

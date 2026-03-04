@@ -78,6 +78,9 @@ type
     procedure TestNestedRecordInClass;
     procedure TestInterfaceSectionOnly;
     procedure TestTypeNameAndConstructorCall;
+    procedure TestCursorAfterIdentifier;
+    procedure TestCursorOnSemicolonAfterIdent;
+    procedure TestCursorOnParenAfterIdent;
   end;
 
   TTestRenameAllTokenOccurrences = class(TTestCase)
@@ -1512,6 +1515,66 @@ begin
     'end;'#13#10 +
     #13#10 +
     'end.'#13#10
+  );
+end;
+
+procedure TTestRenameEdgeCases.TestCursorAfterIdentifier;
+begin
+  // Cursor right after identifier (e.g. after selecting it) — marker is after 'X'
+  DoRename(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  X: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X{|} := 1;'#13#10 +
+    'end;'#13#10,
+    'Y',
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  Y: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Y := 1;'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameEdgeCases.TestCursorOnSemicolonAfterIdent;
+begin
+  // Cursor on semicolon directly after identifier: X;
+  DoRename(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  X: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X{|};'#13#10 +
+    'end;'#13#10,
+    'Y',
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  Y: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Y;'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameEdgeCases.TestCursorOnParenAfterIdent;
+begin
+  // Cursor on opening paren right after identifier
+  DoRename(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  X: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  WriteLn{|}(X);'#13#10 +
+    'end;'#13#10,
+    'DoWrite',
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  X: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  DoWrite(X);'#13#10 +
+    'end;'#13#10
   );
 end;
 
