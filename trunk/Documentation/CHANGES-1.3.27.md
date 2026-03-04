@@ -40,6 +40,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 
 - Rename Identifier: Fixed renaming method parameters not propagating between class declaration and implementation (feature #182)
 - Rename Identifier: Result is now correctly scoped to its enclosing function instead of being treated as a unit-level identifier; nested procedures refer to the enclosing function's Result, nested functions shadow it (feature #182)
+- Rename Components: Shift+F2 only forwards to Rename Identifier when Rename Identifier has no shortcut of its own
 
 - Uses Clause Manager: Line wrapping now respects IDE Right Margin setting instead of hardcoded 80 columns
 
