@@ -76,6 +76,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="GX_TestRenameIdentifierTest.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\..\Source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\mwParser\mPasLex.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\mwParser\mwPasParserTypes.pas"/>

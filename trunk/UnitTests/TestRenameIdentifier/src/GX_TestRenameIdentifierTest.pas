@@ -4,6 +4,7 @@ interface
 
 uses
   TestFramework,
+  GX_PascalTokenAnalyzer,
   GX_RenameIdentifier;
 
 type

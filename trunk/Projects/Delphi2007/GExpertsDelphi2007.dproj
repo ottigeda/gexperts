@@ -265,6 +265,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
@@ -385,6 +386,11 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_eDeclareVariable.pas">
+            <Form>fmDeclareVariable</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_DeclareVariable.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>

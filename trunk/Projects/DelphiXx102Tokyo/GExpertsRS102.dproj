@@ -288,6 +288,11 @@ $(PreBuildEvent)]]>
             <Form>fmDateFormat</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_eDeclareVariable.pas">
+            <Form>fmDeclareVariable</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_DeclareVariable.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
         <DCCReference Include="..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas"/>
         <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas">
@@ -322,6 +327,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
@@ -783,7 +789,10 @@ $(PreBuildEvent)]]>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;
+&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;
+</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
@@ -791,7 +800,10 @@ $(PreBuildEvent)]]>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;
+&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;
+</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>

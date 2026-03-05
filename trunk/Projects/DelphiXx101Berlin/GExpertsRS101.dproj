@@ -227,6 +227,11 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
             <Form>fmEditBookmarks</Form>
         </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_eDeclareVariable.pas">
+            <Form>fmDeclareVariable</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_DeclareVariable.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
         <DCCReference Include="..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas"/>
         <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas">
@@ -255,6 +260,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>

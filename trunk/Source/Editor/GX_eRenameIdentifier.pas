@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, StdCtrls, Controls, Forms, ExtCtrls, GX_BaseForm,
-  GX_RenameIdentifier;
+  GX_PascalTokenAnalyzer, GX_RenameIdentifier;
 
 type
   TfmRenameIdentifier = class(TfmBaseForm)

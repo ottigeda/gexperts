@@ -264,6 +264,11 @@ $(PreBuildEvent)]]>
             <Form>fmEditBookmarks</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_eDeclareVariable.pas">
+            <Form>fmDeclareVariable</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_DeclareVariable.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
         <DCCReference Include="..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas"/>
         <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas">
@@ -298,6 +303,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
@@ -754,7 +760,10 @@ $(PreBuildEvent)]]>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
         <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;
+&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;
+</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
@@ -762,7 +771,10 @@ $(PreBuildEvent)]]>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
         <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;
+&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;
+</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>

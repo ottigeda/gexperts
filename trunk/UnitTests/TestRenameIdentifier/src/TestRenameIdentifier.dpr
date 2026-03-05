@@ -4,6 +4,7 @@ uses
   Windows,
   SysUtils,
   GX_TestRenameIdentifierTest in 'GX_TestRenameIdentifierTest.pas',
+  GX_PascalTokenAnalyzer in '..\..\..\Source\Utils\GX_PascalTokenAnalyzer.pas',
   GX_RenameIdentifier in '..\..\..\Source\Editor\GX_RenameIdentifier.pas',
   mPasLex in '..\..\..\ExternalSource\mwParser\mPasLex.pas',
   mwPasParserTypes in '..\..\..\ExternalSource\mwParser\mwPasParserTypes.pas',
