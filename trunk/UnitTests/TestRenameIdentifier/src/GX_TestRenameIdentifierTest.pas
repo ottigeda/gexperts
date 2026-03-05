@@ -128,6 +128,10 @@ type
     procedure TestResultTwoFunctions;
     procedure TestResultInfoInFunction;
     procedure TestResultInfoInConstructor;
+    procedure TestFuncNameToResult;
+    procedure TestFuncNameToResultSkipsRecursiveCall;
+    procedure TestFuncNameToResultMethod;
+    procedure TestFuncNameToResultNested;
   end;
 
   TTestConflictDetection = class(TTestCase)
@@ -2183,6 +2187,101 @@ begin
     'end;'#13#10 +
     'end.'#13#10,
     ikVariable, 'implicit function result', '');
+end;
+
+procedure TTestRenameResult.TestFuncNameToResult;
+begin
+  // Renaming function name to Result should only rename assignment targets
+  // inside the function body, not the declaration or call sites
+  DoRename(
+    'function {|}Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Foo := 42;'#13#10 +
+    'end;'#13#10,
+    'Result',
+    'function Foo: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 42;'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestFuncNameToResultSkipsRecursiveCall;
+begin
+  // Recursive calls (followed by '(') should not be renamed
+  DoRename(
+    'function {|}Factorial(N: Integer): Integer;'#13#10 +
+    'begin'#13#10 +
+    '  if N <= 1 then'#13#10 +
+    '    Factorial := 1'#13#10 +
+    '  else'#13#10 +
+    '    Factorial := N * Factorial(N - 1);'#13#10 +
+    'end;'#13#10,
+    'Result',
+    'function Factorial(N: Integer): Integer;'#13#10 +
+    'begin'#13#10 +
+    '  if N <= 1 then'#13#10 +
+    '    Result := 1'#13#10 +
+    '  else'#13#10 +
+    '    Result := N * Factorial(N - 1);'#13#10 +
+    'end;'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestFuncNameToResultMethod;
+begin
+  // Method: rename assignment targets in implementation, keep class decl and header
+  DoRename(
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    function {|}GetValue: Integer;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'function TMyClass.GetValue: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  GetValue := 42;'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10,
+    'Result',
+    'unit TestUnit;'#13#10 +
+    'interface'#13#10 +
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    function GetValue: Integer;'#13#10 +
+    '  end;'#13#10 +
+    'implementation'#13#10 +
+    'function TMyClass.GetValue: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  Result := 42;'#13#10 +
+    'end;'#13#10 +
+    'end.'#13#10
+  );
+end;
+
+procedure TTestRenameResult.TestFuncNameToResultNested;
+begin
+  // Only rename in the function whose name matches, not in nested procs
+  DoRename(
+    'function {|}Outer: Integer;'#13#10 +
+    '  function Inner: Integer;'#13#10 +
+    '  begin'#13#10 +
+    '    Inner := 10;'#13#10 +
+    '  end;'#13#10 +
+    'begin'#13#10 +
+    '  Outer := Inner + 1;'#13#10 +
+    'end;'#13#10,
+    'Result',
+    'function Outer: Integer;'#13#10 +
+    '  function Inner: Integer;'#13#10 +
+    '  begin'#13#10 +
+    '    Inner := 10;'#13#10 +
+    '  end;'#13#10 +
+    'begin'#13#10 +
+    '  Result := Inner + 1;'#13#10 +
+    'end;'#13#10
+  );
 end;
 
 initialization

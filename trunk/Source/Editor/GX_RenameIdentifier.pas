@@ -110,6 +110,54 @@ begin
   end;
 end;
 
+function IsAssignmentTarget(const Tokens: TTokenArray; TokenIdx: Integer): Boolean;
+// Returns True if the token at TokenIdx is followed by ':=' (assignment operator),
+// i.e. it's used as the left-hand side of an assignment.
+var
+  NI: Integer;
+begin
+  NI := NextNonJunk(Tokens, TokenIdx);
+  Result := (NI <= High(Tokens)) and (Tokens[NI].Kind = tkAssign);
+end;
+
+function CollectFuncNameAsResultOccurrences(const Tokens: TTokenArray;
+  const FuncName: string; const Procs: TProcScopeArray;
+  const Classes: TClassScopeArray; const Scope: TRenameScope): TList;
+// Collect only assignment-target occurrences of a function name inside
+// its own body. Used when renaming a function name to 'Result'.
+// Skips the function declaration, call sites, and recursive calls.
+var
+  I, ProcIdx: Integer;
+begin
+  Result := TList.Create;
+
+  // Find all procs that match this function name
+  for ProcIdx := 0 to High(Procs) do begin
+    if not SameText(Procs[ProcIdx].Name, FuncName) then
+      Continue;
+    if not Procs[ProcIdx].IsFunction then
+      Continue;
+    if Procs[ProcIdx].BodyStart < 0 then
+      Continue;
+
+    // For class-scoped rename, only process methods of that class
+    if (Scope.Kind = skClass) and (Scope.ClassIndex >= 0) then begin
+      if not SameText(Procs[ProcIdx].ClassName, Classes[Scope.ClassIndex].Name) then
+        Continue;
+    end;
+
+    // Scan the body (between begin and end) for assignment targets
+    for I := Procs[ProcIdx].BodyStart to Procs[ProcIdx].BodyEnd do begin
+      if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, FuncName) then begin
+        // Skip if inside a nested proc that has the same name
+        // (unlikely but defensive)
+        if IsAssignmentTarget(Tokens, I) then
+          Result.Add(Pointer(I));
+      end;
+    end;
+  end;
+end;
+
 function CollectOccurrences(const Tokens: TTokenArray; const IdentName: string;
   const Scope: TRenameScope; const Procs: TProcScopeArray;
   const Classes: TClassScopeArray): TList;
@@ -495,7 +543,13 @@ begin
 
   IdentInfo := DetectIdentifierKind(Tokens, Scope, Procs, Classes, OldName, CursorTokenIdx);
 
-  Occurrences := CollectOccurrences(Tokens, OldName, Scope, Procs, Classes);
+  // Special case: renaming a function/method name to 'Result' should only
+  // rename assignment-target occurrences inside the function body, not
+  // the declaration, class member, or recursive call sites.
+  if (NewName <> '') and SameText(NewName, 'Result') and (IdentInfo.Kind = ikProcedure) then
+    Occurrences := CollectFuncNameAsResultOccurrences(Tokens, OldName, Procs, Classes, Scope)
+  else
+    Occurrences := CollectOccurrences(Tokens, OldName, Scope, Procs, Classes);
   try
     OccurrenceCount := Occurrences.Count;
 
