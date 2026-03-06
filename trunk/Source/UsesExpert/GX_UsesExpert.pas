@@ -624,7 +624,7 @@ begin
     // source:
     // http://docwiki.embarcadero.com/RADStudio/Sydney/en/Conditional_compilation_(Delphi)
 {$IFDEF GX_DELPHIXE2_UP}
-    PlatformName := GxOtaGetProjectPlatform;
+    PlatformName := Ota.GetProjectPlatform;
     if SameText(PlatformName, cWin64Platform) then begin
       _CacheDir := PlatformName;
       _Symbols.Add('ASSEMBLER');
@@ -822,7 +822,7 @@ begin
     sl := TStringList.Create;
     try
       GetSearchPathFavorites(sl);
-      GxOtaGetAllPossiblePaths(Paths, nil, sl);
+      Ota.GetAllPossiblePaths(Paths, nil, sl);
     finally
       FreeAndNil(sl);
     end;
@@ -1253,7 +1253,7 @@ begin
   sl := TStringList.Create;
   try
     FUsesExpert.GetSearchPathFavorites( sl);
-    GxOtaGetEffectiveLibraryPath(FSearchPathThread.SearchDirs, nil, True, sl);
+    Ota.GetEffectiveLibraryPath(FSearchPathThread.SearchDirs, nil, True, sl);
   finally
     FreeAndNil(sl);
   end;
@@ -1268,7 +1268,7 @@ begin
   else pcUnits.Style := tsTabs;
 
   pcUnits.ActivePage := tabSearchPath;
-  GxOtaGetUnitAliases(FAliases);
+  Ota.GetUnitAliases(FAliases);
 
   GetCommonUnits;
   GetProjectUnits;
@@ -1458,7 +1458,7 @@ var
   FileName: string;
 begin
   FileName := UnitName + '.pas';
-  Result := GxOtaOpenFileFromPath(FileName);
+  Result := Ota.OpenFileFromPath(FileName);
 end;
 
 procedure TfmUsesManager.pcUnitsChange(Sender: TObject);
@@ -2791,7 +2791,7 @@ begin
 
   NameSpaces := TStringList.Create;
   try
-    GxOtaGetProjectNamespaces(DefaultNamespace, NameSpaces);
+    Ota.GetProjectNamespaces(DefaultNamespace, NameSpaces);
     CurrentUnitName := GxOtaGetCurrentSourceFile;
     if CurrentUnitName <> '' then begin
       // remove .pas
@@ -3623,8 +3623,8 @@ begin
       if Assigned(ThisUnitNamePtr) then begin
         ThisFullFileName := ThisUnitNamePtr;
         SetSelectedFile(ThisFullFileName, -1);
-      end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
-        or GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
+      end else if Ota.TryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
+        or Ota.TryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
         SetSelectedFile(ThisFullFileName, -1);
         if Idx = -1 then begin
 {$IFOPT D+}SendDebugFmt('Unit %s not found in SearchPathUnits', [ThisUnitName]);

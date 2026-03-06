@@ -368,7 +368,7 @@ begin
   SendingMenu := Sender as TMenuItem;
 
   UnitInfo := TObject(FUnitList[SendingMenu.Tag]) as TUnitInfo;
-  if not GxOtaOpenFileFromPath(UnitInfo.FileName) then
+  if not Ota.OpenFileFromPath(UnitInfo.FileName) then
     ShowMessage(SUnableToLocateFile + UnitInfo.FileName);
 end;
 
@@ -396,7 +396,7 @@ begin
   TList_ClearAndFreeAllItems(FUnitList);
   Aliases := TStringList.Create;
   try
-    GxOtaGetUnitAliases(Aliases);
+    Ota.GetUnitAliases(Aliases);
     {$IFOPT D+}SendDebug('Populating empty unit list');{$ENDIF}
     UsesManager := TUsesManager.Create(Ota.GetCurrentSourceEditor);
     try

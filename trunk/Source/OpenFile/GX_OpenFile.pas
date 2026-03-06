@@ -609,7 +609,7 @@ end;
 
 procedure TAvailableFiles.GetSearchPath(Paths: TStrings);
 begin
-  GxOtaGetEffectiveLibraryPath(Paths);
+  Ota.GetEffectiveLibraryPath(Paths);
 end;
 
 procedure TAvailableFiles.FreeThreads;

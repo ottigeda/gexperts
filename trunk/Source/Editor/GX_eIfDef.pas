@@ -239,7 +239,7 @@ begin
   pc_IfClasses.OnMouseLeave := pc_IfClassesMouseLeave;
 
   FSearchPath := TStringList.Create;
-  GxOtaGetEffectiveLibraryPath(FSearchPath);
+  Ota.GetEffectiveLibraryPath(FSearchPath);
 
   FTabDefinitions := TObjectList.Create;
 

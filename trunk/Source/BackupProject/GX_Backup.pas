@@ -894,7 +894,7 @@ var
 begin
   if IProject = nil then Exit;
   Assert(Assigned(FProgressForm));
-  GxOtaGetEffectiveLibraryPath(FLibraryPath, IProject);
+  Ota.GetEffectiveLibraryPath(FLibraryPath, IProject);
   ListFiles(IProject.FileName, '', '');
   for i := 0 to IProject.GetModuleFileCount - 1 do
   begin

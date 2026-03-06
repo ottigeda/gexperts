@@ -363,9 +363,9 @@ begin
   if Assigned(DependExpert) and DependExpert.FSearchLibraryPath then begin
     FSearchPaths := TStringList.Create;
     if DependExpert.FSearchBrowsingPath then
-      GxOtaGetAllPossiblePaths(FSearchPaths, CurrentProject)
+      Ota.GetAllPossiblePaths(FSearchPaths, CurrentProject)
     else
-      GxOtaGetEffectiveLibraryPath(FSearchPaths, CurrentProject);
+      Ota.GetEffectiveLibraryPath(FSearchPaths, CurrentProject);
   end else
     FreeAndNil(FSearchPaths);
 
@@ -705,7 +705,7 @@ begin
       MessageDlg(Format(SFileDoesNotExist, [CurrentFileName]), mtError, [mbOK], 0);
   end
   else
-    if not GxOtaOpenFileFromPath(UnitName + '.pas') then
+    if not Ota.OpenFileFromPath(UnitName + '.pas') then
       MessageDlg(SOpenError + UnitName, mtInformation, [mbOK], 0);
 end;
 

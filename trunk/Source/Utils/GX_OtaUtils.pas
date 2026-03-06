@@ -473,6 +473,124 @@ type
     /// @param Strings the version info keys to set
     /// @returns True if the keys were set successfully </summary>
     class function SetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+
+    /// <summary>
+    /// Returns the IDE's environment options interface.
+    /// @returns the environment options
+    /// @raises Exception if not available </summary>
+    class function GetEnvironmentOptions: IOTAEnvironmentOptions;
+    /// <summary>
+    /// Returns the value of a named IDE environment string.
+    /// @param EnvironmentStringName the name of the environment string
+    /// @returns the value of the environment string </summary>
+    class function GetIdeEnvironmentString(const EnvironmentStringName: string): string;
+    /// <summary>
+    /// Fills a string list with all IDE environment setting names.
+    /// @param Settings receives the setting names (cleared first) </summary>
+    class procedure GetIdeEnvironmentStrings(Settings: TStrings);
+    /// <summary>
+    /// Returns the IDE's global library path.
+    /// @returns the library path string </summary>
+    class function GetIdeLibraryPath: string;
+    /// <summary>
+    /// Returns the IDE's global browsing path.
+    /// @returns the browsing path string </summary>
+    class function GetIdeBrowsingPath: string;
+    /// <summary>
+    /// Returns the project's current platform, if any (and supported),
+    /// or an empty string.
+    /// @param Project the project to query, or nil for the current project
+    /// @returns the platform identifier string </summary>
+    class function GetProjectPlatform(Project: IOTAProject = nil): string;
+    /// <summary>
+    /// Returns the project's current configuration, if any (and supported),
+    /// or an empty string.
+    /// @param Project the project to query, or nil for the current project
+    /// @returns the configuration string </summary>
+    class function GetProjectConfig(Project: IOTAProject = nil): string;
+    /// <summary>
+    /// Returns the project's framework type, if any (and supported),
+    /// or an empty string.
+    /// @param Project the project to query, or nil for the current project
+    /// @returns the framework type string </summary>
+    class function GetProjectFrameworkType(Project: IOTAProject = nil): string;
+    /// <summary>
+    /// Reads the project's namespaces.
+    /// @param DefaultNamespace receives the default namespace
+    /// @param SearchPath receives the namespace search path entries
+    /// @param Project the project to query, or nil for the current project </summary>
+    class procedure GetProjectNamespaces(var DefaultNamespace: string;
+      SearchPath: TStrings; Project: IOTAProject = nil);
+    /// <summary>
+    /// Returns project-specific search path, with the directory containing the
+    /// project file first.
+    /// @param Paths receives the path entries (cleared first)
+    /// @param Project the project to query, or nil for the current project
+    /// @param DoProcessing if True, paths are macro expanded and non-existing
+    ///                     paths removed </summary>
+    class procedure GetProjectSourcePathStrings(Paths: TStrings;
+      Project: IOTAProject = nil; DoProcessing: Boolean = True);
+    /// <summary>
+    /// Tries to get the project's unit search path.
+    /// @param _Path receives the unit search path, only valid if Result is True
+    /// @param _Project the project to query, or nil for the current project
+    /// @returns True if the search path could be retrieved </summary>
+    class function TryGetProjectSearchPath(out _Path: string;
+      _Project: IOTAProject = nil): Boolean;
+    /// <summary>
+    /// Tries to set the project's unit search path.
+    /// @param _Path the new unit search path
+    /// @param _Project the project to modify, or nil for the current project
+    /// @returns True if the search path could be set </summary>
+    class function TrySetProjectSearchPath(const _Path: string;
+      _Project: IOTAProject = nil): Boolean;
+    /// <summary>
+    /// Returns the global IDE library path (without project-specific paths).
+    /// @param Paths receives the path entries (cleared first)
+    /// @param DoProcessing if True, paths are macro expanded and non-existing
+    ///                     paths removed </summary>
+    class procedure GetIdeLibraryPathStrings(Paths: TStrings;
+      DoProcessing: Boolean = True);
+    /// <summary>
+    /// Returns the effective library path, with project-specific paths first
+    /// and then the IDE's global library path.
+    /// @param Paths receives the path entries (cleared first)
+    /// @param Project the project to query, or nil for the current project
+    /// @param DoProcessing if True, paths are macro expanded and non-existing
+    ///                     paths removed
+    /// @param AdditionalPaths extra paths to append at the end </summary>
+    class procedure GetEffectiveLibraryPath(Paths: TStrings;
+      Project: IOTAProject = nil; DoProcessing: Boolean = True;
+      AdditionalPaths: TStrings = nil);
+    /// <summary>
+    /// Retrieves a guess at all possible paths where files in the current
+    /// project might be located by the compiler.
+    /// @param Paths receives the path entries (cleared first)
+    /// @param Project the project to query, or nil for the current project
+    /// @param AdditionalPaths extra paths to append at the end </summary>
+    class procedure GetAllPossiblePaths(Paths: TStrings;
+      Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
+    /// <summary>
+    /// Locates a base file name in all possible paths.
+    /// @param FileName the file name to find
+    /// @param FullFilename receives the full path if found
+    /// @returns True if the file was found </summary>
+    class function TryFindPathToFile(const FileName: string;
+      out FullFilename: string): Boolean;
+    /// <summary>
+    /// Locates a base file name in all possible paths.
+    /// @param FileName the file name to find
+    /// @returns the full path if found, or FileName if not found </summary>
+    class function FindPathToFile(const FileName: string): string;
+    /// <summary>
+    /// Tries to open a file located anywhere in the possible paths.
+    /// @param FileName the file name to open
+    /// @returns True if the file was found and opened </summary>
+    class function OpenFileFromPath(const FileName: string): Boolean;
+    /// <summary>
+    /// Obtains a list of unit alias mappings in OldUnit=NewUnit format.
+    /// @param Aliases receives the alias mappings (cleared first) </summary>
+    class procedure GetUnitAliases(Aliases: TStrings);
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -958,57 +1076,57 @@ function GxOtaConvertColumnBytesToChars(LineData: UTF8String; ByteIndex: Integer
 function GxOtaGetBaseModuleFileName(const FileName: string): string;
 
 // Get the environment options interface.  Succeeds or raises an exception.
-function GxOtaGetEnvironmentOptions: IOTAEnvironmentOptions;
+function GxOtaGetEnvironmentOptions: IOTAEnvironmentOptions; deprecated; // use Ota.GetEnvironmentOptions
 // Return the IDE's environment string value that is
 // associated with EnvironmentStringName
-function GxOtaGetIdeEnvironmentString(const EnvironmentStringName: string): string;
+function GxOtaGetIdeEnvironmentString(const EnvironmentStringName: string): string; deprecated; // use Ota.GetIdeEnvironmentString
 // Return all of the IDE's environment settings names
-procedure GxOtaGetIdeEnvironmentStrings(Settings: TStrings);
+procedure GxOtaGetIdeEnvironmentStrings(Settings: TStrings); deprecated; // use Ota.GetIdeEnvironmentStrings
 // Return the IDE's global library path
-function GxOtaGetIdeLibraryPath: string;
+function GxOtaGetIdeLibraryPath: string; deprecated; // use Ota.GetIdeLibraryPath
 // Return the IDE's global browsing path
-function GxOtaGetIdeBrowsingPath: string;
+function GxOtaGetIdeBrowsingPath: string; deprecated; // use Ota.GetIdeBrowsingPath
 
 ///<summary>
 /// Returns the project's current platform, if any (and supported), or an empty string </summary>
-function GxOtaGetProjectPlatform(Project: IOTAProject = nil): string;
+function GxOtaGetProjectPlatform(Project: IOTAProject = nil): string; deprecated; // use Ota.GetProjectPlatform
 
 ///<summary>
 /// Returns the project's current config, if any (and supported), or an empty string </summary>
-function GxOtaGetProjectConfig(Project: IOTAProject = nil): string;
+function GxOtaGetProjectConfig(Project: IOTAProject = nil): string; deprecated; // use Ota.GetProjectConfig
 
 ///<summary>
 /// Returns the project's framework, if any (and supported), or an empty string </summary>
-function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string;
+function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string; deprecated; // use Ota.GetProjectFrameworkType
 ///<summary>
 /// reads the project's namespaces </summary>
-procedure GxOtaGetProjectNamespaces(var DefaultNamespace: string; SearchPath: TStrings; Project: IOTAProject = nil);
+procedure GxOtaGetProjectNamespaces(var DefaultNamespace: string; SearchPath: TStrings; Project: IOTAProject = nil); deprecated; // use Ota.GetProjectNamespaces
 ///<summary>
 /// Return project specific search path, with the directory containing the project
 // file first.
 /// @params if DoProcessing is true, the paths are macro expanded and non-existing
 ///                         paths removed. </summary>
 procedure GxOtaGetProjectSourcePathStrings(Paths: TStrings;
-  Project: IOTAProject = nil; DoProcessing: Boolean = True);
+  Project: IOTAProject = nil; DoProcessing: Boolean = True); deprecated; // use Ota.GetProjectSourcePathStrings
 
 ///<summary>
 /// Tries to get the project's unit search path
 /// @param Path is the contents of the unit search path, only valid if Result is True
 /// @param Project is the project whose search path to get, if nil, the current project is used
 /// @returns True, if it could be retrieved, False otherwise (e.g. there is no active project)
-function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
+function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean; deprecated; // use Ota.TryGetProjectSearchPath
 ///<summary>
 /// Tries to set the project's unit search path
 /// @param Path is the new contents of the unit search path
 /// @param Project is the project whose search path to set, if nil, the current project is used
 /// @returns True, if it could be set, False otherwise (e.g. there is no active project)
-function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
+function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean; deprecated; // use Ota.TrySetProjectSearchPath
 
 ///<summary>
 /// Return the global IDE library path (without the project specific paths).
 /// @params if DoProcessing is true, the paths are macro expanded and non-existing
 ///                         paths removed. </summary>
-procedure GxOtaGetIdeLibraryPathStrings(Paths: TStrings; DoProcessing: Boolean = true);
+procedure GxOtaGetIdeLibraryPathStrings(Paths: TStrings; DoProcessing: Boolean = true); deprecated; // use Ota.GetIdeLibraryPathStrings
 ///<summary>
 /// Return the effective library path, with the project specific paths
 /// first and then the IDE's global library path.
@@ -1016,19 +1134,19 @@ procedure GxOtaGetIdeLibraryPathStrings(Paths: TStrings; DoProcessing: Boolean =
 ///                         paths removed.
 /// @params AdditionalPaths are appended at the end and optionally processed too </summary>
 procedure GxOtaGetEffectiveLibraryPath(Paths: TStrings;
-  Project: IOTAProject = nil; DoProcessing: Boolean = True; AdditionalPaths: TStrings = nil);
+  Project: IOTAProject = nil; DoProcessing: Boolean = True; AdditionalPaths: TStrings = nil); deprecated; // use Ota.GetEffectiveLibraryPath
 ///<summary>
 /// Retrieve a guess at all possible paths where files in the current project
 /// might be located by the compiler
 /// @params AdditionalPaths are appended at the end and optionally processed too </summary>
-procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
+procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil); deprecated; // use Ota.GetAllPossiblePaths
 // Locate a base file name in all possible paths (retrieved with GxOtaGetAllPossiblePaths)
-function GxOtaTryFindPathToFile(const FileName: string; out FullFilename: string): Boolean;
-function GxOtaFindPathToFile(const FileName: string): string;
+function GxOtaTryFindPathToFile(const FileName: string; out FullFilename: string): Boolean; deprecated; // use Ota.TryFindPathToFile
+function GxOtaFindPathToFile(const FileName: string): string; deprecated; // use Ota.FindPathToFile
 // Try to open a file located anywhere in GxOtaGetAllPossiblePaths
-function GxOtaOpenFileFromPath(const FileName: string): Boolean;
+function GxOtaOpenFileFromPath(const FileName: string): Boolean; deprecated; // use Ota.OpenFileFromPath
 // Obtain a list of alias mappings in OldUnit=NewUnit format
-procedure GxOtaGetUnitAliases(Aliases: TStrings);
+procedure GxOtaGetUnitAliases(Aliases: TStrings); deprecated; // use Ota.GetUnitAliases
 
 // Returns IDE's base registry key, for instance
 //   Software\Borland\Delphi\4.0
@@ -3875,22 +3993,37 @@ end;
 
 function GxOtaGetEnvironmentOptions: IOTAEnvironmentOptions;
 begin
+  Result := Ota.GetEnvironmentOptions;
+end;
+
+class function Ota.GetEnvironmentOptions: IOTAEnvironmentOptions;
+begin
   Result := Ota.GetIDEServices.GetEnvironmentOptions;
   Assert(Assigned(Result));
 end;
 
 function GxOtaGetIdeEnvironmentString(const EnvironmentStringName: string): string;
 begin
-  Result := GxOtaGetEnvironmentOptions.Values[EnvironmentStringName];
+  Result := Ota.GetIdeEnvironmentString(EnvironmentStringName);
+end;
+
+class function Ota.GetIdeEnvironmentString(const EnvironmentStringName: string): string;
+begin
+  Result := Ota.GetEnvironmentOptions.Values[EnvironmentStringName];
 end;
 
 procedure GxOtaGetIdeEnvironmentStrings(Settings: TStrings);
+begin
+  Ota.GetIdeEnvironmentStrings(Settings);
+end;
+
+class procedure Ota.GetIdeEnvironmentStrings(Settings: TStrings);
 var
   EnvOptions: IOTAEnvironmentOptions;
   i: Integer;
   Options: TOTAOptionNameArray;
 begin
-  EnvOptions := GxOtaGetEnvironmentOptions;
+  EnvOptions := Ota.GetEnvironmentOptions;
 
   Settings.Clear;
   Options := EnvOptions.GetOptionNames; // Broken in Delphi 2005
@@ -3900,24 +4033,34 @@ end;
 
 function GxOtaGetIdeLibraryPath: string;
 begin
+  Result := Ota.GetIdeLibraryPath;
+end;
+
+class function Ota.GetIdeLibraryPath: string;
+begin
    // Do not localize.
   if RunningBDS2006OrGreater and Ota.CurrentProjectIsDelphiDotNet then
-    Result := GxOtaGetIdeEnvironmentString('DotNetLibraryPath')
+    Result := Ota.GetIdeEnvironmentString('DotNetLibraryPath')
   else if RunningBDS2006OrGreater and Ota.CurrentProjectIsNativeCpp then
-    Result := GxOtaGetIdeEnvironmentString('CppSearchPath')
+    Result := Ota.GetIdeEnvironmentString('CppSearchPath')
   else
-    Result := GxOtaGetIdeEnvironmentString('LibraryPath');
+    Result := Ota.GetIdeEnvironmentString('LibraryPath');
 end;
 
 function GxOtaGetIdeBrowsingPath: string;
 begin
+  Result := Ota.GetIdeBrowsingPath;
+end;
+
+class function Ota.GetIdeBrowsingPath: string;
+begin
    // Do not localize.
   if RunningBDS2006OrGreater and Ota.CurrentProjectIsDelphiDotNet then
-    Result := GxOtaGetIdeEnvironmentString('DotNetBrowsingPath')
+    Result := Ota.GetIdeEnvironmentString('DotNetBrowsingPath')
   else if RunningBDS2006OrGreater and Ota.CurrentProjectIsNativeCpp then
-    Result := GxOtaGetIdeEnvironmentString('CppBrowsingPath')
+    Result := Ota.GetIdeEnvironmentString('CppBrowsingPath')
   else if (not RunningBDS2006OrGreater) or Ota.CurrentProjectIsNativeDelphi then
-    Result := GxOtaGetIdeEnvironmentString('BrowsingPath')
+    Result := Ota.GetIdeEnvironmentString('BrowsingPath')
   else
     Result := '';
 end;
@@ -3989,6 +4132,11 @@ end;
 
 function GxOtaGetProjectPlatform(Project: IOTAProject = nil): string;
 begin
+  Result := Ota.GetProjectPlatform(Project);
+end;
+
+class function Ota.GetProjectPlatform(Project: IOTAProject = nil): string;
+begin
   Result := '';
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
@@ -4000,6 +4148,11 @@ end;
 
 function GxOtaGetProjectConfig(Project: IOTAProject = nil): string;
 begin
+  Result := Ota.GetProjectConfig(Project);
+end;
+
+class function Ota.GetProjectConfig(Project: IOTAProject = nil): string;
+begin
   Result := '';
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
@@ -4010,6 +4163,11 @@ begin
 end;
 
 function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string;
+begin
+  Result := Ota.GetProjectFrameworkType(Project);
+end;
+
+class function Ota.GetProjectFrameworkType(Project: IOTAProject = nil): string;
 begin
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
@@ -4063,6 +4221,12 @@ end;
 
 procedure GxOtaGetProjectNamespaces(var DefaultNamespace: string; SearchPath: TStrings;
   Project: IOTAProject = nil);
+begin
+  Ota.GetProjectNamespaces(DefaultNamespace, SearchPath, Project);
+end;
+
+class procedure Ota.GetProjectNamespaces(var DefaultNamespace: string; SearchPath: TStrings;
+  Project: IOTAProject = nil);
 var
   ProjectName: string;
   p: Integer;
@@ -4070,8 +4234,6 @@ var
   ProjectOptions: IOTAProjectOptions;
   ProjectNamespaces: string;
   Framework: string;
-//  OptionNames: TOTAOptionNameArray;
-//  i: Integer;
 begin
   Assert(Assigned(SearchPath));
   SearchPath.Clear;
@@ -4091,10 +4253,6 @@ begin
     end;
     // Then the project search path
     if Ota.TryGetProjectOptions(ProjectOptions, Project) then begin
-
-//      OptionNames := ProjectOptions.GetOptionNames;
-//      for i := Low(OptionNames) to High(OptionNames) - 1 do
-//        SendDebug(OptionNames[i].Name);
       DefaultNamespace := ProjectOptions.Values[OPTION_NAME_DEFAULT_NAMESPACE];
       ProjectNamespaces := ProjectOptions.Values[OPTION_NAME_NAMESPACE_PREFIX];
       SplitIdePath(SearchPath, ProjectNamespaces);
@@ -4103,7 +4261,7 @@ begin
       // prefix is removed, the project no longer compiles.
       // to prevent this, we add the framework type as the last entry to the
       // name spaces.
-      Framework := GxOtaGetProjectFrameworkType;
+      Framework := Ota.GetProjectFrameworkType;
       if Framework <> '' then
         EnsureStringInList(SearchPath, Framework);
     end;
@@ -4111,6 +4269,12 @@ begin
 end;
 
 procedure GxOtaGetProjectSourcePathStrings(Paths: TStrings;
+  Project: IOTAProject = nil; DoProcessing: Boolean = True);
+begin
+  Ota.GetProjectSourcePathStrings(Paths, Project, DoProcessing);
+end;
+
+class procedure Ota.GetProjectSourcePathStrings(Paths: TStrings;
   Project: IOTAProject = nil; DoProcessing: Boolean = True);
 var
   IdePathString: string;
@@ -4137,7 +4301,7 @@ begin
       SplitIdePath(Paths, IdePathString);
     end;
     if DoProcessing then begin
-      PlatformName := GxOtaGetProjectPlatform(Project);
+      PlatformName := Ota.GetProjectPlatform(Project);
       ProcessPaths(Paths, ProjectDir, PlatformName);
     end;
     for i := 0 to Paths.Count - 1 do begin
@@ -4147,6 +4311,11 @@ begin
 end;
 
 function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
+begin
+  Result := Ota.TryGetProjectSearchPath(_Path, _Project);
+end;
+
+class function Ota.TryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
 var
   ProjectOptions: IOTAProjectOptions;
 begin
@@ -4157,6 +4326,11 @@ begin
 end;
 
 function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
+begin
+  Result := Ota.TrySetProjectSearchPath(_Path, _Project);
+end;
+
+class function Ota.TrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
 var
   ProjectOptions: IOTAProjectOptions;
 begin
@@ -4167,13 +4341,18 @@ begin
 end;
 
 procedure GxOtaGetIdeLibraryPathStrings(Paths: TStrings; DoProcessing: Boolean = true);
+begin
+  Ota.GetIdeLibraryPathStrings(Paths, DoProcessing);
+end;
+
+class procedure Ota.GetIdeLibraryPathStrings(Paths: TStrings; DoProcessing: Boolean = True);
 var
   IdePathString: string;
   i: Integer;
 begin
   Assert(Assigned(Paths));
   Paths.Clear;
-  IdePathString := GxOtaGetIdeLibraryPath;
+  IdePathString := Ota.GetIdeLibraryPath;
   SplitIdePath(Paths, IdePathString);
   if DoProcessing then begin
     // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
@@ -4187,6 +4366,12 @@ end;
 
 procedure GxOtaGetEffectiveLibraryPath(Paths: TStrings;
   Project: IOTAProject = nil; DoProcessing: Boolean = True; AdditionalPaths: TStrings = nil);
+begin
+  Ota.GetEffectiveLibraryPath(Paths, Project, DoProcessing, AdditionalPaths);
+end;
+
+class procedure Ota.GetEffectiveLibraryPath(Paths: TStrings;
+  Project: IOTAProject = nil; DoProcessing: Boolean = True; AdditionalPaths: TStrings = nil);
 var
   LocalList: TStringList;
   i: Integer;
@@ -4196,14 +4381,14 @@ begin
   Assert(Assigned(Paths));
   Paths.Clear;
   // DoProcessing = True uses the project file's directory as the base to expand relative paths
-  GxOtaGetProjectSourcePathStrings(Paths, Project, DoProcessing);
+  Ota.GetProjectSourcePathStrings(Paths, Project, DoProcessing);
   LocalList := TStringList.Create;
   try
     // DoProcessing = True expands any general macros and relative paths
-    GxOtaGetIdeLibraryPathStrings(LocalList, DoProcessing);
+    Ota.GetIdeLibraryPathStrings(LocalList, DoProcessing);
     if DoProcessing then begin
       // do another processing, this time also expanding the Platform related macros
-      PlatformName := GxOtaGetProjectPlatform(Project);
+      PlatformName := Ota.GetProjectPlatform(Project);
       // There shouldn't be any more relatives paths left, so passing GetCurrentDir is probably fine
       ProcessPaths(LocalList, GetCurrentDir, PlatformName);
     end;
@@ -4218,7 +4403,7 @@ begin
           Project := Ota.GetCurrentProject;
         if Assigned(Project) then begin
           ProjectDir := ExtractFileDir(Project.FileName);
-          PlatformName := GxOtaGetProjectPlatform(Project);
+          PlatformName := Ota.GetProjectPlatform(Project);
         end else begin
           ProjectDir := GetCurrentDir;
           PlatformName := '';
@@ -4235,6 +4420,11 @@ begin
 end;
 
 procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
+begin
+  Ota.GetAllPossiblePaths(Paths, Project, AdditionalPaths);
+end;
+
+class procedure Ota.GetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
 
   function GetPath(const FileName: string): string;
   begin
@@ -4301,7 +4491,7 @@ begin
     AddAPath(GetPath(Ota.GetProjectFileName(Project)));
 
   // Add library search paths
-  GxOtaGetEffectiveLibraryPath(Paths);
+  Ota.GetEffectiveLibraryPath(Paths);
 
   // Add paths of all files included in the project
   if Assigned(Project) then begin
@@ -4336,7 +4526,7 @@ begin
       LocalList.Assign(AdditionalPaths);
       if Assigned(Project) then begin
         ProjectDir := ExtractFileDir(Project.FileName);
-        PlatformName := GxOtaGetProjectPlatform(Project);
+        PlatformName := Ota.GetProjectPlatform(Project);
       end else begin
         ProjectDir := GetCurrentDir;
         PlatformName := '';
@@ -4352,13 +4542,18 @@ begin
 end;
 
 function GxOtaTryFindPathToFile(const FileName: string; out FullFilename: string): Boolean; overload;
+begin
+  Result := Ota.TryFindPathToFile(FileName, FullFilename);
+end;
+
+class function Ota.TryFindPathToFile(const FileName: string; out FullFilename: string): Boolean;
 var
   PathList: TStringList;
 begin
   PathList := TStringList.Create;
   try
-    GxOtaGetAllPossiblePaths(PathList);
-    Result := TryFindPathToFile(FileName, FullFilename, PathList);
+    Ota.GetAllPossiblePaths(PathList);
+    Result := GX_GenericUtils.TryFindPathToFile(FileName, FullFilename, PathList);
   finally
     FreeAndNil(PathList);
   end;
@@ -4366,21 +4561,36 @@ end;
 
 function GxOtaFindPathToFile(const FileName: string): string;
 begin
-  if not GxOtaTryFindPathToFile(FileName, Result) then
+  Result := Ota.FindPathToFile(FileName);
+end;
+
+class function Ota.FindPathToFile(const FileName: string): string;
+begin
+  if not Ota.TryFindPathToFile(FileName, Result) then
     Result := FileName;
 end;
 
 function GxOtaOpenFileFromPath(const FileName: string): Boolean;
+begin
+  Result := Ota.OpenFileFromPath(FileName);
+end;
+
+class function Ota.OpenFileFromPath(const FileName: string): Boolean;
 var
   FoundFile: string;
 begin
   Result := False;
-  FoundFile := GxOtaFindPathToFile(FileName);
+  FoundFile := Ota.FindPathToFile(FileName);
   if FileExists(FoundFile) then
     Result := GxOtaOpenFile(FoundFile);
 end;
 
 procedure GxOtaGetUnitAliases(Aliases: TStrings);
+begin
+  Ota.GetUnitAliases(Aliases);
+end;
+
+class procedure Ota.GetUnitAliases(Aliases: TStrings);
 var
   AliasItem, AliasString: string;
   VarAliases: Variant;

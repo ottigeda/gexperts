@@ -554,7 +554,7 @@ begin
 //    GxOtaGetEffectiveLibraryPath(SearchPath);
 // This finds everything, but it might be too much. You usually don't
 // want to search RTL / VCL / FMX units.
-    GxOtaGetAllPossiblePaths(SearchPath);
+    Ota.GetAllPossiblePaths(SearchPath);
 // todo: Make this more flexible.
 
     Reader := TMapFileReader.Create(_MapFile);
