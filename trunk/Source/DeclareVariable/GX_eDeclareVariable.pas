@@ -58,7 +58,8 @@ uses
   GX_UsesManager;
 
 type
-  /// Cached tokenization of an external .pas file's interface section
+  /// <summary>
+  /// Cached tokenization of an external .pas file's interface section. </summary>
   TCachedUnitTokens = record
     FilePath: string;
     Tokens: TTokenArray;
@@ -240,9 +241,13 @@ begin
   Result := Length(Tokens) > 0;
 end;
 
+/// <summary>
 /// Scans tokens for a function/procedure header matching FuncName and extracts
-/// its return type.  Works directly on the token array without BuildProcScopes,
+/// its return type. Works directly on the token array without BuildProcScopes,
 /// making it safe for interface-only code.
+/// @param Tokens the token array
+/// @param FuncName the function name to search for
+/// @returns the return type, or '' if not found </summary>
 function ScanForFuncReturnType(const Tokens: TTokenArray;
   const FuncName: string): string;
 var
@@ -278,8 +283,13 @@ begin
   end;
 end;
 
+/// <summary>
 /// Scans tokens for a function/procedure header matching FuncName and extracts
 /// the type of the parameter at the given 0-based index.
+/// @param Tokens the token array
+/// @param FuncName the function name to search for
+/// @param ParamIndex the 0-based parameter position
+/// @returns the parameter type, or '' if not found </summary>
 function ScanForParamType(const Tokens: TTokenArray;
   const FuncName: string; ParamIndex: Integer): string;
 var

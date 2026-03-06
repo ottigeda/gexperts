@@ -1,6 +1,7 @@
+/// <summary>
 /// Core logic for the Declare Variable editor expert.
 /// This unit has no OTA dependency and operates on plain strings,
-/// making it fully testable with DUnit.
+/// making it fully testable with DUnit. </summary>
 unit GX_DeclareVariable;
 
 {$I GX_CondDefine.inc}
@@ -14,9 +15,12 @@ uses
 type
   TExternalLookupKind = (elkFuncReturn, elkParamType, elkIdentType);
 
+  /// <summary>
   /// Callback for resolving types from external units (UCM, intrinsics, etc.).
-  /// Name is the identifier to look up; Kind indicates what type of lookup;
-  /// ParamIndex is the 0-based parameter position (only for elkParamType).
+  /// @param Name the identifier to look up
+  /// @param Kind indicates what type of lookup
+  /// @param ParamIndex 0-based parameter position (only for elkParamType)
+  /// @returns the resolved type name, or '' if not found </summary>
   TExternalTypeLookup = function(const Name: string;
     Kind: TExternalLookupKind; ParamIndex: Integer): string of object;
 
@@ -86,7 +90,8 @@ begin
   end;
 end;
 
-/// Find the line start position (1-based) for a given 1-based position in source
+/// <summary>
+/// Finds the line start position (1-based) for a given 1-based position in source. </summary>
 function FindLineStart(const Source: string; Pos: Integer): Integer;
 begin
   Result := Pos;
@@ -94,7 +99,8 @@ begin
     Dec(Result);
 end;
 
-/// Extract whitespace indentation at line containing Pos (1-based)
+/// <summary>
+/// Extracts whitespace indentation at line containing Pos (1-based). </summary>
 function GetIndentAtPos(const Source: string; Pos: Integer): string;
 var
   LineStart, I: Integer;
@@ -106,7 +112,8 @@ begin
   Result := Copy(Source, LineStart, I - LineStart);
 end;
 
-/// Find position after end of line at given 1-based position
+/// <summary>
+/// Finds position after end of line at given 1-based position. </summary>
 function FindEndOfLine(const Source: string; Pos: Integer): Integer;
 begin
   Result := Pos;
@@ -119,10 +126,11 @@ begin
     Inc(Result);
 end;
 
+/// <summary>
 /// Checks whether a numeric expression starting at RhsIdx contains a '/'
 /// operator or a float literal, which would make the result floating-point.
 /// In Delphi, '/' always returns Extended (floating-point), while 'div' is
-/// integer division.  Scans until semicolon/end-of-tokens.
+/// integer division. Scans until semicolon/end-of-tokens. </summary>
 function ExpressionIsFloat(const Tokens: TTokenArray; RhsIdx: Integer): Boolean;
 var
   J, ParenLevel: Integer;
@@ -163,8 +171,10 @@ begin
   end;
 end;
 
+/// <summary>
 /// Looks up the return type of a compiler intrinsic function.
-/// Returns '' if the function is not a known intrinsic.
+/// @param FuncName the function name to look up
+/// @returns the return type, or '' if not a known intrinsic </summary>
 function LookupIntrinsicReturnType(const FuncName: string): string;
 begin
   Result := '';
