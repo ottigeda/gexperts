@@ -491,7 +491,7 @@ var
   ProjectGroup: IOTAProjectGroup;
   Context: TGrepSearchContext;
 begin
-  ProjectGroup := GxOtaGetProjectGroup;
+  ProjectGroup := Ota.GetProjectGroup;
   if ProjectGroup = nil then
     Exit;
   FSearchRoot := ExtractFilePath(ProjectGroup.FileName);
@@ -519,7 +519,7 @@ begin
   FSearchRoot := ExtractFilePath(Project.FileName);
   Context := TGrepSearchContext.Create;
   try
-    Context.Project := GxOtaGetProjectFileName(Project, True);
+    Context.Project := Ota.GetProjectFileName(Project, True);
     GrepProjectFile(Context.Project, Context);
 
     for i := 0 to Project.GetModuleCount - 1 do
@@ -529,7 +529,7 @@ begin
       if FAbortSignalled then
         Break;
     end;
-    if FGrepSettings.UseMapFile and GxOtaGetCurrentMapFileName(MapFile) then
+    if FGrepSettings.UseMapFile and Ota.GetCurrentMapFileName(MapFile) then
       GrepMapFile(MapFile, Context);
   finally
     FreeAndNil(Context);
@@ -808,13 +808,13 @@ begin
         try
           case FGrepSettings.GrepAction of
             gaProjGrep:
-              GrepProject(GxOtaGetCurrentProject);
+              GrepProject(Ota.GetCurrentProject);
             gaProjGroupGrep:
               GrepProjectGroup;
             gaCurrentOnlyGrep:
               GrepCurrentSourceEditor;
             gaOpenFilesGrep:
-              GrepProject(GxOtaGetCurrentProject);
+              GrepProject(Ota.GetCurrentProject);
             gaDirGrep:
               begin
                 if Length(Trim(FGrepSettings.Mask)) = 0 then

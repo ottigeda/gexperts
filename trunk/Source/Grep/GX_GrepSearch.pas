@@ -682,7 +682,7 @@ var
 begin
   if not IsStandAlone then
   begin
-    if Trim(GxOtaGetCurrentProjectName) = '' then
+    if Trim(Ota.GetCurrentProjectName) = '' then
     begin
       rbAllProjFiles.Enabled := False;
       chk_UseMapFile.Enabled := False;
@@ -692,7 +692,7 @@ begin
     else
     begin
       rbAllProjFiles.Enabled := True;
-      if GxOtaGetCurrentMapFileName(MapFn) then begin
+      if Ota.GetCurrentMapFileName(MapFn) then begin
         txt_NoMapFile.Visible := False;
         chk_UseMapFile.Enabled := True;
       end else begin
@@ -702,12 +702,12 @@ begin
       rbOpenFiles.Enabled := True;
     end;
 
-    if Trim(GxOtaGetProjectGroupFileName) = '' then
+    if Trim(Ota.GetProjectGroupFileName) = '' then
       rbAllProjGroupFiles.Enabled := False
     else
       rbAllProjGroupFiles.Enabled := True;
 
-    rbCurrentOnly.Enabled := Trim(GxOtaGetFileNameOfCurrentModule) <> '';
+    rbCurrentOnly.Enabled := Trim(Ota.GetFileNameOfCurrentModule) <> '';
   end
   else // IsStandAlone
   begin

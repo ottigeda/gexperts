@@ -422,7 +422,7 @@ var
   FormEditor: IOTAFormEditor;
   i: Integer;
 begin
-  CurrentProject := GxOtaGetCurrentProject;
+  CurrentProject := Ota.GetCurrentProject;
   Assert(Assigned(CurrentProject));
 
   for i := 0 to CurrentProject.GetModuleCount - 1 do
@@ -470,7 +470,7 @@ begin
 
   if not GxOtaTryGetCurrentFormEditor(FormEditor) then
   begin
-    if GxOtaGetCurrentProject = nil then
+    if Ota.GetCurrentProject = nil then
       raise Exception.Create(SOpenSomethingFirst);
     SetOptionsForNoCurrentForm;
     Exit;
@@ -534,7 +534,7 @@ procedure TReplaceCompExpert.UpdateAction(Action: TCustomAction);
 var
   FormEditor: IOTAFormEditor;
 begin
-  Action.Enabled := GxOtaTryGetCurrentFormEditor(FormEditor) or (GxOtaHaveCurrentProject);
+  Action.Enabled := GxOtaTryGetCurrentFormEditor(FormEditor) or (Ota.HaveCurrentProject);
 end;
 
 procedure TReplaceCompExpert.Execute(Sender: TObject);

@@ -271,7 +271,7 @@ end;
 procedure TBasePopupListing.PopulateUnitList;
 begin
   TList_ClearAndFreeAllItems(FUnitList);
-  GxOtaFillUnitInfoListForProject(FUnitList, GxOtaGetCurrentProject);
+  GxOtaFillUnitInfoListForProject(FUnitList, Ota.GetCurrentProject);
 end;
 
 procedure TBasePopupListing.ShowPopupBelowControl(AControl: TControl);

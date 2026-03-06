@@ -206,7 +206,7 @@ begin
 
  List:=TList.Create;
  try
-  GxOtaFillUnitInfoListForProject(List,GxOtaGetCurrentProject);
+  GxOtaFillUnitInfoListForProject(List,Ota.GetCurrentProject);
   for i:=0 to List.Count-1 do begin
    UI:=TObject(List[i]) as TUnitInfo;
    coModule.Items.AddObject(ExtractFileName(UI.Filename),UI);

@@ -310,7 +310,7 @@ var
   Item: TClassItem;
   ProjectName: string;
 begin
-  ProjectName := GxOtaGetCurrentProjectFileName;
+  ProjectName := Ota.GetCurrentProjectFileName;
   if AnsiCompareText(FLastProject, ProjectName) = 0 then
     Exit;
   FLastProject := ProjectName;

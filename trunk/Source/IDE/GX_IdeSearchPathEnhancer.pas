@@ -835,7 +835,7 @@ var
   Dir: string;
 begin
   Dir := FEdit.Text;
-  ProjectFile := GxOtaGetCurrentProjectFileName(True);
+  ProjectFile := Ota.GetCurrentProjectFileName(True);
   if ProjectFile <> '' then begin
     ProjectDir := ExtractFilePath(ProjectFile);
     Dir := TFileSystem.ExpandFileNameRelBaseDir(Dir, ProjectDir);

@@ -866,7 +866,7 @@ begin
     Msg := 'Stack overflow at address ' + s;
   end;
 
-  Projectname := GxOtaGetCurrentProjectName;
+  Projectname := Ota.GetCurrentProjectName;
 
   // For now we only fill the string list with the additional information,
   // but this information will also be used for filtering later.

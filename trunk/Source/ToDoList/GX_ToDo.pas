@@ -334,7 +334,7 @@ begin
       begin
         if (ToDoExpert.FScanType = tstProject) and (SameFileName(FileName, FToDoForm.FProjectFileName)) then
           FToDoForm.ClearDataListAndListView
-        else if GxOtaGetCurrentProject = nil then
+        else if Ota.GetCurrentProject = nil then
           FToDoForm.ClearDataListAndListView;
       end;
   end;
@@ -361,7 +361,7 @@ var
   ProjectGroup: IOTAProjectGroup;
   i: Integer;
 begin
-  ProjectGroup := GxOtaGetProjectGroup;
+  ProjectGroup := Ota.GetProjectGroup;
   if not Assigned(ProjectGroup) then
     Exit;
   for i := 0 to ProjectGroup.ProjectCount - 1 do
@@ -398,9 +398,9 @@ begin
   if ToDoExpert.FScanType <> tstProject then
     FProjectFileName := ''
   else
-    FProjectFileName := GxOtaGetCurrentProjectFileName;
+    FProjectFileName := Ota.GetCurrentProjectFileName;
 
-  ScanFile(GxOtaGetProjectFileName(Project, True));
+  ScanFile(Ota.GetProjectFileName(Project, True));
   for i := 0 to Project.GetModuleCount - 1 do
   begin
     ModuleInfo := Project.GetModule(i);
@@ -741,7 +741,7 @@ begin
       case ToDoExpert.FScanType of
         tstProject,
         tstOpenFiles:
-          EnumerateProjectFiles(GxOtaGetCurrentProject);
+          EnumerateProjectFiles(Ota.GetCurrentProject);
 
         tstProjectGroup:
           EnumerateProjects;
@@ -893,10 +893,10 @@ begin
     case ToDoExpert.FScanType of
       tstProject,
       tstOpenFiles:
-        RichEdit.Lines.Add(Format(STodoListForProject, [GxOtaGetCurrentProjectName]));
+        RichEdit.Lines.Add(Format(STodoListForProject, [Ota.GetCurrentProjectName]));
 
       tstProjectGroup:
-        RichEdit.Lines.Add(Format(STodoListForProject, [ExtractFileName(GxOtaGetProjectGroupFileName)]));
+        RichEdit.Lines.Add(Format(STodoListForProject, [ExtractFileName(Ota.GetProjectGroupFileName)]));
 
       tstDirectory:
         RichEdit.Lines.Add(Format(STodoListForDirectory, [ToDoExpert.FDirsToScan]));

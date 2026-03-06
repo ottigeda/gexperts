@@ -873,11 +873,11 @@ var
   i: Integer;
 begin
   if FCurrentBackupScope = bsActiveProject then
-    DoCollectFilesFromSingleProject(GxOtaGetCurrentProject)
+    DoCollectFilesFromSingleProject(Ota.GetCurrentProject)
   else begin
-    IProjectGroup := GxOtaGetProjectGroup;
+    IProjectGroup := Ota.GetProjectGroup;
     if IProjectGroup = nil then Exit;
-    ProjectGroupFileName := GxOtaGetProjectGroupFileName;
+    ProjectGroupFileName := Ota.GetProjectGroupFileName;
     if not IsFileExcluded(ProjectGroupFileName) then
       AddBackupFile(ProjectGroupFileName);
     for i := 0 to IProjectGroup.ProjectCount - 1 do
@@ -961,9 +961,9 @@ begin
   FProjectFolders.Clear;
   
   if FCurrentBackupScope = bsActiveProject then
-    ProjectName := GxOtaGetCurrentProjectFileName
+    ProjectName := Ota.GetCurrentProjectFileName
   else
-    ProjectName := GxOtaGetProjectGroupFileName;
+    ProjectName := Ota.GetProjectGroupFileName;
 
   if ProjectName <> '' then
     FBaseProjectDir := IncludeTrailingPathDelimiter(ExtractFilePath(ProjectName));
@@ -1438,9 +1438,9 @@ begin
   Settings := TBackupProjectExpert.GetSettings;
   Settings.LoadForm('Window', Self, [fsSize]);
   if FCurrentBackupScope = bsActiveProject then
-    fn := ChangeFileExt(ExtractFileName(GxOtaGetCurrentProjectFileName), '')
+    fn := ChangeFileExt(ExtractFileName(Ota.GetCurrentProjectFileName), '')
   else
-    fn := ChangeFileExt(ExtractFileName(GxOtaGetProjectGroupFileName), '');
+    fn := ChangeFileExt(ExtractFileName(Ota.GetProjectGroupFileName), '');
   FLastZipFile := Settings.ReadString('LastZipDir', '');
   if FLastZipFile <> '' then
     FLastZipFile := IncludeTrailingPathDelimiter(FLastZipFile) + fn

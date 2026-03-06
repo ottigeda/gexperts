@@ -369,7 +369,7 @@ var
 begin
   inherited Create(_Memo);
 
-  ProjectFile := GxOtaGetCurrentProjectFileName(True);
+  ProjectFile := Ota.GetCurrentProjectFileName(True);
   if ProjectFile <> '' then
     FProjectDir := ExtractFilePath(ProjectFile)
   else

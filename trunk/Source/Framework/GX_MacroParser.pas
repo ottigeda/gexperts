@@ -708,7 +708,7 @@ begin
   // Project macros
   if StVar = '%PROJECTGROUPNAME%' then
   begin
-    Result := ExtractFileName(GxOtaGetProjectGroupFileName);
+    Result := ExtractFileName(Ota.GetProjectGroupFileName);
      if Result = '' then
        Result := SUnknownNameResult
      else
@@ -716,14 +716,14 @@ begin
   end;
   if StVar = '%PROJECTGROUPDIR%' then
   begin
-    Result := ExtractFilePath(GxOtaGetProjectGroupFileName);
+    Result := ExtractFilePath(Ota.GetProjectGroupFileName);
     if Result = '' then
       Result := SUnknownNameResult;
   end;
   if StVar = '%PROJECTDIR%' then
-    Result := ExtractFilePath(GxOtaGetCurrentProjectFileName)
+    Result := ExtractFilePath(Ota.GetCurrentProjectFileName)
   else if StVar = '%PROJECTNAME%' then
-    Result := GxOtaGetCurrentProjectName
+    Result := Ota.GetCurrentProjectName
   // Date & time macros
   else if StVar = '%DATETIME%' then
     Result := DateTimetoStr(Date + Time)

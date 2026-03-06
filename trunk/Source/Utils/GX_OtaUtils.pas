@@ -344,6 +344,64 @@ type
     class function HaveCSharpSupport: Boolean;
 
     /// <summary>
+    /// Returns the currently active project, or nil if there is none.
+    /// @returns the active IOTAProject or nil </summary>
+    class function GetCurrentProject: IOTAProject;
+    /// <summary>
+    /// Tries to get the currently active project.
+    /// @param _Project receives the project interface if available
+    /// @returns True if a project was found </summary>
+    class function TryGetCurrentProject(out _Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if there is a currently active project.
+    /// @returns True if a current project exists </summary>
+    class function HaveCurrentProject: Boolean;
+    /// <summary>
+    /// Returns the file name for the given project.
+    /// @param Project the project to query
+    /// @param NormalizeBdsProj if True, converts .bdsproj/.dproj to the
+    ///                         actual source file (.dpr/.dpk)
+    /// @returns the project file name </summary>
+    class function GetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
+    /// <summary>
+    /// Returns the file name of the current project.
+    /// @param NormalizeBdsProj if True, converts .bdsproj/.dproj to the
+    ///                         actual source file (.dpr/.dpk)
+    /// @returns the project file name, or empty if no project </summary>
+    class function GetCurrentProjectFileName(NormalizeBdsProj: Boolean = False): string;
+    /// <summary>
+    /// Returns the name of the current project (without path or extension).
+    /// @returns the project name, or empty if no project </summary>
+    class function GetCurrentProjectName: string;
+    /// <summary>
+    /// Returns the output directory for the given project.
+    /// @param Project the project to query
+    /// @returns the output directory path with trailing separator </summary>
+    class function GetProjectOutputDir(Project: IOTAProject): string;
+    /// <summary>
+    /// Tries to determine the .map file name for the current project.
+    /// @param MapFile receives the map file path if successful
+    /// @returns True if a map file name could be determined </summary>
+    class function GetCurrentMapFileName(out MapFile: string): Boolean;
+    /// <summary>
+    /// Returns the project group interface, or nil if none.
+    /// @returns the IOTAProjectGroup or nil </summary>
+    class function GetProjectGroup: IOTAProjectGroup;
+    /// <summary>
+    /// Returns the file name of the project group.
+    /// @returns the project group file name, or empty if none </summary>
+    class function GetProjectGroupFileName: string;
+    /// <summary>
+    /// Fills a string list with the file names of all modules in the project.
+    /// @param Project the project to query
+    /// @param Files receives the file names (cleared first) </summary>
+    class procedure GetProjectFileNames(Project: IOTAProject; Files: TStrings);
+    /// <summary>
+    /// Returns the file name of the currently focused module.
+    /// @returns the module file name, or empty if no module is active </summary>
+    class function GetFileNameOfCurrentModule: string;
+
+    /// <summary>
     /// Returns the IOTAServices interface for the IDE.
     /// @returns the IDE services interface
     /// @raises Exception if IOTAServices is not available </summary>
@@ -742,58 +800,31 @@ function GxOtaFocusCurrentIDEEditControl: Boolean;
 
 // Returns reference to currently active project;
 // returns nil if there is no (active) project.
-function GxOtaGetCurrentProject: IOTAProject;
-function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean;
+function GxOtaGetCurrentProject: IOTAProject; deprecated; // use Ota.GetCurrentProject
+function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean; deprecated; // use Ota.TryGetCurrentProject
 
 // See if there is an active project
-function GxOtaHaveCurrentProject: Boolean;
+function GxOtaHaveCurrentProject: Boolean; deprecated; // use Ota.HaveCurrentProject
 
-///<summary>
-/// Get the file name of the given project
-/// @parram Project is the project whose file name is requested
-/// @param NormalizeBdsProj = True means to get the the dpr instead of the bdsproj/dproj for Delphi projects
-/// @returns an empty string if Project is nil, otherwise the full file name of the project </summary>
-function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
+function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string; deprecated; // use Ota.GetProjectFileName
 
-///<summary>
-/// Get the file name of the current project
-/// @param NormalizeBdsProj = True means to get the the dpr instead of the bdsproj/dproj for Delphi projects
-/// @returns the full file name of the project or an empty string if there is no current project </summary>
-function GxOtaGetCurrentProjectFileName(NormalizeBdsProj: Boolean = False): string;
+function GxOtaGetCurrentProjectFileName(NormalizeBdsProj: Boolean = False): string; deprecated; // use Ota.GetCurrentProjectFileName
 
-///<summary>
-/// Returns the name of the currently active project; returns
-/// an empty string if there is no (active) project.
-/// The name of a project is the project's file name without
-/// a file extension and without path information. </summary>
-function GxOtaGetCurrentProjectName: string;
+function GxOtaGetCurrentProjectName: string; deprecated; // use Ota.GetCurrentProjectName
 
-// Returns the output directory of the given project
-// taken from http://cc.embarcadero.com/item/19823
-// (Ondrey Kelle)
-function GxOtaGetProjectOutputDir(Project: IOTAProject): string;
+function GxOtaGetProjectOutputDir(Project: IOTAProject): string; deprecated; // use Ota.GetProjectOutputDir
 
-///<summary>
-/// Tries to find the current project's map file
-/// @param MapFile will contain full path name of the map file, only valid if result is true
-/// @returns true, if a current project exists and the map file could be found </summary>
-function GxOtaGetCurrentMapFileName(out MapFile: string): Boolean;
+function GxOtaGetCurrentMapFileName(out MapFile: string): Boolean; deprecated; // use Ota.GetCurrentMapFileName
 
 // Returns reference to the IDE's project group;
 // returns Nil if there is no project group.
-function GxOtaGetProjectGroup: IOTAProjectGroup;
+function GxOtaGetProjectGroup: IOTAProjectGroup; deprecated; // use Ota.GetProjectGroup
 
-// Returns the full path and file name of IDE's project group.
-// Returns an empty string if there is no project group.
-function GxOtaGetProjectGroupFileName: string;
+function GxOtaGetProjectGroupFileName: string; deprecated; // use Ota.GetProjectGroupFileName
 
-// Get the list of files in the project
-procedure GxOtaGetProjectFileNames(Project: IOTAProject; Files: TStrings);
+procedure GxOtaGetProjectFileNames(Project: IOTAProject; Files: TStrings); deprecated; // use Ota.GetProjectFileNames
 
-// Returns the file name of the currently "active"
-// module; if no module is active, an empty
-// string is returned.
-function GxOtaGetFileNameOfCurrentModule: string;
+function GxOtaGetFileNameOfCurrentModule: string; deprecated; // use Ota.GetFileNameOfCurrentModule
 
 ///<summary>
 /// Tries to get the options of the given or the active project
@@ -1688,7 +1719,7 @@ end;
 
 class function Ota.GetCurrentProjectPersonality: string;
 begin
-  Result := Ota.GetProjectPersonality(GxOtaGetCurrentProject);
+  Result := Ota.GetProjectPersonality(Ota.GetCurrentProject);
 end;
 
 function GxOtaProjectIsDotNet(Project: IOTAProject): Boolean;
@@ -1758,7 +1789,7 @@ end;
 
 class function Ota.CurrentProjectIsDotNet: Boolean;
 begin
-  Result := Ota.ProjectIsDotNet(GxOtaGetCurrentProject);
+  Result := Ota.ProjectIsDotNet(Ota.GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsDelphiDotNet: Boolean;
@@ -1768,7 +1799,7 @@ end;
 
 class function Ota.CurrentProjectIsDelphiDotNet: Boolean;
 begin
-  Result := Ota.ProjectIsDelphiDotNet(GxOtaGetCurrentProject);
+  Result := Ota.ProjectIsDelphiDotNet(Ota.GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsNativeCpp: Boolean;
@@ -1778,7 +1809,7 @@ end;
 
 class function Ota.CurrentProjectIsNativeCpp: Boolean;
 begin
-  Result := Ota.ProjectIsNativeCpp(GxOtaGetCurrentProject);
+  Result := Ota.ProjectIsNativeCpp(Ota.GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsNativeDelphi: Boolean;
@@ -1788,7 +1819,7 @@ end;
 
 class function Ota.CurrentProjectIsNativeDelphi: Boolean;
 begin
-  Result := Ota.ProjectIsNativeDelphi(GxOtaGetCurrentProject);
+  Result := Ota.ProjectIsNativeDelphi(Ota.GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsEitherDelphi: Boolean;
@@ -1798,7 +1829,7 @@ end;
 
 class function Ota.CurrentProjectIsEitherDelphi: Boolean;
 begin
-  Result := Ota.ProjectIsEitherDelphi(GxOtaGetCurrentProject);
+  Result := Ota.ProjectIsEitherDelphi(Ota.GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsCSharp: Boolean;
@@ -1808,7 +1839,7 @@ end;
 
 class function Ota.CurrentProjectIsCSharp: Boolean;
 begin
-  Result := Ota.ProjectIsCSharp(GxOtaGetCurrentProject);
+  Result := Ota.ProjectIsCSharp(Ota.GetCurrentProject);
 end;
 
 {$IFDEF GX_VER160_up}
@@ -1946,6 +1977,11 @@ begin
 end;
 
 function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
+begin
+  Result := Ota.GetProjectFileName(Project, NormalizeBdsProj);
+end;
+
+class function Ota.GetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
 
   function SearchProjectSourceViaModule(var AProjectFileName: string): Boolean;
   var
@@ -2005,10 +2041,20 @@ end;
 
 function GxOtaGetCurrentProjectFileName(NormalizeBdsProj: Boolean): string;
 begin
-  Result := GxOtaGetProjectFileName(GxOtaGetCurrentProject, NormalizeBdsProj);
+  Result := Ota.GetCurrentProjectFileName(NormalizeBdsProj);
+end;
+
+class function Ota.GetCurrentProjectFileName(NormalizeBdsProj: Boolean): string;
+begin
+  Result := Ota.GetProjectFileName(Ota.GetCurrentProject, NormalizeBdsProj);
 end;
 
 function GxOtaGetProjectGroup: IOTAProjectGroup;
+begin
+  Result := Ota.GetProjectGroup;
+end;
+
+class function Ota.GetProjectGroup: IOTAProjectGroup;
 var
   IModuleServices: IOTAModuleServices;
   IModule: IOTAModule;
@@ -2029,6 +2075,11 @@ begin
 end;
 
 function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean;
+begin
+  Result := Ota.TryGetCurrentProject(_Project);
+end;
+
+class function Ota.TryGetCurrentProject(out _Project: IOTAProject): Boolean;
 var
   IProjectGroup: IOTAProjectGroup;
   IModuleServices: IOTAModuleServices;
@@ -2037,7 +2088,7 @@ var
 begin
   Result := False;
 
-  IProjectGroup := GxOtaGetProjectGroup;
+  IProjectGroup := Ota.GetProjectGroup;
   if not Assigned(IProjectGroup) then
   begin
     Assert(Assigned(BorlandIDEServices));
@@ -2066,22 +2117,37 @@ end;
 
 function GxOtaGetCurrentProject: IOTAProject;
 begin
-  if not GxOtaTryGetCurrentProject(Result) then
+  Result := Ota.GetCurrentProject;
+end;
+
+class function Ota.GetCurrentProject: IOTAProject;
+begin
+  if not Ota.TryGetCurrentProject(Result) then
     Result := nil;
 end;
 
 function GxOtaHaveCurrentProject: Boolean;
 begin
-  Result := GxOtaGetCurrentProject <> nil;
+  Result := Ota.HaveCurrentProject;
+end;
+
+class function Ota.HaveCurrentProject: Boolean;
+begin
+  Result := Ota.GetCurrentProject <> nil;
 end;
 
 function GxOtaGetCurrentProjectName: string;
+begin
+  Result := Ota.GetCurrentProjectName;
+end;
+
+class function Ota.GetCurrentProjectName: string;
 var
   IProject: IOTAProject;
 begin
   Result := '';
 
-  IProject := GxOtaGetCurrentProject;
+  IProject := Ota.GetCurrentProject;
   if Assigned(IProject) then
   begin
     Result := ExtractFileName(IProject.FileName);
@@ -2090,6 +2156,11 @@ begin
 end;
 
 function GxOtaGetProjectOutputDir(Project: IOTAProject): string;
+begin
+  Result := Ota.GetProjectOutputDir(Project);
+end;
+
+class function Ota.GetProjectOutputDir(Project: IOTAProject): string;
 // taken from http://cc.embarcadero.com/item/19823
 // (Ondrey Kelle)
 begin
@@ -2145,7 +2216,7 @@ constructor TPathProcessor.Create(const _Prefix: string; _Project: IOTAProject =
 {$IFDEF GX_VER230_up}
   begin
     if _Project = nil then
-      _Project := GxOtaGetCurrentProject;
+      _Project := Ota.GetCurrentProject;
     if _Project <> nil then begin
       FPlatformName := _Project.CurrentPlatform;
       FConfigName := _Project.CurrentConfiguration;
@@ -2270,6 +2341,11 @@ begin
 end;
 
 function GxOtaGetCurrentMapFileName(out MapFile: string): boolean;
+begin
+  Result := Ota.GetCurrentMapFileName(MapFile);
+end;
+
+class function Ota.GetCurrentMapFileName(out MapFile: string): boolean;
 type
   TExeType = (etExe, etDll, etBpl);
 var
@@ -2289,7 +2365,7 @@ var
 begin
   Result := False;
   MapFile := '';
-  Project := GxOtaGetCurrentProject;
+  Project := Ota.GetCurrentProject;
   if not Assigned(Project) then begin
     // no project -> no .map file
     Exit; //==>
@@ -2302,8 +2378,8 @@ begin
 {$ELSE}
   // Unfortunately Delphi 6 and 7 don't supply the TargetName property, so we try
   // to generate the file name ourselves.
-  OutputDir := GxOtaGetProjectOutputDir(Project);
-  ProjectFilename := GxOtaGetProjectFileName(Project, True);
+  OutputDir := Ota.GetProjectOutputDir(Project);
+  ProjectFilename := Ota.GetProjectFileName(Project, True);
 
   // There seems to be no way to get the actual Target File Extension (from the project options),
   // so we support only the most common ones here. Most likely this will also work
@@ -2353,6 +2429,11 @@ begin
 end;
 
 function GxOtaGetProjectGroupFileName: string;
+begin
+  Result := Ota.GetProjectGroupFileName;
+end;
+
+class function Ota.GetProjectGroupFileName: string;
 var
   IModuleServices: IOTAModuleServices;
   IModule: IOTAModule;
@@ -2374,6 +2455,11 @@ begin
 end;
 
 procedure GxOtaGetProjectFileNames(Project: IOTAProject; Files: TStrings);
+begin
+  Ota.GetProjectFileNames(Project, Files);
+end;
+
+class procedure Ota.GetProjectFileNames(Project: IOTAProject; Files: TStrings);
 var
   i: Integer;
 begin
@@ -2387,6 +2473,11 @@ begin
 end;
 
 function GxOtaGetFileNameOfCurrentModule: string;
+begin
+  Result := Ota.GetFileNameOfCurrentModule;
+end;
+
+class function Ota.GetFileNameOfCurrentModule: string;
 var
   Module: IOTAModule;
 begin
@@ -2399,7 +2490,7 @@ end;
 function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
 begin
   if not Assigned(_Project) then
-    _Project := GxOtaGetCurrentProject;
+    _Project := Ota.GetCurrentProject;
   if Assigned(_Project) then
     _ProjectOptions := _Project.GetProjectOptions;
   Result := Assigned(_ProjectOptions);
@@ -3807,7 +3898,7 @@ begin
   Result := '';
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentPlatform;
 {$ENDIF GX_VER230_up}
@@ -3818,7 +3909,7 @@ begin
   Result := '';
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentConfiguration;
 {$ENDIF GX_VER230_up}
@@ -3828,7 +3919,7 @@ function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string;
 begin
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
   Result := Project.FrameworkType;
 {$ELSE ~ GX_VER230_up}
   Result := '';
@@ -3892,7 +3983,7 @@ begin
   SearchPath.Clear;
   DefaultNamespace := '';
   if Project = nil then
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
   if Assigned(Project) then begin
     ProjectName := ExtractFilename(Project.FileName);
     // remove .dpr/dproj
@@ -3937,7 +4028,7 @@ begin
   Assert(Assigned(Paths));
   Paths.Clear;
   if Project = nil then
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
   if Assigned(Project) then
   begin
     ProjectDir := ExtractFileDir(Project.FileName);
@@ -4030,7 +4121,7 @@ begin
       LocalList.Assign(AdditionalPaths);
       if DoProcessing then begin
         if not Assigned(Project) then
-          Project := GxOtaGetCurrentProject;
+          Project := Ota.GetCurrentProject;
         if Assigned(Project) then begin
           ProjectDir := ExtractFileDir(Project.FileName);
           PlatformName := GxOtaGetProjectPlatform(Project);
@@ -4110,10 +4201,10 @@ begin
 
   // Add path of the current project
   if not Assigned(Project) then
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
 
   if Assigned(Project) then
-    AddAPath(GetPath(GxOtaGetProjectFileName(Project)));
+    AddAPath(GetPath(Ota.GetProjectFileName(Project)));
 
   // Add library search paths
   GxOtaGetEffectiveLibraryPath(Paths);
@@ -4133,13 +4224,13 @@ begin
   end;
 
   // Add current file path
-  AddAPath(GetPath(GxOtaGetFileNameOfCurrentModule));
+  AddAPath(GetPath(Ota.GetFileNameOfCurrentModule));
 
   // Add path of the current source file (probably same as first one)
   AddAPath(GetPath(GxOtaGetCurrentSourceFile));
 
   // Add path of the project group
-  AddAPath(GetPath(GxOtaGetProjectGroupFileName));
+  AddAPath(GetPath(Ota.GetProjectGroupFileName));
 
   // Add paths to VCL source (since we are smart)
   AddVCLPaths;
@@ -6614,7 +6705,7 @@ var
 begin
   List := TStringList.Create;
   try
-    Project := GxOtaGetCurrentProject;
+    Project := Ota.GetCurrentProject;
     if not Assigned(Project) then
     begin
       ModuleServices := BorlandIDEServices as IOTAModuleServices;

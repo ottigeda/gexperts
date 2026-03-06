@@ -518,7 +518,7 @@ var
 {$ENDIF}
 begin
   ModalResult := mrOk;
-  if not GxOtaTryGetCurrentProject(Project) then
+  if not Ota.TryGetCurrentProject(Project) then
     Exit; //==>
 
   if Assigned(FActiveItem) then begin
@@ -645,7 +645,7 @@ var
   ActiveCfg: IOTABuildConfiguration;
   BaseConfig: IOTABuildConfiguration;
 begin
-  if GxOtaTryGetCurrentProject(Project) then begin
+  if Ota.TryGetCurrentProject(Project) then begin
     ProjectOptions := Project.ProjectOptions;
     // IOTAProjectOptionsConfigurations is only declared for Delphi 2009 and up even though build
     // configurations were already introduced in Delphi 2007. I tried to simply copy the interface

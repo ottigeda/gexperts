@@ -494,7 +494,7 @@ begin
   // loaded, to speed up scanning when the dialog is shown.
   FProjectChangedNotifier := TFileNotifier.Create(HandleFileNotification);
   FProjectChangedNotifier.AddNotifierToIDE;
-  HandleFileNotification(FProjectChangedNotifier, ofnActiveProjectChanged, GxOtaGetCurrentProjectFileName, Cancel);
+  HandleFileNotification(FProjectChangedNotifier, ofnActiveProjectChanged, Ota.GetCurrentProjectFileName, Cancel);
 end;
 
 function TUsesClauseMgrExpert.FindAction(out _Action: TBasicAction): Boolean;
@@ -1113,7 +1113,7 @@ begin
   try
     FProjectUnits.Clear;
     if not FUsesExpert.FReadMap or not TryGetMapFileUnits then begin
-      IProject := GxOtaGetCurrentProject;
+      IProject := Ota.GetCurrentProject;
       if not Assigned(IProject) then
         Exit;
       for i := 0 to IProject.GetModuleCount - 1 do begin
@@ -1141,7 +1141,7 @@ var
   Reader: TMapFileReader;
   MapFile: string;
 begin
-  Result := GxOtaGetCurrentMapFileName(MapFile);
+  Result := Ota.GetCurrentMapFileName(MapFile);
   try
     if Result then begin
       Reader := TMapFileReader.Create(MapFile);
@@ -2293,7 +2293,7 @@ begin
 {$ENDIF D+}
     for i := 0 to PathFiles.Count - 1 do
       AddPathUnit(PathFiles[i]);
-    GxOtaGetProjectFileNames(GxOtaGetCurrentProject, PathFiles);
+    Ota.GetProjectFileNames(Ota.GetCurrentProject, PathFiles);
     for i := 0 to PathFiles.Count - 1 do
     begin
       FileName := PathFiles[i];

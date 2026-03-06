@@ -373,7 +373,7 @@ begin
   ClassList := Collection as TClassList;
   FProjectCount := 0;
 
-  CurrentProject := GxOtaGetCurrentProject;
+  CurrentProject := Ota.GetCurrentProject;
   Assert(Assigned(CurrentProject));
 
   ModuleFileCount := CurrentProject.GetModuleCount;

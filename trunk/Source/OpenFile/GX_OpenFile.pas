@@ -582,7 +582,7 @@ var
   CurrentProjectFiles, FileExtensions: TStringList;
   FileName: string;
 begin
-  Project := GxOtaGetCurrentProject;
+  Project := Ota.GetCurrentProject;
   if Assigned(Project) then
   begin
     FileExtensions := nil;
@@ -592,7 +592,7 @@ begin
       // This will allow semi-colon separated lists at the user GUI level
       // D5 has no way to separate ; into TStrings.
       FileExtensions.CommaText := StringReplace(FFileExtensions, ';', ',', [rfReplaceAll]);
-      GxOtaGetProjectFileNames(Project, CurrentProjectFiles);
+      Ota.GetProjectFileNames(Project, CurrentProjectFiles);
       for i := 0 to CurrentProjectFiles.Count - 1 do
         for ExtensionIndex := 0 to FileExtensions.Count - 1 do
         begin

@@ -198,7 +198,7 @@ begin
   if NotifyCode = ofnActiveProjectChanged then
   begin
     // Don't refresh if the project hasn't actually changed
-    if GxOtaGetCurrentProjectFileName = fmDepend.FLastProject then
+    if Ota.GetCurrentProjectFileName = fmDepend.FLastProject then
       Exit;
 
     fmDepend.ClearFileList;
@@ -249,7 +249,7 @@ var
 begin
   LFileName := FileName;
   Result := True;
-  if LFileName = GxOtaGetCurrentProjectFileName then
+  if LFileName = Ota.GetCurrentProjectFileName then
     Exit;
 
   UpdateFormActions;
@@ -356,7 +356,7 @@ var
   ModuleInfo: IOTAModuleInfo;
   ContinueProcessing: Boolean;
 begin
-  CurrentProject := GxOtaGetCurrentProject;
+  CurrentProject := Ota.GetCurrentProject;
   if not Assigned(CurrentProject) then
     Exit; //==>
 
@@ -401,7 +401,7 @@ begin
     StatusBar.SimpleText := SParsingUnits;
     StatusBar.Repaint;
 
-    FRootNode := tvUnits.Items.Add(nil, ExtractFileName(GxOtaGetCurrentProjectFileName));
+    FRootNode := tvUnits.Items.Add(nil, ExtractFileName(Ota.GetCurrentProjectFileName));
 
     FRootNode.ImageIndex := ImageIndexWindows;
     FRootNode.SelectedIndex := ImageIndexWindows;
@@ -411,7 +411,7 @@ begin
     FRootNode.Expand(False);
     tvUnits.AlphaSort;
 
-    FLastProject := GxOtaGetCurrentProjectFileName;
+    FLastProject := Ota.GetCurrentProjectFileName;
   finally
     tvUnits.Items.EndUpdate;
 
@@ -1164,7 +1164,7 @@ end;
 
 procedure TProjectDependenciesExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaHaveCurrentProject;
+  Action.Enabled := Ota.HaveCurrentProject;
 end;
 
 initialization

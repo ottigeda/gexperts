@@ -411,7 +411,7 @@ var
             end
             else
             begin
-              ProjectDir := ExtractFileDir(GxOtaGetCurrentProjectFileName);
+              ProjectDir := ExtractFileDir(Ota.GetCurrentProjectFileName);
               if ProjectDir <> '' then
               begin
                 Directory := AddSlash(ProjectDir) + Directory;
@@ -433,7 +433,7 @@ var
   ModuleInfo: IOTAModuleInfo;
   TempPathString: string;
 begin
-  Project := GxOtaGetCurrentProject;
+  Project := Ota.GetCurrentProject;
   if not Assigned(Project) then
     Exit;
 

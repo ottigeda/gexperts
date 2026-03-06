@@ -292,7 +292,7 @@ end;
 
 procedure TProjOptionSetsExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaHaveCurrentProject;
+  Action.Enabled := Ota.HaveCurrentProject;
 end;
 
 function TProjOptionSetsExpert.HasConfigOptions: Boolean;
