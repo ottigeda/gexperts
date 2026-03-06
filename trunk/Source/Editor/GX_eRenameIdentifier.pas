@@ -5,7 +5,7 @@ unit GX_eRenameIdentifier;
 interface
 
 uses
-  Classes, StdCtrls, Controls, Forms, ExtCtrls, GX_BaseForm,
+  Classes, Graphics, StdCtrls, Controls, Forms, ExtCtrls, GX_BaseForm,
   GX_PascalTokenAnalyzer, GX_RenameIdentifier;
 
 type
@@ -33,14 +33,18 @@ type
     procedure edtNewNameChange(Sender: TObject);
     procedure ValidateInput;
     procedure ConflictTimerFired(Sender: TObject);
-  public
-    constructor Create(_Owner: TComponent); override;
-    destructor Destroy; override;
     procedure SetInfo(const _OldName: string; const _IdentInfo: TIdentifierInfo;
       _OccurrenceCount: Integer);
     procedure SetSource(const _Source: string; _CursorPos: Integer);
     procedure SetIsComponent(Value: Boolean);
     function GetNewName: string;
+  public
+    constructor Create(_Owner: TComponent); override;
+    destructor Destroy; override;
+    class function Execute(_bmp: Graphics.TBitmap; const _OldName: string;
+      const _IdentInfo: TIdentifierInfo; _OccurrenceCount: Integer;
+      const _Source: string; _CursorPos: Integer; _IsComponent: Boolean;
+      out _NewName: string): Boolean; reintroduce;
   end;
 
 implementation
@@ -128,6 +132,29 @@ end;
 function TfmRenameIdentifier.GetNewName: string;
 begin
   Result := Trim(edtNewName.Text);
+end;
+
+class function TfmRenameIdentifier.Execute(_bmp: Graphics.TBitmap;
+  const _OldName: string; const _IdentInfo: TIdentifierInfo;
+  _OccurrenceCount: Integer; const _Source: string; _CursorPos: Integer;
+  _IsComponent: Boolean; out _NewName: string): Boolean;
+var
+  Dlg: TfmRenameIdentifier;
+begin
+  Result := False;
+  Dlg := Self.Create(nil);
+  try
+    ConvertBitmapToIcon(_bmp, Dlg.Icon);
+    Dlg.SetInfo(_OldName, _IdentInfo, _OccurrenceCount);
+    Dlg.SetSource(_Source, _CursorPos);
+    Dlg.SetIsComponent(_IsComponent);
+    if Dlg.ShowModal <> mrOk then
+      Exit;
+    _NewName := Dlg.GetNewName;
+    Result := True;
+  finally
+    FreeAndNil(Dlg);
+  end;
 end;
 
 procedure TfmRenameIdentifier.edtNewNameChange(Sender: TObject);
@@ -227,7 +254,6 @@ var
   RenamedSource: string;
   OccurrenceCount: Integer;
   IdentInfo: TIdentifierInfo;
-  Dlg: TfmRenameIdentifier;
   NewName: string;
   Step: string;
   FormEditor: IOTAFormEditor;
@@ -281,18 +307,9 @@ begin
     end;
 
     Step := 'ShowDialog';
-    Dlg := TfmRenameIdentifier.Create(nil);
-    try
-      SetFormIcon(Dlg);
-      Dlg.SetInfo(OldName, IdentInfo, OccurrenceCount);
-      Dlg.SetSource(Src, CursorCharIdx);
-      Dlg.SetIsComponent(IsComponent);
-      if Dlg.ShowModal <> mrOk then
-        Exit;
-      NewName := Dlg.GetNewName;
-    finally
-      FreeAndNil(Dlg);
-    end;
+    if not TfmRenameIdentifier.Execute(GetBitmap, OldName, IdentInfo,
+      OccurrenceCount, Src, CursorCharIdx, IsComponent, NewName) then
+      Exit;
 
     if IsComponent then begin
       // Component path: rename in DFM first, then update body references
