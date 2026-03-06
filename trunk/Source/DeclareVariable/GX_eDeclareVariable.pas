@@ -35,6 +35,7 @@ type
     procedure UpdateInsertAtCombo;
     procedure UpdatePropertyFields;
     procedure ValidateInput;
+    procedure UpdateLayout;
     function GetSelectedKind: TDeclKind;
   public
     constructor Create(_Owner: TComponent); override;
@@ -437,6 +438,76 @@ begin
   edtType.OnChange := edtTypeChange;
 end;
 
+procedure TfmDeclareVariable.UpdateLayout;
+const
+  Margin = 16;
+  RowGap = 8;
+  SectionGap = 12;
+  ButtonHeight = 25;
+  ButtonGap = 12;
+var
+  Y: Integer;
+begin
+  // Position all rows top-down based on visibility
+  Y := Margin;
+
+  // Row 1: Identifier
+  lblIdentifier.Top := Y;
+  lblIdentifierValue.Top := Y;
+  Y := Y + lblIdentifierValue.Height + RowGap;
+
+  // Row 2: Existing declaration warning (conditional)
+  if lblExisting.Visible then begin
+    lblExisting.Top := Y;
+    Y := Y + lblExisting.Height + RowGap;
+  end;
+
+  // Row 3: Declare as (radio buttons)
+  lblDeclareAs.Top := Y;
+  rbLocalVar.Top := Y - 1;
+  rbField.Top := Y - 1;
+  rbProperty.Top := Y - 1;
+  Y := Y + rbLocalVar.Height + SectionGap;
+
+  // Row 4: Type
+  lblType.Top := Y + 3;
+  edtType.Top := Y;
+  Y := Y + edtType.Height + RowGap;
+
+  // Row 5: Insert at
+  lblInsertAt.Top := Y + 3;
+  cmbInsertAt.Top := Y;
+  Y := Y + cmbInsertAt.Height + RowGap;
+
+  // Row 6-7: Property read/write specifiers (conditional)
+  if lblRead.Visible then begin
+    lblRead.Top := Y + 3;
+    edtRead.Top := Y;
+    Y := Y + edtRead.Height + RowGap;
+    lblWrite.Top := Y + 3;
+    edtWrite.Top := Y;
+    Y := Y + edtWrite.Height + RowGap;
+  end;
+
+  // Warning label (conditional)
+  if lblWarning.Visible then begin
+    Y := Y + SectionGap;
+    lblWarning.Top := Y;
+    Y := Y + lblWarning.Height;
+  end;
+
+  // Buttons at bottom
+  Y := Y + ButtonGap;
+  // Temporarily remove bottom anchors so we can resize without fighting them
+  btnOK.Anchors := [akRight, akTop];
+  btnCancel.Anchors := [akRight, akTop];
+  btnOK.Top := Y;
+  btnCancel.Top := Y;
+  ClientHeight := Y + ButtonHeight + Margin;
+  btnOK.Anchors := [akRight, akBottom];
+  btnCancel.Anchors := [akRight, akBottom];
+end;
+
 procedure TfmDeclareVariable.SetInfo(const _Info: TDeclareInfo);
 var
   I: Integer;
@@ -455,6 +526,7 @@ begin
     lblWarning.Caption := '''' + _Info.IdentName + ''' is a reserved word';
     lblWarning.Visible := True;
     btnOK.Enabled := False;
+    UpdateLayout;
     Exit;
   end;
 
@@ -541,6 +613,7 @@ begin
     if edtWrite.Text = '' then
       edtWrite.Text := FieldName;
   end;
+  UpdateLayout;
 end;
 
 procedure TfmDeclareVariable.rbDeclKindClick(Sender: TObject);
