@@ -1082,7 +1082,7 @@ end;
 
 procedure TfmMacroTemplates.SetupTemplateMemo;
 begin
-  if RunningCPPBuilder or GxOtaCurrentProjectIsNativeCpp then
+  if RunningCPPBuilder or Ota.CurrentProjectIsNativeCpp then
     FCurrentSyntaxMode := gxpCPP
   else
     FCurrentSyntaxMode := gxpPas;

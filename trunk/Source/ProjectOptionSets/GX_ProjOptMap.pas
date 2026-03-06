@@ -2403,7 +2403,7 @@ function OptionIsAppropriateForIde(const OptionCategories: TGxOptionCategorySet)
 begin
   Result := True;
 
-  if not GxOtaHaveCPPSupport then
+  if not Ota.HaveCPPSupport then
   begin
     Result := Result and not (ocTasm in OptionCategories);
     Result := Result and not (ocTLib in OptionCategories);
@@ -2422,9 +2422,9 @@ var
   AppropriateOptions: TGxOptionCategorySet;
 begin
   AppropriateOptions := [];
-  if GxOtaHaveCPPSupport then
+  if Ota.HaveCPPSupport then
     AppropriateOptions := GxCppOptions;
-  if GxOtaHaveDelphiSupport then
+  if Ota.HaveDelphiSupport then
     AppropriateOptions := AppropriateOptions + DelphiOptions;
   if not RunningDelphi7OrGreater then
     Exclude(AppropriateOptions, ocWarnings);

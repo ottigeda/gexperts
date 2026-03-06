@@ -728,9 +728,9 @@ begin
 
   EnsureStringInList(MaskList,'*.pas;*.dpr;*.inc');
   EnsureStringInList(MaskList,'*.txt;*.html;*.htm;.rc;*.xml;*.todo;*.me');
-  if IsStandAlone or GxOtaHaveCPPSupport then
+  if IsStandAlone or Ota.HaveCPPSupport then
     EnsureStringInList(MaskList,'*.cpp;*.hpp;*.h;*.pas;*.dpr');
-  if IsStandAlone or GxOtaHaveCSharpSupport then
+  if IsStandAlone or Ota.HaveCSharpSupport then
     EnsureStringInList(MaskList,'*.cs');
 
   TempPath := RemoveSlash(ConfigInfo.VCLPath);

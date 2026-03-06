@@ -2275,7 +2275,7 @@ begin
 {$IFOPT D+}
   SendDebug('SearchPath is ready');
 {$ENDIF D+}
-  IsDotNet := GxOtaCurrentProjectIsDotNet;
+  IsDotNet := Ota.CurrentProjectIsDotNet;
   PathFiles := nil;
   PathUnits := TStringList.Create;
   try

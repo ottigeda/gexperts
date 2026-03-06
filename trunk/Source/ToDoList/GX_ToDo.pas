@@ -1166,9 +1166,9 @@ resourcestring
   SSpecifiedDirectoryDoesNotExist = 'The search directory %s does not exist';
 begin
   FileMask := '*.todo';
-  if GxOtaHaveDelphiSupport then
+  if Ota.HaveDelphiSupport then
     FileMask := FileMask + ';*.pas;*.dpr;*.inc';
-  if GxOtaHaveCPPSupport then
+  if Ota.HaveCPPSupport then
     FileMask := FileMask + ';*.cpp;*.hpp;*.h';
 
   for i := 1 to Length(FileMask) do

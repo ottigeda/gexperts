@@ -263,6 +263,87 @@ type
     class function CurrentlyEditingSource: Boolean;
 
     /// <summary>
+    /// Returns the personality identifier string for the given project.
+    /// @param Project the project to query
+    /// @returns the personality string, or empty if none </summary>
+    class function GetProjectPersonality(Project: IOTAProject): string;
+    /// <summary>
+    /// Returns the personality of the current project.
+    /// @returns the personality string, or empty if none </summary>
+    class function GetCurrentProjectPersonality: string;
+    /// <summary>
+    /// Checks if the given project targets .NET.
+    /// @param Project the project to check
+    /// @returns True if the project is Delphi.NET, C#, or VB.NET </summary>
+    class function ProjectIsDotNet(Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if the given project is Delphi for .NET.
+    /// @param Project the project to check
+    /// @returns True if the project personality is Delphi.NET </summary>
+    class function ProjectIsDelphiDotNet(Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if the given project is native C++.
+    /// @param Project the project to check
+    /// @returns True if the project personality is C++Builder </summary>
+    class function ProjectIsNativeCpp(Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if the given project is native Delphi.
+    /// @param Project the project to check
+    /// @returns True if the project personality is Delphi </summary>
+    class function ProjectIsNativeDelphi(Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if the given project is either native Delphi or Delphi.NET.
+    /// @param Project the project to check
+    /// @returns True if the project personality is Delphi or Delphi.NET </summary>
+    class function ProjectIsEitherDelphi(Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if the given project is C#.
+    /// @param Project the project to check
+    /// @returns True if the project personality is C# </summary>
+    class function ProjectIsCSharp(Project: IOTAProject): Boolean;
+    /// <summary>
+    /// Checks if the current project targets .NET.
+    /// @returns True if the current project is .NET </summary>
+    class function CurrentProjectIsDotNet: Boolean;
+    /// <summary>
+    /// Checks if the current project is Delphi for .NET.
+    /// @returns True if the current project personality is Delphi.NET </summary>
+    class function CurrentProjectIsDelphiDotNet: Boolean;
+    /// <summary>
+    /// Checks if the current project is native C++.
+    /// @returns True if the current project personality is C++Builder </summary>
+    class function CurrentProjectIsNativeCpp: Boolean;
+    /// <summary>
+    /// Checks if the current project is native Delphi.
+    /// @returns True if the current project personality is Delphi </summary>
+    class function CurrentProjectIsNativeDelphi: Boolean;
+    /// <summary>
+    /// Checks if the current project is either native Delphi or Delphi.NET.
+    /// @returns True if the current project personality is Delphi or Delphi.NET </summary>
+    class function CurrentProjectIsEitherDelphi: Boolean;
+    /// <summary>
+    /// Checks if the current project is C#.
+    /// @returns True if the current project personality is C# </summary>
+    class function CurrentProjectIsCSharp: Boolean;
+    /// <summary>
+    /// Checks if the IDE supports a given personality.
+    /// @param Personality the personality string to check
+    /// @returns True if the IDE supports the given personality </summary>
+    class function IdeSupportsPersonality(const Personality: string): Boolean;
+    /// <summary>
+    /// Checks if the IDE has C++ support.
+    /// @returns True if C++Builder personality is available </summary>
+    class function HaveCPPSupport: Boolean;
+    /// <summary>
+    /// Checks if the IDE has Delphi support.
+    /// @returns True if Delphi or Delphi.NET personality is available </summary>
+    class function HaveDelphiSupport: Boolean;
+    /// <summary>
+    /// Checks if the IDE has C# support.
+    /// @returns True if C# personality is available </summary>
+    class function HaveCSharpSupport: Boolean;
+
+    /// <summary>
     /// Returns the IOTAServices interface for the IDE.
     /// @returns the IDE services interface
     /// @raises Exception if IOTAServices is not available </summary>
@@ -622,29 +703,29 @@ function GxOtaActiveDesignerIsNFM: Boolean; deprecated; // use Ota.ActiveDesigne
 function GxOtaActiveDesignerIsFMX: Boolean; deprecated; // use Ota.ActiveDesignerIsFMX
 
 // Get the personality identifier string for the project, or blank for none
-function GxOtaGetProjectPersonality(Project: IOTAProject): string;
-function GxOtaGetCurrentProjectPersonality: string;
+function GxOtaGetProjectPersonality(Project: IOTAProject): string; deprecated; // use Ota.GetProjectPersonality
+function GxOtaGetCurrentProjectPersonality: string; deprecated; // use Ota.GetCurrentProjectPersonality
 
 // See if a project is of a specific personality
-function GxOtaProjectIsDotNet(Project: IOTAProject): Boolean;
-function GxOtaProjectIsDelphiDotNet(Project: IOTAProject): Boolean;
-function GxOtaProjectIsNativeCpp(Project: IOTAProject): Boolean;
-function GxOtaProjectIsNativeDelphi(Project: IOTAProject): Boolean;
-function GxOtaProjectIsEitherDelphi(Project: IOTAProject): Boolean;
-function GxOtaProjectIsCSharp(Project: IOTAProject): Boolean;
+function GxOtaProjectIsDotNet(Project: IOTAProject): Boolean; deprecated; // use Ota.ProjectIsDotNet
+function GxOtaProjectIsDelphiDotNet(Project: IOTAProject): Boolean; deprecated; // use Ota.ProjectIsDelphiDotNet
+function GxOtaProjectIsNativeCpp(Project: IOTAProject): Boolean; deprecated; // use Ota.ProjectIsNativeCpp
+function GxOtaProjectIsNativeDelphi(Project: IOTAProject): Boolean; deprecated; // use Ota.ProjectIsNativeDelphi
+function GxOtaProjectIsEitherDelphi(Project: IOTAProject): Boolean; deprecated; // use Ota.ProjectIsEitherDelphi
+function GxOtaProjectIsCSharp(Project: IOTAProject): Boolean; deprecated; // use Ota.ProjectIsCSharp
 // See if the current project is of a specific personality
-function GxOtaCurrentProjectIsDotNet: Boolean;
-function GxOtaCurrentProjectIsDelphiDotNet: Boolean;
-function GxOtaCurrentProjectIsNativeCpp: Boolean;
-function GxOtaCurrentProjectIsNativeDelphi: Boolean;
-function GxOtaCurrentProjectIsEitherDelphi: Boolean;
-function GxOtaCurrentProjectIsCSharp: Boolean;
+function GxOtaCurrentProjectIsDotNet: Boolean; deprecated; // use Ota.CurrentProjectIsDotNet
+function GxOtaCurrentProjectIsDelphiDotNet: Boolean; deprecated; // use Ota.CurrentProjectIsDelphiDotNet
+function GxOtaCurrentProjectIsNativeCpp: Boolean; deprecated; // use Ota.CurrentProjectIsNativeCpp
+function GxOtaCurrentProjectIsNativeDelphi: Boolean; deprecated; // use Ota.CurrentProjectIsNativeDelphi
+function GxOtaCurrentProjectIsEitherDelphi: Boolean; deprecated; // use Ota.CurrentProjectIsEitherDelphi
+function GxOtaCurrentProjectIsCSharp: Boolean; deprecated; // use Ota.CurrentProjectIsCSharp
 
 // Check if the IDE supports a certain personality
-function GxOtaIdeSupportsPersonality(const Personality: string): Boolean;
-function GxOtaHaveCPPSupport: Boolean;
-function GxOtaHaveDelphiSupport: Boolean;
-function GxOtaHaveCSharpSupport: Boolean;
+function GxOtaIdeSupportsPersonality(const Personality: string): Boolean; deprecated; // use Ota.IdeSupportsPersonality
+function GxOtaHaveCPPSupport: Boolean; deprecated; // use Ota.HaveCPPSupport
+function GxOtaHaveDelphiSupport: Boolean; deprecated; // use Ota.HaveDelphiSupport
+function GxOtaHaveCSharpSupport: Boolean; deprecated; // use Ota.HaveCSharpSupport
 
 // Get the preferred hex number display prefix characters for our personality
 function GxOtaGetHexPrefix: string;
@@ -1581,6 +1662,11 @@ end;
 
 function GxOtaGetProjectPersonality(Project: IOTAProject): string;
 begin
+  Result := Ota.GetProjectPersonality(Project);
+end;
+
+class function Ota.GetProjectPersonality(Project: IOTAProject): string;
+begin
   Result := '';
   if Assigned(Project) then
   begin
@@ -1597,67 +1683,132 @@ end;
 
 function GxOtaGetCurrentProjectPersonality: string;
 begin
-  Result := GxOtaGetProjectPersonality(GxOtaGetCurrentProject);
+  Result := Ota.GetCurrentProjectPersonality;
+end;
+
+class function Ota.GetCurrentProjectPersonality: string;
+begin
+  Result := Ota.GetProjectPersonality(GxOtaGetCurrentProject);
 end;
 
 function GxOtaProjectIsDotNet(Project: IOTAProject): Boolean;
 begin
-  Result := StringInArray(GxOtaGetProjectPersonality(Project), [sDelphiDotNetPersonality, sCSharpPersonality, sVBPersonality]);
+  Result := Ota.ProjectIsDotNet(Project);
+end;
+
+class function Ota.ProjectIsDotNet(Project: IOTAProject): Boolean;
+begin
+  Result := StringInArray(Ota.GetProjectPersonality(Project), [sDelphiDotNetPersonality, sCSharpPersonality, sVBPersonality]);
 end;
 
 function GxOtaProjectIsDelphiDotNet(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(GxOtaGetProjectPersonality(Project), sDelphiDotNetPersonality);
+  Result := Ota.ProjectIsDelphiDotNet(Project);
+end;
+
+class function Ota.ProjectIsDelphiDotNet(Project: IOTAProject): Boolean;
+begin
+  Result := SameText(Ota.GetProjectPersonality(Project), sDelphiDotNetPersonality);
 end;
 
 function GxOtaProjectIsNativeCpp(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(GxOtaGetProjectPersonality(Project), sCBuilderPersonality);
+  Result := Ota.ProjectIsNativeCpp(Project);
+end;
+
+class function Ota.ProjectIsNativeCpp(Project: IOTAProject): Boolean;
+begin
+  Result := SameText(Ota.GetProjectPersonality(Project), sCBuilderPersonality);
 end;
 
 function GxOtaProjectIsNativeDelphi(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(GxOtaGetProjectPersonality(Project), sDelphiPersonality);
+  Result := Ota.ProjectIsNativeDelphi(Project);
+end;
+
+class function Ota.ProjectIsNativeDelphi(Project: IOTAProject): Boolean;
+begin
+  Result := SameText(Ota.GetProjectPersonality(Project), sDelphiPersonality);
 end;
 
 function GxOtaProjectIsEitherDelphi(Project: IOTAProject): Boolean;
 begin
-  Result := StringInArray(GxOtaGetProjectPersonality(Project), [sDelphiPersonality, sDelphiDotNetPersonality]);
+  Result := Ota.ProjectIsEitherDelphi(Project);
+end;
+
+class function Ota.ProjectIsEitherDelphi(Project: IOTAProject): Boolean;
+begin
+  Result := StringInArray(Ota.GetProjectPersonality(Project), [sDelphiPersonality, sDelphiDotNetPersonality]);
 end;
 
 function GxOtaProjectIsCSharp(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(GxOtaGetProjectPersonality(Project), sCSharpPersonality);
+  Result := Ota.ProjectIsCSharp(Project);
+end;
+
+class function Ota.ProjectIsCSharp(Project: IOTAProject): Boolean;
+begin
+  Result := SameText(Ota.GetProjectPersonality(Project), sCSharpPersonality);
 end;
 
 function GxOtaCurrentProjectIsDotNet: Boolean;
 begin
-  Result := GxOtaProjectIsDotNet(GxOtaGetCurrentProject);
+  Result := Ota.CurrentProjectIsDotNet;
+end;
+
+class function Ota.CurrentProjectIsDotNet: Boolean;
+begin
+  Result := Ota.ProjectIsDotNet(GxOtaGetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsDelphiDotNet: Boolean;
 begin
-  Result := GxOtaProjectIsDelphiDotNet(GxOtaGetCurrentProject);
+  Result := Ota.CurrentProjectIsDelphiDotNet;
+end;
+
+class function Ota.CurrentProjectIsDelphiDotNet: Boolean;
+begin
+  Result := Ota.ProjectIsDelphiDotNet(GxOtaGetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsNativeCpp: Boolean;
 begin
-  Result := GxOtaProjectIsNativeCpp(GxOtaGetCurrentProject);
+  Result := Ota.CurrentProjectIsNativeCpp;
+end;
+
+class function Ota.CurrentProjectIsNativeCpp: Boolean;
+begin
+  Result := Ota.ProjectIsNativeCpp(GxOtaGetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsNativeDelphi: Boolean;
 begin
-  Result := GxOtaProjectIsNativeDelphi(GxOtaGetCurrentProject);
+  Result := Ota.CurrentProjectIsNativeDelphi;
+end;
+
+class function Ota.CurrentProjectIsNativeDelphi: Boolean;
+begin
+  Result := Ota.ProjectIsNativeDelphi(GxOtaGetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsEitherDelphi: Boolean;
 begin
-  Result := GxOtaProjectIsEitherDelphi(GxOtaGetCurrentProject);
+  Result := Ota.CurrentProjectIsEitherDelphi;
+end;
+
+class function Ota.CurrentProjectIsEitherDelphi: Boolean;
+begin
+  Result := Ota.ProjectIsEitherDelphi(GxOtaGetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsCSharp: Boolean;
 begin
-  Result := GxOtaProjectIsCSharp(GxOtaGetCurrentProject);
+  Result := Ota.CurrentProjectIsCSharp;
+end;
+
+class function Ota.CurrentProjectIsCSharp: Boolean;
+begin
+  Result := Ota.ProjectIsCSharp(GxOtaGetCurrentProject);
 end;
 
 {$IFDEF GX_VER160_up}
@@ -1669,6 +1820,11 @@ begin
 end;
 
 function GxOtaIdeSupportsPersonality(const Personality: string): Boolean;
+begin
+  Result := Ota.IdeSupportsPersonality(Personality);
+end;
+
+class function Ota.IdeSupportsPersonality(const Personality: string): Boolean;
 var
   Personalities: IOTAPersonalityServices;
   i: Integer;
@@ -1685,6 +1841,11 @@ end;
 {$ELSE Delphi 7-}
 function GxOtaIdeSupportsPersonality(const Personality: string): Boolean;
 begin
+  Result := Ota.IdeSupportsPersonality(Personality);
+end;
+
+class function Ota.IdeSupportsPersonality(const Personality: string): Boolean;
+begin
   if RunningCPPBuilder then
     Result := StringInArray(Personality, [sDelphiPersonality, sCBuilderPersonality])
   else
@@ -1694,23 +1855,38 @@ end;
 
 function GxOtaHaveCPPSupport: Boolean;
 begin
-  Result := GxOtaIdeSupportsPersonality(sCBuilderPersonality);
+  Result := Ota.HaveCPPSupport;
+end;
+
+class function Ota.HaveCPPSupport: Boolean;
+begin
+  Result := Ota.IdeSupportsPersonality(sCBuilderPersonality);
 end;
 
 function GxOtaHaveDelphiSupport: Boolean;
 begin
-  Result := GxOtaIdeSupportsPersonality(sDelphiPersonality) or
-    GxOtaIdeSupportsPersonality(sDelphiDotNetPersonality)
+  Result := Ota.HaveDelphiSupport;
+end;
+
+class function Ota.HaveDelphiSupport: Boolean;
+begin
+  Result := Ota.IdeSupportsPersonality(sDelphiPersonality) or
+    Ota.IdeSupportsPersonality(sDelphiDotNetPersonality)
 end;
 
 function GxOtaHaveCSharpSupport: Boolean;
 begin
-  Result := GxOtaIdeSupportsPersonality(sCSharpPersonality);
+  Result := Ota.HaveCSharpSupport;
+end;
+
+class function Ota.HaveCSharpSupport: Boolean;
+begin
+  Result := Ota.IdeSupportsPersonality(sCSharpPersonality);
 end;
 
 function GxOtaGetHexPrefix: string;
 begin
-  if StringInArray(GxOtaGetCurrentProjectPersonality, [sCBuilderPersonality, sCSharpPersonality]) then
+  if StringInArray(Ota.GetCurrentProjectPersonality, [sCBuilderPersonality, sCSharpPersonality]) then
     Result := '0x'
   else
     Result := '$';
@@ -1795,7 +1971,7 @@ function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean
   var
     PackageFileName: string;
   begin
-    Result := GxOtaProjectIsEitherDelphi(Project);
+    Result := Ota.ProjectIsEitherDelphi(Project);
     if Result then
     begin
       AProjectFileName := ChangeFileExt(AProjectFileName, '.dpr');
@@ -3500,7 +3676,7 @@ begin
   Result := FileName;
   if IsForm(FileName) then
   begin
-    if GxOtaHaveCPPSupport then
+    if Ota.HaveCPPSupport then
     begin
       AltName := ChangeFileExt(FileName, '.cpp');
       if GxOtaFileOrModuleExists(AltName) then
@@ -3540,9 +3716,9 @@ end;
 function GxOtaGetIdeLibraryPath: string;
 begin
    // Do not localize.
-  if RunningBDS2006OrGreater and GxOtaCurrentProjectIsDelphiDotNet then
+  if RunningBDS2006OrGreater and Ota.CurrentProjectIsDelphiDotNet then
     Result := GxOtaGetIdeEnvironmentString('DotNetLibraryPath')
-  else if RunningBDS2006OrGreater and GxOtaCurrentProjectIsNativeCpp then
+  else if RunningBDS2006OrGreater and Ota.CurrentProjectIsNativeCpp then
     Result := GxOtaGetIdeEnvironmentString('CppSearchPath')
   else
     Result := GxOtaGetIdeEnvironmentString('LibraryPath');
@@ -3551,11 +3727,11 @@ end;
 function GxOtaGetIdeBrowsingPath: string;
 begin
    // Do not localize.
-  if RunningBDS2006OrGreater and GxOtaCurrentProjectIsDelphiDotNet then
+  if RunningBDS2006OrGreater and Ota.CurrentProjectIsDelphiDotNet then
     Result := GxOtaGetIdeEnvironmentString('DotNetBrowsingPath')
-  else if RunningBDS2006OrGreater and GxOtaCurrentProjectIsNativeCpp then
+  else if RunningBDS2006OrGreater and Ota.CurrentProjectIsNativeCpp then
     Result := GxOtaGetIdeEnvironmentString('CppBrowsingPath')
-  else if (not RunningBDS2006OrGreater) or GxOtaCurrentProjectIsNativeDelphi then
+  else if (not RunningBDS2006OrGreater) or Ota.CurrentProjectIsNativeDelphi then
     Result := GxOtaGetIdeEnvironmentString('BrowsingPath')
   else
     Result := '';
@@ -6454,7 +6630,7 @@ begin
     end
     else
     begin
-      List.Add(Format('Project: %s (Personality: %s):', [Project.FileName, GxOtaGetCurrentProjectPersonality]));
+      List.Add(Format('Project: %s (Personality: %s):', [Project.FileName, Ota.GetCurrentProjectPersonality]));
       AddEditorDetails(Project);
       List.Add('');
 

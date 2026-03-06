@@ -819,9 +819,9 @@ begin
               begin
                 if Length(Trim(FGrepSettings.Mask)) = 0 then
                 begin
-                  if GxOtaCurrentProjectIsNativeCpp then
+                  if Ota.CurrentProjectIsNativeCpp then
                     GrepDirectories(FGrepSettings.Directories, '*.cpp;*.hpp;*.h;*.pas;*.inc')
-                  else if GxOtaCurrentProjectIsCSharp then
+                  else if Ota.CurrentProjectIsCSharp then
                     GrepDirectories(FGrepSettings.Directories, '*.cs')
                   else
                     GrepDirectories(FGrepSettings.Directories, '*.pas;*.dpr;*.inc')
