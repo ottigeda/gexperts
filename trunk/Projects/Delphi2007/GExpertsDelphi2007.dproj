@@ -18,6 +18,7 @@
         <DCC_HppOutput>.\dcu\release</DCC_HppOutput>
         <DCC_IncludePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_IncludePath>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+        <DCC_MapFile>3</DCC_MapFile>
         <DCC_ObjOutput>.\dcu\release</DCC_ObjOutput>
         <DCC_ObjPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_ObjPath>
         <DCC_ResourcePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_ResourcePath>
@@ -229,6 +230,11 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmCompsToCode</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\CopyComponentNames\GX_CopyComponentNames.pas"/>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_DeclareVariable.pas"/>
+        <DCCReference Include="..\..\source\DeclareVariable\GX_eDeclareVariable.pas">
+            <FormType>dfm</FormType>
+            <Form>fmDeclareVariable</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\EditorToolbar\GX_Toolbar.pas"/>
         <DCCReference Include="..\..\source\EditorToolbar\GX_ToolbarConfig.pas">
             <Form>fmToolbarConfig</Form>
@@ -264,11 +270,11 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmEditorPopupMenuExpertConfig</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
-        <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
-        <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
-        <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas">
+            <Form>fmRenameIdentifier</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
@@ -282,6 +288,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmConfigureWarning</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_MenusForEditorExpert.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\EditPath\GX_EditPath.pas">
             <Form>f_EditPath</Form>
         </DCCReference>
@@ -386,11 +393,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
-        <DCCReference Include="..\..\source\DeclareVariable\GX_eDeclareVariable.pas">
-            <Form>fmDeclareVariable</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\source\DeclareVariable\GX_DeclareVariable.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
@@ -667,6 +669,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ShLwApi.pas"/>
