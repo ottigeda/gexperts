@@ -125,7 +125,7 @@ end;
 
 procedure THideNonVisualCompsExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaCurrentlyEditingForm;
+  Action.Enabled := Ota.CurrentlyEditingForm;
 end;
 
 initialization

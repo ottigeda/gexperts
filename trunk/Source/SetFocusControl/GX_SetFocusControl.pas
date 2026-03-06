@@ -55,7 +55,7 @@ end;
 
 procedure TSetFocusControlExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaCurrentlyEditingForm;
+  Action.Enabled := Ota.CurrentlyEditingForm;
 end;
 
 procedure TSetFocusControlExpert.Execute(Sender: TObject);

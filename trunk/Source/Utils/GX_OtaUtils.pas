@@ -234,6 +234,35 @@ type
     class function GetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer;
 
     /// <summary>
+    /// Returns the active designer type string (e.g. 'dfm', 'xfm', 'nfm', 'FMX').
+    /// @returns the designer type identifier </summary>
+    class function GetActiveDesignerType: string;
+    /// <summary>
+    /// Checks if the active designer is VCL (dfm).
+    /// @returns True if the active designer type is VCL </summary>
+    class function ActiveDesignerIsVCL: Boolean;
+    /// <summary>
+    /// Checks if the active designer is CLX (xfm).
+    /// @returns True if the active designer type is CLX </summary>
+    class function ActiveDesignerIsCLX: Boolean;
+    /// <summary>
+    /// Checks if the active designer is NFM (.NET forms).
+    /// @returns True if the active designer type is NFM </summary>
+    class function ActiveDesignerIsNFM: Boolean;
+    /// <summary>
+    /// Checks if the active designer is FMX (FireMonkey).
+    /// @returns True if the active designer type is FMX </summary>
+    class function ActiveDesignerIsFMX: Boolean;
+    /// <summary>
+    /// Checks if the user is currently editing a form.
+    /// @returns True if the current editor is a form editor </summary>
+    class function CurrentlyEditingForm: Boolean;
+    /// <summary>
+    /// Checks if the user is currently editing source code.
+    /// @returns True if the active window is a source editor </summary>
+    class function CurrentlyEditingSource: Boolean;
+
+    /// <summary>
     /// Returns the IOTAServices interface for the IDE.
     /// @returns the IDE services interface
     /// @raises Exception if IOTAServices is not available </summary>
@@ -586,11 +615,11 @@ function GxOtaGetIDEServices: IOTAServices; deprecated; // use Ota.GetIDEService
 function GxOtaGetDebuggerServices: IOTADebuggerServices; deprecated; // use Ota.GetDebuggerServices
 
 // Determine if we are currently editing a VCL/CLX/NFM
-function GxOtaGetActiveDesignerType: string;
-function GxOtaActiveDesignerIsVCL: Boolean;
-function GxOtaActiveDesignerIsCLX: Boolean;
-function GxOtaActiveDesignerIsNFM: Boolean;
-function GxOtaActiveDesignerIsFMX: Boolean;
+function GxOtaGetActiveDesignerType: string; deprecated; // use Ota.GetActiveDesignerType
+function GxOtaActiveDesignerIsVCL: Boolean; deprecated; // use Ota.ActiveDesignerIsVCL
+function GxOtaActiveDesignerIsCLX: Boolean; deprecated; // use Ota.ActiveDesignerIsCLX
+function GxOtaActiveDesignerIsNFM: Boolean; deprecated; // use Ota.ActiveDesignerIsNFM
+function GxOtaActiveDesignerIsFMX: Boolean; deprecated; // use Ota.ActiveDesignerIsFMX
 
 // Get the personality identifier string for the project, or blank for none
 function GxOtaGetProjectPersonality(Project: IOTAProject): string;
@@ -621,10 +650,10 @@ function GxOtaHaveCSharpSupport: Boolean;
 function GxOtaGetHexPrefix: string;
 
 // See if the user is editing a form
-function GxOtaCurrentlyEditingForm: Boolean;
+function GxOtaCurrentlyEditingForm: Boolean; deprecated; // use Ota.CurrentlyEditingForm
 
 // See if the user is editing a source file
-function GxOtaCurrentlyEditingSource: Boolean;
+function GxOtaCurrentlyEditingSource: Boolean; deprecated; // use Ota.CurrentlyEditingSource
 
 // Obtain and focus the IDE's internal edit control wrapper
 function GxOtaGetCurrentIDEEditControl: TWinControl;
@@ -1498,28 +1527,53 @@ end;
 
 function GxOtaGetActiveDesignerType: string;
 begin
+  Result := Ota.GetActiveDesignerType;
+end;
+
+class function Ota.GetActiveDesignerType: string;
+begin
   Result := Ota.GetIDEServices.GetActiveDesignerType;
 end;
 
 function GxOtaActiveDesignerIsVCL: Boolean;
 begin
-  Result := (GxOtaGetActiveDesignerType = dVCL);
+  Result := Ota.ActiveDesignerIsVCL;
+end;
+
+class function Ota.ActiveDesignerIsVCL: Boolean;
+begin
+  Result := (Ota.GetActiveDesignerType = dVCL);
 end;
 
 function GxOtaActiveDesignerIsCLX: Boolean;
 begin
-  Result := (GxOtaGetActiveDesignerType = dCLX);
+  Result := Ota.ActiveDesignerIsCLX;
+end;
+
+class function Ota.ActiveDesignerIsCLX: Boolean;
+begin
+  Result := (Ota.GetActiveDesignerType = dCLX);
 end;
 
 function GxOtaActiveDesignerIsNFM: Boolean;
 begin
-  Result := (GxOtaGetActiveDesignerType = dNFM);
+  Result := Ota.ActiveDesignerIsNFM;
+end;
+
+class function Ota.ActiveDesignerIsNFM: Boolean;
+begin
+  Result := (Ota.GetActiveDesignerType = dNFM);
 end;
 
 function GxOtaActiveDesignerIsFMX: Boolean;
 begin
+  Result := Ota.ActiveDesignerIsFMX;
+end;
+
+class function Ota.ActiveDesignerIsFMX: Boolean;
+begin
   {$IFDEF GX_VER230_up}
-  Result := (GxOtaGetActiveDesignerType = dFMX);
+  Result := (Ota.GetActiveDesignerType = dFMX);
   {$ELSE}
   Result := False;
   {$ENDIF}
@@ -1663,6 +1717,11 @@ begin
 end;
 
 function GxOtaCurrentlyEditingForm: Boolean;
+begin
+  Result := Ota.CurrentlyEditingForm;
+end;
+
+class function Ota.CurrentlyEditingForm: Boolean;
 var
   Editor: IOTAEditor;
 begin
@@ -1673,6 +1732,11 @@ begin
 end;
 
 function GxOtaCurrentlyEditingSource: Boolean;
+begin
+  Result := Ota.CurrentlyEditingSource;
+end;
+
+class function Ota.CurrentlyEditingSource: Boolean;
 begin
   Result := IsIdeEditorForm(Screen.ActiveCustomForm) or IsEditControl(Screen.ActiveControl);
 end;
@@ -4750,7 +4814,7 @@ begin
       end;
     tkSet:
       begin
-        if PreferStrings and GxOtaActiveDesignerIsVCL then
+        if PreferStrings and Ota.ActiveDesignerIsVCL then
         begin
           NativeObject := Ota.GetNativeObject(AComponent);
           Assert(Assigned(NativeObject), 'No native object for property ' + PropertyName);
@@ -4761,7 +4825,7 @@ begin
       end;
     tkEnumeration:
       begin
-        if PreferStrings and GxOtaActiveDesignerIsVCL then
+        if PreferStrings and Ota.ActiveDesignerIsVCL then
         begin
           NativeObject := Ota.GetNativeObject(AComponent);
           Assert(Assigned(NativeObject));
@@ -4971,7 +5035,7 @@ var
   CompHandle: TOTAHandle;
 begin
   Result := nil;
-  if (AComponent = nil) or ((GxOtaCurrentlyEditingForm) and (not (GxOtaActiveDesignerIsVCL or GxOtaActiveDesignerIsFMX))) then
+  if (AComponent = nil) or ((Ota.CurrentlyEditingForm) and (not (Ota.ActiveDesignerIsVCL or Ota.ActiveDesignerIsFMX))) then
     Exit;
   CompHandle := AComponent.GetComponentHandle;
   if Assigned(CompHandle) then
@@ -4991,7 +5055,7 @@ begin
   ComponentObject := GetNativeObject(AComponent);
   if Assigned(ComponentObject) then
   begin
-    if GxOtaActiveDesignerIsNFM then begin
+    if Ota.ActiveDesignerIsNFM then begin
       {$IFOPT D+}SendDebugError('Attempt to get a native persistent for a .NET object');{$ENDIF}
       Exit;
     end;
@@ -5013,7 +5077,7 @@ begin
   ComponentObject := GetNativeObject(AComponent);
   if Assigned(ComponentObject) then
   begin
-    if GxOtaActiveDesignerIsNFM then begin
+    if Ota.ActiveDesignerIsNFM then begin
       {$IFOPT D+}SendDebugError('Attempt to get a native component for a .NET object');{$ENDIF}
       Exit;
     end;

@@ -309,7 +309,7 @@ var
   al: TAlign;
   IntValue: Integer;
 begin
-  if not GxOtaActiveDesignerIsVCL then begin
+  if not Ota.ActiveDesignerIsVCL then begin
     // for whatever reason this currently does not work for FMX
     Exit; //==>
   end;
@@ -362,7 +362,7 @@ begin
   HasAlignWithMargins := False;
   try
     // for whatever reason this currently does not work for FMX
-    if not GxOtaActiveDesignerIsVCL then
+    if not Ota.ActiveDesignerIsVCL then
       Exit; //==>
 
     // GetPropValueByName expects 4 byte values for enums
@@ -791,7 +791,7 @@ end;
 
 function  TRenameComponentsExpert.GetActiveRenameRuleList: TStringList;
 begin
-  if GxOtaActiveDesignerIsFMX then begin
+  if Ota.ActiveDesignerIsFMX then begin
     Result := FRenameRuleListFmx;
   end else begin
     // I can't be bothered to distinguish between VCL, CLX and dotNET, since only VCL has survived

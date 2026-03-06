@@ -280,7 +280,7 @@ end;
 
 procedure TTabExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaCurrentlyEditingForm;
+  Action.Enabled := Ota.CurrentlyEditingForm;
 end;
 
 procedure TTabExpert.Configure(_Owner: TWinControl);

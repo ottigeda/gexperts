@@ -4,7 +4,7 @@ unit RplWizInfo;
 
 { Hidden Paths of Delphi 3, by Ray Lischner.
   Informant Press, 1997.
-  Copyright © 1997 Tempest Software, Inc.
+  Copyright ï¿½ 1997 Tempest Software, Inc.
 
   Component Replace Wizard.
 
@@ -1165,7 +1165,7 @@ var
   NewComponent: IOTAComponent;
   OldGroup: TPersistentClass;
 begin
-  if GxOtaActiveDesignerIsVCL then
+  if Ota.ActiveDesignerIsVCL then
     OldGroup := ActivateClassGroup(Controls.TControl)
   else
     OldGroup := nil; // Not necessary?: ActivateClassGroup(QControls.TControl);

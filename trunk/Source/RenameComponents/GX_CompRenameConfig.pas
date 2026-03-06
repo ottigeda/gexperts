@@ -255,7 +255,7 @@ begin
   CopyValuesToGrid(FValueListFmx, FGridFmx);
   FGridFmx.Row := FGridFmx.FixedRows; // Go to the top of the grid
 
-  if GxOtaActiveDesignerIsFMX then begin
+  if Ota.ActiveDesignerIsFMX then begin
     pc_Names.ActivePage := ts_NamesFmx
   end else begin
     pc_Names.ActivePage := ts_NamesVcl;

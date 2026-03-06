@@ -179,7 +179,7 @@ end;
 
 procedure TComponentGridExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaCurrentlyEditingForm;;
+  Action.Enabled := Ota.CurrentlyEditingForm;;
 end;
 
 procedure TComponentGridExpert.Execute(Sender: TObject);

@@ -182,7 +182,7 @@ begin
   cbSearch.Items.BeginUpdate;
   cbReplace.Items.BeginUpdate;
   try
-    if GxOtaActiveDesignerIsVCL then
+    if Ota.ActiveDesignerIsVCL then
       OldGroup := ActivateClassGroup(TControl)
     else
       OldGroup := nil; // Not necessary?: ActivateClassGroup(QControls.TControl);
@@ -542,7 +542,7 @@ resourcestring
   NoSupportError = 'Due to limitations of the IDE, Replace Components can not support VCL.NET projects.';
 begin
   // Replace components requires IOTAComponent interfaces and access to native TPersistent objects
-  if GxOtaActiveDesignerIsNFM then
+  if Ota.ActiveDesignerIsNFM then
     raise Exception.Create(NoSupportError);
 
   if TfmReplaceComp.Execute(nil) then

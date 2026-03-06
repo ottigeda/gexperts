@@ -559,7 +559,7 @@ end;
 
 procedure TComponentSelectExpert.UpdateAction(aAction: TCustomAction);
 begin
-  aAction.Enabled := GxOtaCurrentlyEditingForm;
+  aAction.Enabled := Ota.CurrentlyEditingForm;
 end;
 
 procedure TComponentSelectExpert.Execute(Sender: TObject);

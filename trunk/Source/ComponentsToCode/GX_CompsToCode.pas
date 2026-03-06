@@ -376,7 +376,7 @@ var
   Comps: TComponentArray;
 begin
   // No way to get a "native" component for VCL.NET components
-  if GxOtaActiveDesignerIsNFM then
+  if Ota.ActiveDesignerIsNFM then
     raise Exception.Create('Components to Code does not support VCL.NET forms.');
 
   Comps := GetDesignerComps;
@@ -502,7 +502,7 @@ end;
 
 procedure TComponentsToCodeExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaCurrentlyEditingForm;
+  Action.Enabled := Ota.CurrentlyEditingForm;
 end;
 
 function TComponentsToCodeExpert.HasDesignerMenuItem: Boolean;

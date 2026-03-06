@@ -500,7 +500,7 @@ end;
 
 procedure TFormHotkeysExpert.UpdateAction(aAction: TCustomAction);
 begin
-  aAction.Enabled := GxOtaCurrentlyEditingForm;
+  aAction.Enabled := Ota.CurrentlyEditingForm;
 end;
 
 initialization

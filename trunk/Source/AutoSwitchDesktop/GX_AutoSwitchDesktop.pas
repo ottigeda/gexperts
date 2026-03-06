@@ -173,7 +173,7 @@ var
   mi: TMenuItem;
   DesktopToSelect: string;
 begin
-  if GxOtaCurrentlyEditingForm then
+  if Ota.CurrentlyEditingForm then
     DesktopToSelect := FFormDesktop
   else
     DesktopToSelect := FCodeDesktop;

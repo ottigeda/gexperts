@@ -185,7 +185,7 @@ begin
     // Only correct when the active form is an IDE TEditWindow.
     // This prevents some unwanted corrections when other experts,
     // the form designer, or the IDE make changes.
-    if not GxOtaCurrentlyEditingSource then
+    if not Ota.CurrentlyEditingSource then
       Exit;
 
     CheckMacroCodePlacement(SourceEditor);
