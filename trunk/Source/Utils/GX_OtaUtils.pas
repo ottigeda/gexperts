@@ -424,6 +424,55 @@ type
     /// @returns the keyboard services interface
     /// @raises Exception if IOTAKeyboardServices is not available </summary>
     class function GetKeyboardServices: IOTAKeyboardServices;
+
+    /// <summary>
+    /// Tries to get the options of the given or the active project.
+    /// @param _ProjectOptions will contain the options, only valid if Result is True
+    /// @param _Project is the project whose options to get, if nil the current
+    ///                 project will be used
+    /// @returns True if the options could be retrieved </summary>
+    class function TryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions;
+      _Project: IOTAProject = nil): Boolean;
+    /// <summary>
+    /// Returns the IOTAProjectOptions interface for the active project, or nil.
+    /// @returns the project options or nil </summary>
+    class function GetActiveProjectOptions: IOTAProjectOptions;
+    /// <summary>
+    /// Tries to get a configuration option from the active configuration of the
+    /// given project.
+    /// @param Option the name of the option to retrieve
+    /// @param Value receives the option value, only valid if Result is True
+    /// @param _Project the project to query, if nil the current project is used
+    /// @returns True if the option could be retrieved </summary>
+    class function TryGetProjectOption(const Option: string; var Value: Variant;
+      _Project: IOTAProject = nil): Boolean;
+    /// <summary>
+    /// Returns the value of a version info keys string option.
+    /// @param Option the name of the version info key
+    /// @param Value receives the option value
+    /// @returns True if the option was found </summary>
+    class function GetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
+    /// <summary>
+    /// Returns the first matching value from a list of version info keys options.
+    /// @param Options array of option names to try
+    /// @param Value receives the first matching value
+    /// @returns True if any option was found </summary>
+    class function GetVersionInfoKeysOptions(const Options: array of string;
+      var Value: Variant): Boolean;
+    /// <summary>
+    /// Gets all version info keys into a string list.
+    /// @param Strings receives the version info keys
+    /// @returns True if the keys could be retrieved </summary>
+    class function GetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+    /// <summary>
+    /// Returns all version info keys as a single string.
+    /// @returns the version info keys text, or empty if unavailable </summary>
+    class function GetVersionInfoKeysString: string;
+    /// <summary>
+    /// Sets all version info keys from a string list.
+    /// @param Strings the version info keys to set
+    /// @returns True if the keys were set successfully </summary>
+    class function SetVersionInfoKeysStrings(Strings: TStrings): Boolean;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -831,27 +880,27 @@ function GxOtaGetFileNameOfCurrentModule: string; deprecated; // use Ota.GetFile
 /// @param ProjectOptions will contain the options, only valid if Result is True
 /// @param Project is the project whose options to get, it nil the current project will be used
 /// @returns True, if the options could be retrieved, False otherwise (e.g. if there is no active project) </summary>
-function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
+function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean; deprecated; // use Ota.TryGetProjectOptions
 
 // Get the IOTAProjectOptions interface for the active project
-function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
+function GxOtaGetActiveProjectOptions: IOTAProjectOptions; deprecated; // use Ota.GetActiveProjectOptions
 ///<summary>
 /// Tries to get a configuration option from the active configuration of the given project
 /// @param Option is the name of the option to retrieve
 /// @param Value will return the value of the given option, only valid if Result is True
 /// @param Project is the project for which to get the option, if nil the current project will be used
 /// @returns True, if the option could be retrieved, False otherwise (e.g. if there is no active project) </summary>
-function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
+function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean; deprecated; // use Ota.TryGetProjectOption
 // Get the value of a version info keys string
-function GxOtaGetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
+function GxOtaGetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean; deprecated; // use Ota.GetVersionInfoKeysOption
 // Get the first value of a list of version info keys strings
-function GxOtaGetVersionInfoKeysOptions(const Options: array of string; var Value: Variant): Boolean;
+function GxOtaGetVersionInfoKeysOptions(const Options: array of string; var Value: Variant): Boolean; deprecated; // use Ota.GetVersionInfoKeysOptions
 // Get all of the version info keys
-function GxOtaGetVersionInfoKeysStrings(Strings: TStrings): Boolean;
-function GxOtaGetVersionInfoKeysString: string;
+function GxOtaGetVersionInfoKeysStrings(Strings: TStrings): Boolean; deprecated; // use Ota.GetVersionInfoKeysStrings
+function GxOtaGetVersionInfoKeysString: string; deprecated; // use Ota.GetVersionInfoKeysString
 
 // Set all the version info keys
-function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean; deprecated; // use Ota.SetVersionInfoKeysStrings
 
 // Get the selected text in the top edit view, if any
 function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): TGXUnicodeString;
@@ -2489,6 +2538,49 @@ end;
 
 function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
 begin
+  Result := Ota.TryGetProjectOptions(_ProjectOptions, _Project);
+end;
+
+function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
+begin
+  Result := Ota.GetActiveProjectOptions;
+end;
+
+function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
+begin
+  Result := Ota.TryGetProjectOption(Option, Value, _Project);
+end;
+
+function GxOtaGetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
+begin
+  Result := Ota.GetVersionInfoKeysOption(Option, Value);
+end;
+
+function GxOtaGetVersionInfoKeysOptions(const Options: array of string; var Value: Variant): Boolean; overload;
+begin
+  Result := Ota.GetVersionInfoKeysOptions(Options, Value);
+end;
+
+function GxOtaGetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+begin
+  Result := Ota.GetVersionInfoKeysStrings(Strings);
+end;
+
+function GxOtaGetVersionInfoKeysString: string;
+begin
+  Result := Ota.GetVersionInfoKeysString;
+end;
+
+function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+begin
+  Result := Ota.SetVersionInfoKeysStrings(Strings);
+end;
+
+{ Ota - Project Options }
+
+class function Ota.TryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions;
+  _Project: IOTAProject = nil): Boolean;
+begin
   if not Assigned(_Project) then
     _Project := Ota.GetCurrentProject;
   if Assigned(_Project) then
@@ -2496,13 +2588,14 @@ begin
   Result := Assigned(_ProjectOptions);
 end;
 
-function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
+class function Ota.GetActiveProjectOptions: IOTAProjectOptions;
 begin
-  if not GxOtaTryGetProjectOptions(Result) then
+  if not Ota.TryGetProjectOptions(Result) then
     Result := nil;
 end;
 
-function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
+class function Ota.TryGetProjectOption(const Option: string; var Value: Variant;
+  _Project: IOTAProject = nil): Boolean;
 var
   ProjectOptions: IOTAProjectOptions;
 
@@ -2545,7 +2638,7 @@ var
 begin
   Result := False;
   Value := '';
-  if GxOtaTryGetProjectOptions(ProjectOptions, _Project) then begin
+  if Ota.TryGetProjectOptions(ProjectOptions, _Project) then begin
     if HandleDelphiXEUpVersionInfo(Option, Value) then begin
       Result := True;
     end else begin
@@ -2555,7 +2648,7 @@ begin
   end;
 end;
 
-function GxOtaGetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
+class function Ota.GetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
 var
   KeysStrings: TStrings;
   OptionValue: string;
@@ -2564,7 +2657,7 @@ begin
   Value := Null;
   KeysStrings := TStringList.Create;
   try
-    if GxOtaGetVersionInfoKeysStrings(KeysStrings) then
+    if Ota.GetVersionInfoKeysStrings(KeysStrings) then
     begin
       OptionValue := KeysStrings.Values[Option];
       if OptionValue <> '' then
@@ -2578,20 +2671,21 @@ begin
   end;
 end;
 
-function GxOtaGetVersionInfoKeysOptions(const Options: array of string; var Value: Variant): Boolean; overload;
+class function Ota.GetVersionInfoKeysOptions(const Options: array of string;
+  var Value: Variant): Boolean;
 var
   i: Integer;
 begin
   Result := False;
   for i := Low(Options) to High(Options) do
   begin
-    Result := GxOtaGetVersionInfoKeysOption(Options[i], Value);
+    Result := Ota.GetVersionInfoKeysOption(Options[i], Value);
     if Result then
       Break;
   end;
 end;
 
-function GxOtaGetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+class function Ota.GetVersionInfoKeysStrings(Strings: TStrings): Boolean;
 var
   VerStrings: TStrings;
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
@@ -2613,7 +2707,7 @@ begin
   Result := False;
 
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
-  if  GxOtaTryGetProjectOptions(ProjectOptions) then
+  if Ota.TryGetProjectOptions(ProjectOptions) then
   begin
     if ProjectOptions.QueryInterface(IOTAProjectOptionsConfigurations, Configurations) = S_OK then
     begin
@@ -2639,7 +2733,7 @@ begin
     end;
   end;
 {$ELSE}
-  if GxOtaTryGetProjectOption('Keys', KeysValue) then
+  if Ota.TryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -2655,21 +2749,21 @@ begin
 {$ENDIF}
 end;
 
-function GxOtaGetVersionInfoKeysString: string;
+class function Ota.GetVersionInfoKeysString: string;
 var
   Strings: TStrings;
 begin
   Result := '';
   Strings := TStringList.Create;
   try
-    if GxOtaGetVersionInfoKeysStrings(Strings) then
+    if Ota.GetVersionInfoKeysStrings(Strings) then
       Result := Strings.Text;
   finally
     FreeAndNil(Strings);
   end;
 end;
 
-function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean;
+class function Ota.SetVersionInfoKeysStrings(Strings: TStrings): Boolean;
 var
   VerStrings: TStrings;
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
@@ -2687,7 +2781,7 @@ begin
   Result := False;
 
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
-  ProjectOptions := GxOtaGetActiveProjectOptions;
+  ProjectOptions := Ota.GetActiveProjectOptions;
   if Assigned(ProjectOptions) then
   begin
     if ProjectOptions.QueryInterface(IOTAProjectOptionsConfigurations, Configurations) = S_OK then
@@ -2710,7 +2804,7 @@ begin
     end;
   end;
 {$ELSE}
-  if GxOtaTryGetProjectOption('Keys', KeysValue) then
+  if Ota.TryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -3996,7 +4090,7 @@ begin
       EnsureStringInList(SearchPath, ProjectName);
     end;
     // Then the project search path
-    if GxOtaTryGetProjectOptions(ProjectOptions, Project) then begin
+    if Ota.TryGetProjectOptions(ProjectOptions, Project) then begin
 
 //      OptionNames := ProjectOptions.GetOptionNames;
 //      for i := Low(OptionNames) to High(OptionNames) - 1 do
@@ -4035,7 +4129,7 @@ begin
     // Add the current project directory first
     Paths.Add(ProjectDir);
     // Then the project search path
-    if GxOtaTryGetProjectOptions(ProjectOptions, Project) then
+    if Ota.TryGetProjectOptions(ProjectOptions, Project) then
     begin
       IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
@@ -4056,7 +4150,7 @@ function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject =
 var
   ProjectOptions: IOTAProjectOptions;
 begin
-  Result := GxOtaTryGetProjectOptions(ProjectOptions, _Project);
+  Result := Ota.TryGetProjectOptions(ProjectOptions, _Project);
   if Result then begin
     _Path := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
   end;
@@ -4066,7 +4160,7 @@ function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject
 var
   ProjectOptions: IOTAProjectOptions;
 begin
-  Result := GxOtaTryGetProjectOptions(ProjectOptions, _Project);
+  Result := Ota.TryGetProjectOptions(ProjectOptions, _Project);
   if Result then begin
     ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH] := _Path;
   end;
@@ -4295,7 +4389,7 @@ var
 begin
   Assert(Assigned(Aliases));
   Aliases.Clear;
-  FoundAliases := GxOtaTryGetProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
+  FoundAliases := Ota.TryGetProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
   if FoundAliases then
   begin
     AliasString := VarAliases;

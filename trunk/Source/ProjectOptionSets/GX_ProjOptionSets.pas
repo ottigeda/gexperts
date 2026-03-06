@@ -455,7 +455,7 @@ var
   OptionIdx: Integer;
 begin
   TStrings_FreeAllObjects(lstPrjOptions.Items).Clear;
-  PrjOptions := GxOtaGetActiveProjectOptions;
+  PrjOptions := Ota.GetActiveProjectOptions;
   if Assigned(PrjOptions) then begin
     OptionNames := nil;
     Items := nil;
@@ -773,7 +773,7 @@ var
   EnvOptions: IOTAEnvironmentOptions;
 begin
   // This method uses FPrjSetOptions and updates the ProjectOptions
-  PrjOptions := GxOtaGetActiveProjectOptions;
+  PrjOptions := Ota.GetActiveProjectOptions;
   try
     if Assigned(PrjOptions) then
     begin
@@ -836,7 +836,7 @@ begin
   Container := FDom.CreateElement(PRJ_OPT_NODE);
   SetNode.AppendChild(Container);
 
-  PrjOptions := GxOtaGetActiveProjectOptions;
+  PrjOptions := Ota.GetActiveProjectOptions;
   try
     if Assigned(PrjOptions) then
     begin
@@ -1055,7 +1055,7 @@ begin
     end;
     HintStr := HintStr + sLineBreak;
     // Get current value
-    PrjOptions := GxOtaGetActiveProjectOptions;
+    PrjOptions := Ota.GetActiveProjectOptions;
     try
       TranslatedValueString := TranslatedValue(OptionIdx, GetPrjOptionValue(PrjOptions, OptionName));
       ProcessTranslatedValueForLineBreaks(TranslatedValueString);
@@ -1226,7 +1226,7 @@ begin
         VersionKeys := TStringList.Create;
         try
           VersionKeys.Text := s;
-          GxOtaSetVersionInfoKeysStrings(VersionKeys);
+          Ota.SetVersionInfoKeysStrings(VersionKeys);
         finally
           FreeAndNil(VersionKeys);
         end;
@@ -1453,7 +1453,7 @@ begin
     begin
       tmpObj := TOptionDesc(lstPrjOptions.Items.Objects[idx]);
       if (tmpObj.OptionKind = tkClass) and (_Option = 'Keys') then
-        Result := GxOtaGetVersionInfoKeysString
+        Result := Ota.GetVersionInfoKeysString
       else
         Result := GetVariantValueAsString(_PrjOptions.Values[_Option], tmpObj.OptionKind);
     end;

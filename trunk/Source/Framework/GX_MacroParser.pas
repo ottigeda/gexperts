@@ -810,47 +810,47 @@ begin
   // Version macros
   else if StVar = '%VERPRODUCTVERSION%' then
   begin
-    if GxOtaGetVersionInfoKeysOptions(ProductVersionOptionNames, OptionValue) then
+    if Ota.GetVersionInfoKeysOptions(ProductVersionOptionNames, OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERFILEVERSION%' then
   begin
-    if GxOtaGetVersionInfoKeysOptions(FileVersionOptionNames, OptionValue) then
+    if Ota.GetVersionInfoKeysOptions(FileVersionOptionNames, OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERMAJOR%' then
   begin
-    if GxOtaTryGetProjectOption('MajorVersion', OptionValue) then
+    if Ota.TryGetProjectOption('MajorVersion', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERMINOR%' then
   begin
-    if GxOtaTryGetProjectOption('MinorVersion', OptionValue) then
+    if Ota.TryGetProjectOption('MinorVersion', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERRELEASE%' then
   begin
-    if GxOtaTryGetProjectOption('Release', OptionValue) then
+    if Ota.TryGetProjectOption('Release', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERBUILD%' then
   begin
-    if GxOtaTryGetProjectOption('Build', OptionValue) then
+    if Ota.TryGetProjectOption('Build', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERPRODUCTNAME%' then
   begin
-    if GxOtaGetVersionInfoKeysOptions(ProductNameOptionNames, OptionValue) then
+    if Ota.GetVersionInfoKeysOptions(ProductNameOptionNames, OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERINTERNALNAME%' then
   begin
-    if GxOtaGetVersionInfoKeysOptions(InternalNameOptionNames, OptionValue) then
+    if Ota.GetVersionInfoKeysOptions(InternalNameOptionNames, OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERFILEDESCRIPTION%' then
   begin
-    if GxOtaGetVersionInfoKeysOptions(FileDescriptionOptionNames, OptionValue) then
+    if Ota.GetVersionInfoKeysOptions(FileDescriptionOptionNames, OptionValue) then
       Result := OptionValue;
   end
   // More token macros

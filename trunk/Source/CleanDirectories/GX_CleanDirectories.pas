@@ -398,7 +398,7 @@ var
     Directory: string;
     ProjectDir: string;
   begin
-    if GxOtaTryGetProjectOption(OptionName, DirectoryVariant) then
+    if Ota.TryGetProjectOption(OptionName, DirectoryVariant) then
         case VarType(DirectoryVariant) of
           varString, varOleStr, varUString: begin
           Directory := DirectoryVariant;
