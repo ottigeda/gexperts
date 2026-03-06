@@ -51,6 +51,7 @@ implementation
 
 uses
   SysUtils, Windows, Menus, ToolsAPI, Dialogs,
+  u_dzVclUtils,
   GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert,
   mPasLex, mwPasParserTypes,
   GX_PascalTokenAnalyzer, GX_Experts,
@@ -468,6 +469,7 @@ begin
   // Row 2: Existing declaration warning (conditional)
   if lblExisting.Visible then begin
     lblExisting.Top := Y;
+    TGraphicControl_AdjustHeight(lblExisting, lblExisting.Caption);
     Y := Y + lblExisting.Height + RowGap;
   end;
 

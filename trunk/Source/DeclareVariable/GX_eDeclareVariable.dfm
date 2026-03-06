@@ -45,6 +45,7 @@ object fmDeclareVariable: TfmDeclareVariable
     Width = 387
     Height = 14
     Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
     Caption = '...'
     Font.Charset = ANSI_CHARSET
     Font.Color = clMaroon
