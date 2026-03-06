@@ -187,13 +187,13 @@ end;
 constructor TGotoModificationBaseExpert.Create;
 begin
   inherited Create;
-  FNotifier := GxOtaGetEditorServices.AddNotifier(TEditorNotifier.Create(HandleWindowOpened, nil));
+  FNotifier := Ota.GetEditorServices.AddNotifier(TEditorNotifier.Create(HandleWindowOpened, nil));
 end;
 
 destructor TGotoModificationBaseExpert.Destroy;
 begin
   if FNotifier <> InvalidNotifierIndex then begin
-    GxOtaGetEditorServices.RemoveNotifier(FNotifier);
+    Ota.GetEditorServices.RemoveNotifier(FNotifier);
   end;
   inherited;
 end;

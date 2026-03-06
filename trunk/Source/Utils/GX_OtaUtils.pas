@@ -232,6 +232,30 @@ type
     ///<summary>
     // Get the position in the character array for the edit view (defaults to the topmost view) </summary>
     class function GetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer;
+
+    /// <summary>
+    /// Returns the IOTAServices interface for the IDE.
+    /// @returns the IDE services interface
+    /// @raises Exception if IOTAServices is not available </summary>
+    class function GetIDEServices: IOTAServices;
+    /// <summary>
+    /// Returns the IOTADebuggerServices interface for the IDE.
+    /// @returns the debugger services interface
+    /// @raises Exception if IOTADebuggerServices is not available </summary>
+    class function GetDebuggerServices: IOTADebuggerServices;
+    /// <summary>
+    /// Checks if the IDE is currently debugging an application.
+    /// @returns True if a debug process is running </summary>
+    class function CurrentlyDebugging: Boolean;
+    /// <summary>
+    /// Returns the IOTAEditorServices interface for the IDE.
+    /// @returns the editor services interface </summary>
+    class function GetEditorServices: IOTAEditorServices;
+    /// <summary>
+    /// Returns the IOTAKeyboardServices interface for the IDE.
+    /// @returns the keyboard services interface
+    /// @raises Exception if IOTAKeyboardServices is not available </summary>
+    class function GetKeyboardServices: IOTAKeyboardServices;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -555,11 +579,11 @@ procedure GxOtaWriteToolMessage(const FileName, MessageStr, PrefixStr: string;
 procedure GxOtaClearToolMessages;
 
 // Ses if the IDE is curently debugging an application
-function GxOtaCurrentlyDebugging: Boolean;
+function GxOtaCurrentlyDebugging: Boolean; deprecated; // use Ota.CurrentlyDebugging
 
 // Get an IDE services interface.  Succeeds or raises an exception.
-function GxOtaGetIDEServices: IOTAServices;
-function GxOtaGetDebuggerServices: IOTADebuggerServices;
+function GxOtaGetIDEServices: IOTAServices; deprecated; // use Ota.GetIDEServices
+function GxOtaGetDebuggerServices: IOTADebuggerServices; deprecated; // use Ota.GetDebuggerServices
 
 // Determine if we are currently editing a VCL/CLX/NFM
 function GxOtaGetActiveDesignerType: string;
@@ -839,7 +863,7 @@ function GxOtaGetIdeActionList: TCustomActionList;
 function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
 function GxOtaTryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
 
-function GxOtaGetEditorServices: IOTAEditorServices;
+function GxOtaGetEditorServices: IOTAEditorServices; deprecated; // use Ota.GetEditorServices
 
 // Return the top-most edit view/buffer (globally or for a given source editor)
 // Returns nil if none exists.
@@ -977,7 +1001,7 @@ function IsStandAlone: Boolean;
 // Consolidate with GxOtaGotoPosition?
 procedure GxOtaSetCurrentSourcePosition(Position: Integer);
 
-function GxOtaGetKeyboardServices: IOTAKeyboardServices;
+function GxOtaGetKeyboardServices: IOTAKeyboardServices; deprecated; // use Ota.GetKeyboardServices
 
 // Get the configures tab stops as a string for the current editor file
 function GxOtaGetTabStops: string;
@@ -1435,6 +1459,11 @@ begin
 end;
 
 function GxOtaCurrentlyDebugging: Boolean;
+begin
+  Result := Ota.CurrentlyDebugging;
+end;
+
+class function Ota.CurrentlyDebugging: Boolean;
 var
   DebuggerServices: IOTADebuggerServices;
 begin
@@ -1445,12 +1474,22 @@ end;
 
 function GxOtaGetIDEServices: IOTAServices;
 begin
+  Result := Ota.GetIDEServices;
+end;
+
+class function Ota.GetIDEServices: IOTAServices;
+begin
   Result := BorlandIDEServices as IOTAServices;
   if not Assigned(Result) then
     raise Exception.Create('IOTAServices not implemented');
 end;
 
 function GxOtaGetDebuggerServices: IOTADebuggerServices;
+begin
+  Result := Ota.GetDebuggerServices;
+end;
+
+class function Ota.GetDebuggerServices: IOTADebuggerServices;
 begin
   Result := BorlandIDEServices as IOTADebuggerServices;
   if not Assigned(Result) then
@@ -1459,7 +1498,7 @@ end;
 
 function GxOtaGetActiveDesignerType: string;
 begin
-  Result := GxOtaGetIDEServices.GetActiveDesignerType;
+  Result := Ota.GetIDEServices.GetActiveDesignerType;
 end;
 
 function GxOtaActiveDesignerIsVCL: Boolean;
@@ -3411,7 +3450,7 @@ end;
 
 function GxOtaGetEnvironmentOptions: IOTAEnvironmentOptions;
 begin
-  Result := GxOtaGetIDEServices.GetEnvironmentOptions;
+  Result := Ota.GetIDEServices.GetEnvironmentOptions;
   Assert(Assigned(Result));
 end;
 
@@ -3949,7 +3988,7 @@ begin
   if IsStandAlone then
     Result := 'Software\' + CompilerDefinedProductRegistryKey
   else
-    Result := GxOtaGetIDEServices.GetBaseRegistryKey;
+    Result := Ota.GetIDEServices.GetBaseRegistryKey;
 
   if Length(Result) > 0 then
   begin
@@ -3976,7 +4015,7 @@ begin
   end
   else
   begin
-    Result := GxOtaGetIDEServices.GetProductIdentifier; // D2007: 'CodeGear Delphi for Microsoft Windows'
+    Result := Ota.GetIDEServices.GetProductIdentifier; // D2007: 'CodeGear Delphi for Microsoft Windows'
     Assert(NotEmpty(Result), 'GetProductIdentifier returns nothing');
   end;
 end;
@@ -4090,6 +4129,11 @@ end;
 
 function GxOtaGetEditorServices: IOTAEditorServices;
 begin
+  Result := Ota.GetEditorServices;
+end;
+
+class function Ota.GetEditorServices: IOTAEditorServices;
+begin
   Result := (BorlandIDEServices as IOTAEditorServices);
   Assert(Assigned(Result), 'BorlandIDEServices is not assigned');
 end;
@@ -4100,7 +4144,7 @@ procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
 var
   LServices : IOTAEditorServices;
 begin
-  LServices := GxOtaGetEditorServices;
+  LServices := Ota.GetEditorServices;
   if Assigned(LServices) then begin
     AFont.Name := LServices.EditOptions.FontName;
     if ASizeAdjust > 0 then
@@ -4133,7 +4177,7 @@ end;
 
 class function Ota.TryGetTopMostEditBuffer(out EditBuffer: IOTAEditBuffer): Boolean;
 begin
-  EditBuffer := GxOtaGetEditorServices.TopBuffer;
+  EditBuffer := Ota.GetEditorServices.TopBuffer;
   Result := Assigned(EditBuffer);
 end;
 
@@ -4394,7 +4438,7 @@ var
   CurRecord: IOTARecord;
 begin
   Result := False;
-  CurRecord := GxOtaGetKeyboardServices.CurrentRecord;
+  CurRecord := Ota.GetKeyboardServices.CurrentRecord;
   if Assigned(CurRecord) then
     Result := CurRecord.IsRecording;
 end;
@@ -4409,7 +4453,7 @@ var
   CurPlayback: IOTARecord;
 begin
   Result := False;
-  CurPlayback := GxOtaGetKeyboardServices.CurrentPlayback;
+  CurPlayback := Ota.GetKeyboardServices.CurrentPlayback;
   if Assigned(CurPlayback) then
     Result := CurPlayback.IsPlaying;
 end;
@@ -4424,7 +4468,7 @@ var
   CurRecord: IOTARecord;
 begin
   Result := False;
-  CurRecord := GxOtaGetKeyboardServices.CurrentRecord;
+  CurRecord := Ota.GetKeyboardServices.CurrentRecord;
   if Assigned(CurRecord) then
     Result := CurRecord.IsPaused;
 end;
@@ -6200,6 +6244,11 @@ end;
 
 function GxOtaGetKeyboardServices: IOTAKeyboardServices;
 begin
+  Result := Ota.GetKeyboardServices;
+end;
+
+class function Ota.GetKeyboardServices: IOTAKeyboardServices;
+begin
   if not Supports(BorlandIDEServices, IOTAKeyboardServices, Result) then
     raise Exception.Create('IDE keyboard services are not available');
 end;
@@ -6566,7 +6615,7 @@ end;
 
 function TBaseIdeNotifier.AddNotifierToIDE: Boolean;
 begin
-  FNotifierIndex := GxOtaGetIDEServices.AddNotifier(Self);
+  FNotifierIndex := Ota.GetIDEServices.AddNotifier(Self);
   Result := (FNotifierIndex <> InvalidNotifierIndex);
 end;
 
@@ -6579,7 +6628,7 @@ begin
     Exit;
   SavedIndex := FNotifierIndex;
   FNotifierIndex := InvalidNotifierIndex;
-  GxOtaGetIDEServices.RemoveNotifier(SavedIndex);
+  Ota.GetIDEServices.RemoveNotifier(SavedIndex);
   Result := True;
 end;
 
@@ -6610,7 +6659,7 @@ end;
 
 function TBaseDebuggerNotifier.AddNotifierToIDE: Boolean;
 begin
-  FNotifierIndex := GxOtaGetDebuggerServices.AddNotifier(Self);
+  FNotifierIndex := Ota.GetDebuggerServices.AddNotifier(Self);
   Result := (FNotifierIndex <> InvalidNotifierIndex);
 end;
 
@@ -6623,7 +6672,7 @@ begin
     Exit;
   SavedIndex := FNotifierIndex;
   FNotifierIndex := InvalidNotifierIndex;
-  GxOtaGetDebuggerServices.RemoveNotifier(SavedIndex);
+  Ota.GetDebuggerServices.RemoveNotifier(SavedIndex);
   Result := True;
 end;
 

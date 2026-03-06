@@ -619,7 +619,7 @@ procedure TfmMacroLibrary.RecordShortcutCallback(Sender: TObject);
 var
   KS: IOTAKeyboardServices;
 begin
-  KS := GxOtaGetKeyboardServices;
+  KS := Ota.GetKeyboardServices;
   Assert(Assigned(KS));
   if not KS.CurrentPlayback.IsPlaying then
     if KS.CurrentRecord.IsRecording then
@@ -875,7 +875,7 @@ begin
     OldInfo.Stream.Position := 0;
 
     Stream := TStreamAdapter.Create(OldInfo.Stream);
-    KS := GxOtaGetKeyboardServices;
+    KS := Ota.GetKeyboardServices;
     Assert(Assigned(KS));
     if not KS.CurrentPlayback.IsPlaying and not KS.CurrentRecord.IsRecording then
     begin
@@ -1114,7 +1114,7 @@ procedure TfmMacroLibrary.actRecordExecute(Sender: TObject);
 var
   KS : IOTAKeyboardServices;
 begin
-  KS := GxOtaGetKeyboardServices;
+  KS := Ota.GetKeyboardServices;
   if not Assigned(KS) then
     Exit;
 
@@ -1140,7 +1140,7 @@ procedure TfmMacroLibrary.actPlaybackExecute(Sender: TObject);
 begin
   actEditCopy.Execute;
   GxOtaFocusCurrentIDEEditControl;
-  GxOtaGetKeyboardServices.ResumePlayback;
+  Ota.GetKeyboardServices.ResumePlayback;
 
   MacroLibExpert.IncCallCount;
 end;

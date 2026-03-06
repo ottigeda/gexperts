@@ -394,7 +394,7 @@ var
   IdeNotifier: TGxIdeNotifier;
 begin
   IdeNotifier := TGxIdeNotifier.Create(Self);
-  FIdeNotifierIndex := GxOtaGetIDEServices.AddNotifier(IdeNotifier);
+  FIdeNotifierIndex := Ota.GetIDEServices.AddNotifier(IdeNotifier);
 
   Assert(FIdeNotifierIndex >= 0);
 end;
@@ -403,7 +403,7 @@ procedure TEditorChangeServices.RemoveInternalIdeNotifier;
 begin
   if FIdeNotifierIndex <> InvalidNotifierIndex then
   begin
-    GxOtaGetIDEServices.RemoveNotifier(FIdeNotifierIndex);
+    Ota.GetIDEServices.RemoveNotifier(FIdeNotifierIndex);
     FIdeNotifierIndex := InvalidNotifierIndex;
   end;
 end;

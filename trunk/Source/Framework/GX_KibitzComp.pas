@@ -341,7 +341,7 @@ with a ' ', and at the end restore the '.', but this adds to the undo stack.
 begin
   Initialize;
   // Exit if kibitzing is not enabled, or the IDE is debugging.
-  if (not KibitzEnabled) or GxOtaCurrentlyDebugging then
+  if (not KibitzEnabled) or Ota.CurrentlyDebugging then
     Exit;
 
   NewCharPos.CharIndex := XPos;
@@ -385,7 +385,7 @@ var
 begin
   Initialize;
   // Exit if kibitzing is not enabled, or the IDE is debugging.
-  if (not KibitzEnabled) or GxOtaCurrentlyDebugging then
+  if (not KibitzEnabled) or Ota.CurrentlyDebugging then
     Exit;
 
   // Save the old edit control (I don't know if it is necessary but it won't do harm).

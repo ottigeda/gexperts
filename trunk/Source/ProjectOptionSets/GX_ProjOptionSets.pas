@@ -1000,7 +1000,7 @@ end;
 
 function TfmProjOptionSets.GetEnvironmentOptions: IOTAEnvironmentOptions;
 begin
-  Result := GxOtaGetIDEServices.GetEnvironmentOptions;
+  Result := Ota.GetIDEServices.GetEnvironmentOptions;
 end;
 
 procedure ProcessTranslatedValueForLineBreaks(var Value: string);

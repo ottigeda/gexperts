@@ -546,7 +546,7 @@ begin
     if FShortCutList.Count = 0 then
       Exit;
 
-    IKeyboardServices := GxOtaGetKeyboardServices;
+    IKeyboardServices := Ota.GetKeyboardServices;
     Assert(Assigned(IKeyboardServices));
 
     IKeyboardBinding := TGxKeyboardBinding.Create(Self);
@@ -573,7 +573,7 @@ begin
   // installed, remove it - otherwise
   // ignore the request to remove it.
   if FKeyboardBindingIndex <> InvalidIndex then begin
-    IKeyboardServices := GxOtaGetKeyboardServices;
+    IKeyboardServices := Ota.GetKeyboardServices;
     try
       {$IFOPT D+} SendDebugWarning(ClassName + ' IKeyboardServices.RemoveKeyboardBindings!'); {$ENDIF}
       IKeyboardServices.RemoveKeyboardBinding(FKeyboardBindingIndex);
