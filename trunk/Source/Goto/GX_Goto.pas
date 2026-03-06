@@ -120,7 +120,7 @@ begin
   reg := TRegistry.Create;
   try
     reg.RootKey := HKEY_CURRENT_USER;
-    if reg.OpenKeyReadOnly(GxOtaGetIdeBaseRegistryKey + '\History Lists\hlGotoLine') then begin
+    if reg.OpenKeyReadOnly(Ota.GetIdeBaseRegistryKey + '\History Lists\hlGotoLine') then begin
       if reg.ValueExists('Count') then begin
         cnt := reg.ReadInteger('Count');
         Items := cmb_LineNumber.Items;

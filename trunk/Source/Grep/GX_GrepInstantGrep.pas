@@ -238,7 +238,7 @@ begin
   if FOriginalEditPos.Col >= 0 then begin
     Ota.TryGotoEditPos(FOriginalEditPos);
   end;
-  GxOtaFocusCurrentIDEEditControl;
+  Ota.FocusCurrentIDEEditControl;
 end;
 
 procedure TfmGxInstantGrepForm.GoToCurrent();
@@ -248,7 +248,7 @@ begin
   if TryGetSelectedEditorPos(EditPos) then begin
     Ota.TryGotoEditPos(EditPos);
   end;
-  GxOtaFocusCurrentIDEEditControl;
+  Ota.FocusCurrentIDEEditControl;
 end;
 
 procedure TfmGxInstantGrepForm.Init(const _Text: string);

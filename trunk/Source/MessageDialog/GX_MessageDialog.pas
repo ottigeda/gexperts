@@ -1093,7 +1093,7 @@ begin
       end;
       if frm.chkDefaults.Checked then
         frm.SaveSettings;
-      GxOtaFocusCurrentIDEEditControl;
+      Ota.FocusCurrentIDEEditControl;
 
       IncCallCount;
     end;

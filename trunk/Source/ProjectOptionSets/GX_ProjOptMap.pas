@@ -2472,7 +2472,7 @@ end;
 
 function GxHexOptionTranslator(const ValueString: string): string;
 begin
-  Result := Format(GxOtaGetHexPrefix + '%x', [StrToIntDef(ValueString, 0)]);
+  Result := Format(Ota.GetHexPrefix + '%x', [StrToIntDef(ValueString, 0)]);
 end;
 
 function GxProcInstructTranslator(const ValueString: string): string;

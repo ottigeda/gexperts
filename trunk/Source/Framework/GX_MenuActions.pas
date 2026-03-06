@@ -172,7 +172,7 @@ begin
   FConfigAction := CreateAction(SGxConfigMenu, 'Configuration', ConfigClick, nil, 0, ConfigItemTag, 1); // Do not localize.
   FAboutAction := CreateAction(SGxAboutMenu, 'About', AboutClick, nil, 0, AboutItemTag, 2); // Do not localize.
 
-  MainMenu := GxOtaGetIdeMainMenu;
+  MainMenu := Ota.GetIdeMainMenu;
   Assert(Assigned(MainMenu), 'MainMenu component not found');
 
   // Insert GExperts drop down menu.
@@ -256,7 +256,7 @@ procedure TGXMenuActionManager.SetHideWindowMenu(const Value: boolean);
 var
   WindowMenu: TMenuItem;
 begin
-  if not GetMatchingMenuItem(GxOtaGetIdeMainMenu.Items, 'WindowsMenu', WindowMenu) then
+  if not GetMatchingMenuItem(Ota.GetIdeMainMenu.Items, 'WindowsMenu', WindowMenu) then
     Exit;
   WindowMenu.Visible := not Value;
   ConfigInfo.HideWindowMenu := Value;
@@ -274,7 +274,7 @@ var
   ComponentMenu: TMenuItem;
   ToolsMenu: TMenuItem;
 begin
-  MainMenu := GxOtaGetIdeMainMenu;
+  MainMenu := Ota.GetIdeMainMenu;
   if not GetToolsMenuItem(MainMenu.Items, ToolsMenu) then
     Exit;
   if Value then

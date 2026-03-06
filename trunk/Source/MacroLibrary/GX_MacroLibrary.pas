@@ -1118,7 +1118,7 @@ begin
   if not Assigned(KS) then
     Exit;
 
-  GxOtaFocusCurrentIDEEditControl;
+  Ota.FocusCurrentIDEEditControl;
   if not KS.CurrentPlayback.IsPlaying then
   begin
     if KS.CurrentRecord.IsRecording then
@@ -1139,7 +1139,7 @@ end;
 procedure TfmMacroLibrary.actPlaybackExecute(Sender: TObject);
 begin
   actEditCopy.Execute;
-  GxOtaFocusCurrentIDEEditControl;
+  Ota.FocusCurrentIDEEditControl;
   Ota.GetKeyboardServices.ResumePlayback;
 
   MacroLibExpert.IncCallCount;

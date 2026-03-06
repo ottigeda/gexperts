@@ -591,6 +591,52 @@ type
     /// Obtains a list of unit alias mappings in OldUnit=NewUnit format.
     /// @param Aliases receives the alias mappings (cleared first) </summary>
     class procedure GetUnitAliases(Aliases: TStrings);
+
+    /// <summary>
+    /// Returns the IDE's base registry key, e.g. 'Software\Borland\Delphi\4.0'.
+    /// The returned string has no leading or trailing backslash.
+    /// @returns the base registry key string </summary>
+    class function GetIdeBaseRegistryKey: string;
+    /// <summary>
+    /// Returns a string describing the IDE such as 'Delphi' or 'C++Builder'.
+    /// @returns the IDE product identifier string </summary>
+    class function GetIDEProductIdentifier: string;
+    /// <summary>
+    /// Returns the IDE's image list.
+    /// @returns the IDE image list </summary>
+    class function GetIdeImageList: TCustomImageList;
+    /// <summary>
+    /// Returns the IDE's main menu.
+    /// @returns the IDE main menu </summary>
+    class function GetIdeMainMenu: TMainMenu;
+    /// <summary>
+    /// Returns the IDE's main action list.
+    /// @returns the IDE action list </summary>
+    class function GetIdeActionList: TCustomActionList;
+    /// <summary>
+    /// Finds an action in the IDE's action list by name.
+    /// @param Name the action name to search for
+    /// @returns the action if found, nil otherwise </summary>
+    class function GetIdeActionByName(const Name: string): TContainedAction;
+    /// <summary>
+    /// Tries to find an action in the IDE's action list by name.
+    /// @param Name the action name to search for
+    /// @param _Action receives the found action
+    /// @returns True if the action was found </summary>
+    class function TryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
+    /// <summary>
+    /// Returns the preferred hex number display prefix for the current project
+    /// personality ('$' for Delphi, '0x' for C++/C#).
+    /// @returns the hex prefix string </summary>
+    class function GetHexPrefix: string;
+    /// <summary>
+    /// Returns the IDE's internal edit control for the current edit view.
+    /// @returns the edit control, or nil if not available </summary>
+    class function GetCurrentIDEEditControl: TWinControl;
+    /// <summary>
+    /// Tries to focus the IDE's current edit control.
+    /// @returns True if the control was focused </summary>
+    class function FocusCurrentIDEEditControl: Boolean;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -953,7 +999,7 @@ function GxOtaHaveDelphiSupport: Boolean; deprecated; // use Ota.HaveDelphiSuppo
 function GxOtaHaveCSharpSupport: Boolean; deprecated; // use Ota.HaveCSharpSupport
 
 // Get the preferred hex number display prefix characters for our personality
-function GxOtaGetHexPrefix: string;
+function GxOtaGetHexPrefix: string; deprecated; // use Ota.GetHexPrefix
 
 // See if the user is editing a form
 function GxOtaCurrentlyEditingForm: Boolean; deprecated; // use Ota.CurrentlyEditingForm
@@ -962,8 +1008,8 @@ function GxOtaCurrentlyEditingForm: Boolean; deprecated; // use Ota.CurrentlyEdi
 function GxOtaCurrentlyEditingSource: Boolean; deprecated; // use Ota.CurrentlyEditingSource
 
 // Obtain and focus the IDE's internal edit control wrapper
-function GxOtaGetCurrentIDEEditControl: TWinControl;
-function GxOtaFocusCurrentIDEEditControl: Boolean;
+function GxOtaGetCurrentIDEEditControl: TWinControl; deprecated; // use Ota.GetCurrentIDEEditControl
+function GxOtaFocusCurrentIDEEditControl: Boolean; deprecated; // use Ota.FocusCurrentIDEEditControl
 
 // Returns reference to currently active project;
 // returns nil if there is no (active) project.
@@ -1153,23 +1199,23 @@ procedure GxOtaGetUnitAliases(Aliases: TStrings); deprecated; // use Ota.GetUnit
 // The returned string is guaranteed to NOT have a
 // backslash appended and it does NOT have a leading
 // backslash either (Windows 2000 is allergic to that).
-function GxOtaGetIdeBaseRegistryKey: string;
+function GxOtaGetIdeBaseRegistryKey: string; deprecated; // use Ota.GetIdeBaseRegistryKey
 
 // Get a string describing the IDE such as 'Delphi' or 'C++Builder'
-function GxOtaGetIDEProductIdentifier: string;
+function GxOtaGetIDEProductIdentifier: string; deprecated; // use Ota.GetIDEProductIdentifier
 
 // Returns the IDE's image list.
-function GxOtaGetIdeImageList: TCustomImageList;
+function GxOtaGetIdeImageList: TCustomImageList; deprecated; // use Ota.GetIdeImageList
 
 // Return the IDE's main menu.
-function GxOtaGetIdeMainMenu: TMainMenu;
+function GxOtaGetIdeMainMenu: TMainMenu; deprecated; // use Ota.GetIdeMainMenu
 
 // Return the IDE's main action list
-function GxOtaGetIdeActionList: TCustomActionList;
+function GxOtaGetIdeActionList: TCustomActionList; deprecated; // use Ota.GetIdeActionList
 
 // Find an action in the IDE's action list by name and return it.
-function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
-function GxOtaTryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
+function GxOtaGetIdeActionByName(const Name: string): TContainedAction; deprecated; // use Ota.GetIdeActionByName
+function GxOtaTryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean; deprecated; // use Ota.TryGetIdeActionByName
 
 function GxOtaGetEditorServices: IOTAEditorServices; deprecated; // use Ota.GetEditorServices
 
@@ -2084,6 +2130,11 @@ end;
 
 function GxOtaGetHexPrefix: string;
 begin
+  Result := Ota.GetHexPrefix;
+end;
+
+class function Ota.GetHexPrefix: string;
+begin
   if StringInArray(Ota.GetCurrentProjectPersonality, [sCBuilderPersonality, sCSharpPersonality]) then
     Result := '0x'
   else
@@ -2116,6 +2167,11 @@ begin
 end;
 
 function GxOtaGetCurrentIDEEditControl: TWinControl;
+begin
+  Result := Ota.GetCurrentIDEEditControl;
+end;
+
+class function Ota.GetCurrentIDEEditControl: TWinControl;
 var
   EditView: IOTAEditView;
   EditWindow: INTAEditWindow;
@@ -2136,10 +2192,15 @@ begin
 end;
 
 function GxOtaFocusCurrentIDEEditControl: Boolean;
+begin
+  Result := Ota.FocusCurrentIDEEditControl;
+end;
+
+class function Ota.FocusCurrentIDEEditControl: Boolean;
 var
   EditControl: TWinControl;
 begin
-  EditControl := GxOtaGetCurrentIDEEditControl;
+  EditControl := Ota.GetCurrentIDEEditControl;
   Result := TryFocusControl(EditControl)
 end;
 
@@ -3898,7 +3959,7 @@ begin
 
   Application.ProcessMessages;
 
-  GxOtaFocusCurrentIDEEditControl;
+  Ota.FocusCurrentIDEEditControl;
 
   // XE7 matches contains the correct block parameters in CharPos (not BytePos) (IVK)
   // todo: If this is a workaround for a bug and that bug was fixed in XE7, shouldn't it also be
@@ -4620,6 +4681,11 @@ end;
 
 function GxOtaGetIdeBaseRegistryKey: string;
 begin
+  Result := Ota.GetIdeBaseRegistryKey;
+end;
+
+class function Ota.GetIdeBaseRegistryKey: string;
+begin
   if IsStandAlone then
     Result := 'Software\' + CompilerDefinedProductRegistryKey
   else
@@ -4639,6 +4705,11 @@ end;
 // This should only be used for a display that does not care about the format, it can change regularly
 function GxOtaGetIDEProductIdentifier: string;
 begin
+  Result := Ota.GetIDEProductIdentifier;
+end;
+
+class function Ota.GetIDEProductIdentifier: string;
+begin
   if IsStandAlone then
   begin
     if RunningCppBuilder then
@@ -4656,6 +4727,11 @@ begin
 end;
 
 function GxOtaGetIdeImageList: TCustomImageList;
+begin
+  Result := Ota.GetIdeImageList;
+end;
+
+class function Ota.GetIdeImageList: TCustomImageList;
 var
   NTAServices: INTAServices;
 begin
@@ -4669,6 +4745,11 @@ begin
 end;
 
 function GxOtaGetIdeMainMenu: TMainMenu;
+begin
+  Result := Ota.GetIdeMainMenu;
+end;
+
+class function Ota.GetIdeMainMenu: TMainMenu;
 var
   NTAServices: INTAServices;
 begin
@@ -4682,6 +4763,11 @@ begin
 end;
 
 function GxOtaGetIdeActionList: TCustomActionList;
+begin
+  Result := Ota.GetIdeActionList;
+end;
+
+class function Ota.GetIdeActionList: TCustomActionList;
 var
   NTAServices: INTAServices;
 begin
@@ -4692,12 +4778,17 @@ begin
 end;
 
 function GxOtaTryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
+begin
+  Result := Ota.TryGetIdeActionByName(Name, _Action);
+end;
+
+class function Ota.TryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
 var
   IdeActionList: TCustomActionList;
   InspectedAction: TContainedAction;
   i: Integer;
 begin
-  IdeActionList := GxOtaGetIdeActionList;
+  IdeActionList := Ota.GetIdeActionList;
   Assert(Assigned(IdeActionList));
   Result := False;
   i := IdeActionList.ActionCount;
@@ -4729,7 +4820,12 @@ end;
 
 function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
 begin
-  if not GxOtaTryGetIdeActionByName(Name, Result) then
+  Result := Ota.GetIdeActionByName(Name);
+end;
+
+class function Ota.GetIdeActionByName(const Name: string): TContainedAction;
+begin
+  if not Ota.TryGetIdeActionByName(Name, Result) then
     Result := nil;
 (*
   if not Assigned(Result) then
@@ -7061,7 +7157,7 @@ var
   ActionShortCut: TShortCut;
   i: Integer;
 begin
-  Actions := GxOtaGetIdeActionList;
+  Actions := Ota.GetIdeActionList;
   Assert(Assigned(Actions));
   Msg := '';
   for i := 0 to Actions.ActionCount - 1 do

@@ -242,7 +242,7 @@ procedure TfmIdeShortCuts.InitializeForm;
 begin
   LoadSettings;
   MainMenu.Items.Clear;
-  FillMenuBar(GxOtaGetIdeMainMenu.Items, MainMenu.Items);
+  FillMenuBar(Ota.GetIdeMainMenu.Items, MainMenu.Items);
   ReadFromRegistryCFG;
   Menu := MainMenu;
 end;
@@ -534,7 +534,7 @@ begin
   Settings := TGExpertsSettings.Create;
   try
     RegValues := TStringList.Create;
-    IDEMainMenu := GxOtaGetIdeMainMenu;
+    IDEMainMenu := Ota.GetIdeMainMenu;
     if not Assigned(IDEMainMenu) then
       Exit;
 
@@ -586,7 +586,7 @@ var
 begin
   if Application.Terminated then
     Exit;
-  IDEMainMenu := GxOtaGetIdeMainMenu;
+  IDEMainMenu := Ota.GetIdeMainMenu;
   if not Assigned(IDEMainMenu) then
     Exit;
   if Assigned(FOldShortCuts) then

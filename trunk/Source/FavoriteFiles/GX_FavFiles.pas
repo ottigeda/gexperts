@@ -2028,7 +2028,7 @@ var
   MainMenu: TMainMenu;
 begin
   Result := False;
-  MainMenu := GxOtaGetIdeMainMenu;
+  MainMenu := Ota.GetIdeMainMenu;
   if not Assigned(MainMenu) then
     Exit;
   Result := TMainMenu_FindMenuItem(MainMenu, FileOpenRecentItemName, _MenuItem);

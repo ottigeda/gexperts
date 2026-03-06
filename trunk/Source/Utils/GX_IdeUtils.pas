@@ -341,7 +341,7 @@ begin
     Reg := TRegistry.Create;
     try
       Reg.RootKey := HKEY_CURRENT_USER;
-      if Reg.OpenKeyReadOnly(GxOtaGetIdeBaseRegistryKey+'\Session') then
+      if Reg.OpenKeyReadOnly(Ota.GetIdeBaseRegistryKey+'\Session') then
       begin
         Result := Reg.ReadString('DesktopName');
         Reg.CloseKey;
@@ -443,7 +443,7 @@ begin
   if IsStandAlone then
     Result := ''
   else
-    Result := GxOtaGetIdeBaseRegistryKey;
+    Result := Ota.GetIdeBaseRegistryKey;
 end;
 
 function GetIdeFontData(var FontName: string; var FontSize: Integer): Boolean;
@@ -473,7 +473,7 @@ const
   BinDirPostfix = PathDelim + 'Bin';
 {$ENDIF}
 begin
-  if TRegistry_TryReadString(GxOtaGetIdeBaseRegistryKey, 'RootDir', Result, HKEY_LOCAL_MACHINE) then begin
+  if TRegistry_TryReadString(Ota.GetIdeBaseRegistryKey, 'RootDir', Result, HKEY_LOCAL_MACHINE) then begin
     if DirectoryExists(Result) then begin
       Result := AddSlash(Result);
       Exit; //==>
@@ -491,7 +491,7 @@ end;
 
 function GetIdeEdition: string;
 begin
-  Result := TRegistry_ReadString(GxOtaGetIdeBaseRegistryKey, 'Version', '', HKEY_LOCAL_MACHINE);
+  Result := TRegistry_ReadString(Ota.GetIdeBaseRegistryKey, 'Version', '', HKEY_LOCAL_MACHINE);
 end;
 
 
@@ -516,7 +516,7 @@ begin
   Result := clWindow;
   Reg := TRegistry.Create;
   try
-    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + _RegKey, False) then
     begin
       if TryReadRegString(reg, 'Default Background', Value) then begin
         if SameText(Value, 'False') then begin
@@ -538,7 +538,7 @@ begin
   Result := clWindowText;
   Reg := TRegistry.Create;
   try
-    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + _RegKey, False) then
     begin
       if TryReadRegString(reg, 'Default Foreground', Value) then begin
         if SameText(Value, 'False') then begin
@@ -565,7 +565,7 @@ begin
   Result := clWindow;
   Reg := TRegistry.Create;
   try
-    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + _RegKey, False) then
     begin
       if TryReadRegString(reg, 'Default Background', s) then begin
         if SameText(s, 'False') then begin
@@ -600,7 +600,7 @@ begin
   Result := clWindowText;
   Reg := TRegistry.Create;
   try
-    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + _RegKey, False) then
     begin
       if TryReadRegString(reg, 'Default Foreground', s) then begin
         if SameText(s, 'False') then begin
@@ -671,7 +671,7 @@ begin
   Reg := TRegistry.Create;
   try
     Names := TStringList.Create;
-    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + '\Environment Variables', False) then
+    if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + '\Environment Variables', False) then
     begin
       Reg.GetValueNames(Names);
       for i := 0 to Names.Count - 1 do begin
@@ -689,7 +689,7 @@ procedure HijackIDEAction(const ActionName: string; var OriginalIDEAction: TNoti
 var
   Action: TContainedAction;
 begin
-  if GxOtaTryGetIdeActionByName(ActionName, Action)
+  if Ota.TryGetIdeActionByName(ActionName, Action)
     and (Action is TCustomAction) then begin
     OriginalIDEAction := (Action as TCustomAction).OnExecute;
     (Action as TCustomAction).OnExecute := NewIDEAction;
@@ -705,7 +705,7 @@ begin
   //       and cause problems.
   if not Assigned(IDEHandler) then
     Exit;
-  if GxOtaTryGetIdeActionByName(ActionName, Action) then
+  if Ota.TryGetIdeActionByName(ActionName, Action) then
     Action.OnExecute := IDEHandler;
 end;
 
@@ -731,7 +731,7 @@ var
   LastSlashPos: Integer;
   Version: string;
 begin
-  RegKey := GxOtaGetIdeBaseRegistryKey;
+  RegKey := Ota.GetIdeBaseRegistryKey;
   LastSlashPos := LastCharPos(RegKey, '\');
   Version := Copy(RegKey, LastSlashPos + 1);
   Result := Version;
@@ -952,7 +952,7 @@ begin
   reg := TRegistry.Create;
   try
     reg.RootKey := HKEY_CURRENT_USER;
-    if reg.OpenKeyReadOnly(GxOtaGetIdeBaseRegistryKey + '\Theme') then begin
+    if reg.OpenKeyReadOnly(Ota.GetIdeBaseRegistryKey + '\Theme') then begin
       try
         if reg.ValueExists('Enabled') and (reg.GetDataType('Enabled') = rdInteger) then
           Result := (reg.ReadInteger('Enabled') <> 0);
@@ -979,7 +979,7 @@ var
 {$ENDIF}
   reg: TRegistry;
 begin
-  RegKey := GxOtaGetIdeBaseRegistryKey + '\Editor\Highlight\' + _Key;
+  RegKey := Ota.GetIdeBaseRegistryKey + '\Editor\Highlight\' + _Key;
   BGColorName := 'Background Color';
   FGColorName := 'Foreground Color';
 {$IFDEF GX_DELPHI7_UP}

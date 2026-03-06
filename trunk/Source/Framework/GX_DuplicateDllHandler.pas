@@ -105,7 +105,7 @@ begin
   GXGeneralMutex := CreateMutex(nil, False, 'GExperts.Addin.For.Borland.IDEs');
 
   GXVersionMutex := CreateMutex(nil, False, PChar('GExperts.Addin.For.Borland.IDEs.Under.' +
-    GxOtaGetIDEProductIdentifier + MajorVersionNumberChar));
+    Ota.GetIDEProductIdentifier + MajorVersionNumberChar));
   if (GXVersionMutex <> 0) and (GetLastError = ERROR_ALREADY_EXISTS) then begin
     // The mutex already exists, so there is a good chance that a copy
     // of this version of GExperts is already loaded into memory.

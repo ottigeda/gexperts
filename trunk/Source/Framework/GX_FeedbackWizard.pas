@@ -1,7 +1,7 @@
 unit GX_FeedbackWizard;
 
 // Original Authors:
-//   Stig Jørgensen <stig.joergensen@clearsky.dk> and
+//   Stig Jï¿½rgensen <stig.joergensen@clearsky.dk> and
 //   Erik Berry <eberry@gexperts.org>
 
 interface
@@ -377,7 +377,7 @@ begin
   FActiveTabNumber := 1;
   UpdateInfo;
   pgeMain.Style := tsButtons;
-  FIDEName := GxOtaGetIDEProductIdentifier;
+  FIDEName := Ota.GetIDEProductIdentifier;
   SetParentBackgroundValue(pnlHeader, False);
 
   InitDpiScaler;
@@ -868,15 +868,15 @@ end;
 function GetInstalledExpertsString: string;
 begin
   Result := ReportItemsInRegistryKey('Installed Experts:',
-    GxOtaGetIdeBaseRegistryKey + '\Experts') + CRLF;
+    Ota.GetIdeBaseRegistryKey + '\Experts') + CRLF;
 end;
 
 function GetInstalledPackagesString: string;
 begin
   Result := ReportItemsInRegistryKey('Installed Packages:',
-    GxOtaGetIdeBaseRegistryKey + '\Known Packages') + CRLF;
+    Ota.GetIdeBaseRegistryKey + '\Known Packages') + CRLF;
   Result := Result + ReportItemsInRegistryKey('Installed IDE Packages:',
-    GxOtaGetIdeBaseRegistryKey + '\Known IDE Packages') + CRLF;
+    Ota.GetIdeBaseRegistryKey + '\Known IDE Packages') + CRLF;
 end;
 
 function GetGExpertsSettingsString: string;

@@ -148,7 +148,7 @@ begin
         Exit;
 
       ToolBar.Parent := EditControlPanel;
-      ToolBar.Images := GxOtaGetIdeImageList;
+      ToolBar.Images := Ota.GetIdeImageList;
 
       ToolBar.BringToFront;
 

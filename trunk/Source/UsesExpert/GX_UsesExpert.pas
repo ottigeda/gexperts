@@ -503,7 +503,7 @@ var
   mi: TMenuItem;
 begin
   Result := False;
-  MainMenu := GxOtaGetIdeMainMenu;
+  MainMenu := Ota.GetIdeMainMenu;
   if not Assigned(MainMenu) then
     Exit;
   if not TMainMenu_FindMenuItem(MainMenu, 'FileUseUnitItem', mi) or not Assigned(mi.Action) then

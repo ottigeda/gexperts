@@ -77,7 +77,7 @@ begin
 
   RegisterUnspecifiedBitmapWithIde;
 
-  FToolbar.Images := GxOtaGetIdeImageList;
+  FToolbar.Images := Ota.GetIdeImageList;
   SetToolBarGradient(FToolbar, False);
 end;
 
@@ -152,7 +152,7 @@ begin
       ToolButton.Parent := Self;
       ToolButton.Visible := True;
       ToolButton.Width := 8;
-    end else if not GxOtaTryGetIdeActionByName(ActionName, IdeAction) then begin
+    end else if not Ota.TryGetIdeActionByName(ActionName, IdeAction) then begin
       // The action does not exist within the realm of the current IDE.
       // We probably want to consider adding the tool button nevertheless, but
       // with a warning or text description that the action is missing?

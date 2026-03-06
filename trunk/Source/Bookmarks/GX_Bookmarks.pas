@@ -415,7 +415,7 @@ begin
 
  finally
   EditView.MoveViewToCursor;
-  GxOtaFocusCurrentIDEEditControl;
+  Ota.FocusCurrentIDEEditControl;
   EditView.Paint;
   end;
 end;
@@ -465,8 +465,8 @@ begin
 
  EditView.BookmarkGoto(BM.Number);
  EditView.MoveViewToCursor;
- lbBookmarks.SetFocus; //§3 -cInfo : MUST for updating IDE SBar, EditView.Paint has no effect
- GxOtaFocusCurrentIDEEditControl;
+ lbBookmarks.SetFocus; //ï¿½3 -cInfo : MUST for updating IDE SBar, EditView.Paint has no effect
+ Ota.FocusCurrentIDEEditControl;
  // EditView.Paint;
 end;
 
@@ -670,7 +670,7 @@ var ListBox      : TListBox absolute _Control;
 
   if FHideClassName then begin
    p:=pos('.',FuncProcName);
-   if p>0 then delete(FuncProcName,1,p-1); //§3 -cInfo : group local + class methods
+   if p>0 then delete(FuncProcName,1,p-1); //ï¿½3 -cInfo : group local + class methods
    end;
 
   lbCanvas.TextOut(_Rect.Left+GutterL,TextTop,Shorten(lbCanvas,MaxL,FuncProcName,#133));

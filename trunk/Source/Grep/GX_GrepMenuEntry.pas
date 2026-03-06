@@ -84,7 +84,7 @@ begin
   if not Assigned(InternalPopupMenu) then begin
     InternalPopupMenu := NewPopupMenu(nil, MenuName, paCenter, False, []);
 {$IFNDEF GX_ICONS_IN_POPUP_MENUS_ARE_BROKEN}
-    InternalPopupMenu.Images := GxOtaGetIdeImageList;
+    InternalPopupMenu.Images := Ota.GetIdeImageList;
 {$ENDIF}
   end;
 

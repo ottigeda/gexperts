@@ -141,7 +141,7 @@ begin
     and Ota.IdeStyleIsDark // ColorToGrayscale(GxOtaGetThemedColor(clWindow)) < 127)
     then begin
       // Dark Mode
-      Key := GxOtaGetIdeBaseRegistryKey + '\Editor\Highlight';
+      Key := Ota.GetIdeBaseRegistryKey + '\Editor\Highlight';
       for i := 0 to SynEdit.Highlighter.AttrCount-1 do
       begin
         SynEdit.Highlighter.Attribute[i].LoadFromBorlandRegistry(

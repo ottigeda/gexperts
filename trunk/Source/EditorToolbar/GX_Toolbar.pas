@@ -338,7 +338,7 @@ begin
       // If it doesn't exist, ignore it.
       // We probably want to consider adding the tool button nevertheless, but
       // with a warning or text description that the action is missing?
-      if GxOtaTryGetIdeActionByName(ActionName, IdeAction) then
+      if Ota.TryGetIdeActionByName(ActionName, IdeAction) then
       begin
         ToolButton := TToolButton.Create(Self);
         {$IFDEF GX_VER160_up}
