@@ -50,6 +50,13 @@ type
     class function SetComponentPropertyAsString(const AComponent: IOTAComponent;
       const PropertyName: string; const Value: WideString): Boolean;
     class function NormalizePropertyValue(Component: IOTAComponent; const PropName, Value: string): string;
+    /// <summary>
+    /// Checks if a property with the given name exists for the component.
+    /// Property names are case-insensitive.
+    /// @param Component the component to check
+    /// @param PropertyName the name of the property to look for
+    /// @returns True if the property exists, False otherwise </summary>
+    class function PropertyExists(const Component: IOTAComponent; const PropertyName: string): Boolean;
     class function GetPropertyIndexByName(const AComponent: IOTAComponent;
       const PropertyName: WideString): Integer;
 
@@ -250,7 +257,7 @@ function GxOtaGetComponentPropertyAsString(const AComponent: IOTAComponent;
   const PropertyName: string; PreferStrings: Boolean = False): WideString; deprecated; // use Ota.GetComponentPropertyAsString
 function GxOtaSetComponentPropertyAsString(const AComponent: IOTAComponent;
   const PropertyName: string; const Value: WideString): Boolean; deprecated; // use Ota.SetComponentPropertyAsString
-function GxOtaNormalizePropertyValue(Component: IOTAComponent; const PropName, Value: string): string;
+function GxOtaNormalizePropertyValue(Component: IOTAComponent; const PropName, Value: string): string; deprecated; // use Ota.NormalizePropertyValue
 function GxOtaGetPropertyIndexByName(const AComponent: IOTAComponent;
   const PropertyName: WideString): Integer; deprecated; // use Ota.GetPropertyIndexByName
 
@@ -900,7 +907,7 @@ function GxOtaGetCurrentSyntaxHighlighter(SourceEditor: IOTASourceEditor = nil):
 // Returns True if property with name PropertyName exists for the component;
 // False otherwise.
 // Property names are insensitive to case.
-function GxOtaPropertyExists(const Component: IOTAComponent; const PropertyName: string): Boolean;
+function GxOtaPropertyExists(const Component: IOTAComponent; const PropertyName: string): Boolean; deprecated; // use Ota.PropertyExists
 
 function GxOtaGetFormEditorForFileName(const FileName: string): IOTAFormEditor;
 // Gets the form editor for the active module, or nil if none is present
@@ -5108,6 +5115,11 @@ begin
 end;
 
 function GxOtaPropertyExists(const Component: IOTAComponent; const PropertyName: string): Boolean;
+begin
+  Result := Ota.PropertyExists(Component, PropertyName);
+end;
+
+class function Ota.PropertyExists(const Component: IOTAComponent; const PropertyName: string): Boolean;
 var
   i: Integer;
 begin

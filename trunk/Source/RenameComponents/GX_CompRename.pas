@@ -281,7 +281,7 @@ begin
       PropName := _OtherProps.Names[i];
       if PropName = '' then
         PropName := _OtherProps[i];
-      if GxOtaPropertyExists(_Component, PropName) then
+      if Ota.PropertyExists(_Component, PropName) then
         Ota.SetComponentPropertyAsString(_Component, PropName, GetComponentProperty(i));
     end;
   end;
@@ -463,7 +463,7 @@ begin
     PropName := _OtherProps.Names[i];
     if PropName = '' then
       PropName := _OtherProps[i];
-    if not GxOtaPropertyExists(_Component, PropName) then begin
+    if not Ota.PropertyExists(_Component, PropName) then begin
       AddComponentProperty(_Component, PropName, SPropertyNotFound);
     end else begin
       if _UseRules then begin
@@ -1125,7 +1125,7 @@ begin
             for i := 0 to OtherProps.Count - 1 do
             begin
               PropName := OtherProps.Names[i];
-              if (PropName <> '') and GxOtaPropertyExists(Component, PropName) then
+              if (PropName <> '') and Ota.PropertyExists(Component, PropName) then
               begin
                 PropValue := OtherProps.Values[PropName];
                 if PropValue <> '' then

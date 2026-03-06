@@ -194,8 +194,8 @@ var
   TreeNode: TTreeNode;
   AName: WideString;
 begin
-  if (GxOtaPropertyExists(Component, TabStopPropertyName) and
-      GxOtaPropertyExists(Component, TabOrderPropertyName)) or
+  if (Ota.PropertyExists(Component, TabStopPropertyName) and
+      Ota.PropertyExists(Component, TabOrderPropertyName)) or
      (Component.GetControlCount > 0) then
   begin
     // These are freed by the owner form
@@ -362,8 +362,8 @@ begin
       if CurrentComponent.GetPropTypeByName('TabStop') = tkEnumeration then
       begin
         // ... and make dead sure that they have the relevant properties
-        if GxOtaPropertyExists(CurrentComponent, TabStopPropertyName) and
-           GxOtaPropertyExists(CurrentComponent, TabOrderPropertyName) then
+        if Ota.PropertyExists(CurrentComponent, TabStopPropertyName) and
+           Ota.PropertyExists(CurrentComponent, TabOrderPropertyName) then
         begin
           if ParentName = '' then
           begin

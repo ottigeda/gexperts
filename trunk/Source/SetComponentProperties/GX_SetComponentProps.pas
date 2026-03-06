@@ -430,7 +430,7 @@ begin
         begin
           try
             CurrentValue := Ota.GetComponentPropertyAsString(Component, cProperty);
-            NormalizedValue := GxOtaNormalizePropertyValue(Component, cProperty, cValue);
+            NormalizedValue := Ota.NormalizePropertyValue(Component, cProperty, cValue);
             if CurrentValue <> NormalizedValue then
             begin
               Result := True;

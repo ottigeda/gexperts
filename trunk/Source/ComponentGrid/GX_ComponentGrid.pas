@@ -278,7 +278,7 @@ procedure TfmComponentGrid.PopulateGrid;
 
   function ComponentProperty(const PropName: string; const AComponent: IOTAComponent): WideString;
   begin
-    if GxOtaPropertyExists(AComponent, PropName) then
+    if Ota.PropertyExists(AComponent, PropName) then
       Result := Ota.GetComponentPropertyAsString(AComponent, PropName)
     else
       Result := SNotAvailable;
