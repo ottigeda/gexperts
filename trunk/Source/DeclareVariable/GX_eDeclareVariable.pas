@@ -51,9 +51,45 @@ implementation
 
 uses
   SysUtils, Windows, Menus, ToolsAPI, Dialogs,
-  GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert;
+  GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert,
+  mPasLex, mwPasParserTypes,
+  GX_PascalTokenAnalyzer, GX_Experts,
+  GX_GExperts, GX_UsesExpert, GX_UnitExportList,
+  GX_UsesManager;
 
 type
+  /// Cached tokenization of an external .pas file's interface section
+  TCachedUnitTokens = record
+    FilePath: string;
+    Tokens: TTokenArray;
+    Classes: TClassScopeArray;
+  end;
+  TCachedUnitTokensArray = array of TCachedUnitTokens;
+
+  TExternalTypeResolver = class
+  private
+    FIdentifiers: TUnitExportlist;
+    FUsesUnits: TStringList;
+    FSourceEditor: IOTASourceEditor;
+    FCache: TCachedUnitTokensArray;
+    FCacheCount: Integer;
+    procedure InitUsesUnits;
+    function IsUnitInUses(const UnitFileName: string): Boolean;
+    function GetCachedTokens(const FilePath: string;
+      out Tokens: TTokenArray; out Procs: TProcScopeArray;
+      out Classes: TClassScopeArray): Boolean;
+    function ParseFileForFuncReturn(const FilePath, FuncName: string): string;
+    function ParseFileForParamType(const FilePath, FuncName: string;
+      ParamIndex: Integer): string;
+    function ParseFileForIdentType(const FilePath, IdentName: string): string;
+  public
+    constructor Create(Identifiers: TUnitExportlist;
+      SourceEditor: IOTASourceEditor);
+    destructor Destroy; override;
+    function Lookup(const Name: string; Kind: TExternalLookupKind;
+      ParamIndex: Integer): string;
+  end;
+
   TDeclareVariableExpert = class(TEditorExpert)
   public
     class function GetName: string; override;
@@ -63,6 +99,331 @@ type
     function HasConfigOptions: Boolean; override;
     procedure Execute(Sender: TObject); override;
   end;
+
+{ TExternalTypeResolver }
+
+constructor TExternalTypeResolver.Create(Identifiers: TUnitExportlist;
+  SourceEditor: IOTASourceEditor);
+begin
+  inherited Create;
+  FIdentifiers := Identifiers;
+  FSourceEditor := SourceEditor;
+  FUsesUnits := nil; // lazily initialized
+  FCacheCount := 0;
+  SetLength(FCache, 4);
+end;
+
+destructor TExternalTypeResolver.Destroy;
+begin
+  FreeAndNil(FUsesUnits);
+  FCache := nil;
+  inherited;
+end;
+
+procedure TExternalTypeResolver.InitUsesUnits;
+var
+  UsesMgr: TUsesManager;
+  I: Integer;
+  UnitName: string;
+  UsesList: TUsesList;
+begin
+  if Assigned(FUsesUnits) then
+    Exit;
+  FUsesUnits := TStringList.Create;
+  FUsesUnits.CaseSensitive := False;
+  FUsesUnits.Duplicates := dupIgnore;
+  FUsesUnits.Sorted := True;
+  // System and SysUtils are always implicitly available
+  FUsesUnits.Add('System');
+  FUsesUnits.Add('SysUtils');
+  try
+    UsesMgr := TUsesManager.Create(FSourceEditor);
+    try
+      UsesList := UsesMgr.InterfaceUses;
+      for I := 0 to UsesList.Count - 1 do begin
+        UnitName := UsesList.Items[I].Name;
+        // Handle dotted unit names: System.SysUtils -> SysUtils
+        if Pos('.', UnitName) > 0 then
+          FUsesUnits.Add(Copy(UnitName, LastDelimiter('.', UnitName) + 1, MaxInt));
+        FUsesUnits.Add(UnitName);
+      end;
+      UsesList := UsesMgr.ImplementationUses;
+      for I := 0 to UsesList.Count - 1 do begin
+        UnitName := UsesList.Items[I].Name;
+        if Pos('.', UnitName) > 0 then
+          FUsesUnits.Add(Copy(UnitName, LastDelimiter('.', UnitName) + 1, MaxInt));
+        FUsesUnits.Add(UnitName);
+      end;
+    finally
+      FreeAndNil(UsesMgr);
+    end;
+  except
+    // If uses clause parsing fails, allow all units
+  end;
+end;
+
+function TExternalTypeResolver.IsUnitInUses(const UnitFileName: string): Boolean;
+var
+  UnitName: string;
+begin
+  InitUsesUnits;
+  // Extract unit name from filename: "C:\Source\SysUtils.pas" -> "SysUtils"
+  UnitName := ChangeFileExt(ExtractFileName(UnitFileName), '');
+  Result := FUsesUnits.IndexOf(UnitName) >= 0;
+end;
+
+function TExternalTypeResolver.GetCachedTokens(const FilePath: string;
+  out Tokens: TTokenArray; out Procs: TProcScopeArray;
+  out Classes: TClassScopeArray): Boolean;
+var
+  I, ImplPos: Integer;
+  Stream: TFileStream;
+  Bytes: AnsiString;
+  Source: string;
+begin
+  Result := False;
+
+  // Check cache first
+  for I := 0 to FCacheCount - 1 do begin
+    if SameText(FCache[I].FilePath, FilePath) then begin
+      Tokens := FCache[I].Tokens;
+      Procs := nil;
+      Classes := FCache[I].Classes;
+      Result := Length(Tokens) > 0;
+      Exit;
+    end;
+  end;
+
+  // Read file
+  if not FileExists(FilePath) then
+    Exit;
+  try
+    Stream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
+    try
+      SetLength(Bytes, Stream.Size);
+      if Stream.Size > 0 then
+        Stream.ReadBuffer(Bytes[1], Stream.Size);
+      Source := string(Bytes);
+    finally
+      Stream.Free;
+    end;
+  except
+    Exit;
+  end;
+  if Source = '' then
+    Exit;
+
+  // Truncate at 'implementation' keyword to avoid parsing huge implementation sections.
+  // Search for #10implementation followed by a non-identifier char (newline, space, CR).
+  ImplPos := Pos(#10'implementation'#13, Source);
+  if ImplPos = 0 then
+    ImplPos := Pos(#10'implementation'#10, Source);
+  if ImplPos = 0 then
+    ImplPos := Pos(#10'implementation '#13, Source);
+  if ImplPos > 0 then
+    Source := Copy(Source, 1, ImplPos);
+
+  Tokens := TokenizeSource(Source);
+  // Only build class scopes (lightweight). Do NOT call BuildProcScopes here —
+  // it causes O(N^2) behavior on interface-only code because ScanProcBody
+  // treats every subsequent function as nested in the previous one.
+  Classes := BuildClassScopes(Tokens);
+  Procs := nil;
+
+  // Store in cache
+  if FCacheCount >= Length(FCache) then
+    SetLength(FCache, Length(FCache) * 2);
+  FCache[FCacheCount].FilePath := FilePath;
+  FCache[FCacheCount].Tokens := Tokens;
+  FCache[FCacheCount].Classes := Classes;
+  Inc(FCacheCount);
+  Result := Length(Tokens) > 0;
+end;
+
+/// Scans tokens for a function/procedure header matching FuncName and extracts
+/// its return type.  Works directly on the token array without BuildProcScopes,
+/// making it safe for interface-only code.
+function ScanForFuncReturnType(const Tokens: TTokenArray;
+  const FuncName: string): string;
+var
+  I, J, NI, ParenLevel: Integer;
+begin
+  Result := '';
+  I := 0;
+  while I <= High(Tokens) do begin
+    if Tokens[I].Kind = tkFunction then begin
+      NI := NextNonJunk(Tokens, I);
+      if (NI <= High(Tokens)) and (Tokens[NI].Kind in IdentDirect) and
+         SameText(Tokens[NI].Text, FuncName) then begin
+        // Found matching function — skip past params to find ': ReturnType'
+        J := NI + 1;
+        ParenLevel := 0;
+        while J <= High(Tokens) do begin
+          if Tokens[J].Kind = tkRoundOpen then
+            Inc(ParenLevel)
+          else if Tokens[J].Kind = tkRoundClose then
+            Dec(ParenLevel)
+          else if (ParenLevel = 0) and (Tokens[J].Kind = tkColon) then begin
+            Result := ExtractTypeAfterColon(Tokens, J);
+            if Result <> '' then
+              Exit;
+            Break;
+          end else if (ParenLevel = 0) and (Tokens[J].Kind = tkSemiColon) then
+            Break;
+          Inc(J);
+        end;
+      end;
+    end;
+    Inc(I);
+  end;
+end;
+
+/// Scans tokens for a function/procedure header matching FuncName and extracts
+/// the type of the parameter at the given 0-based index.
+function ScanForParamType(const Tokens: TTokenArray;
+  const FuncName: string; ParamIndex: Integer): string;
+var
+  I, J, NI, ParamCount, LastColon: Integer;
+begin
+  Result := '';
+  I := 0;
+  while I <= High(Tokens) do begin
+    if IsProcKeyword(Tokens[I].Kind) then begin
+      NI := NextNonJunk(Tokens, I);
+      if (NI <= High(Tokens)) and (Tokens[NI].Kind in IdentDirect) and
+         SameText(Tokens[NI].Text, FuncName) then begin
+        // Find opening paren
+        J := NI + 1;
+        while (J <= High(Tokens)) and (Tokens[J].Kind <> tkRoundOpen) do begin
+          if Tokens[J].Kind = tkSemiColon then
+            Break;
+          Inc(J);
+        end;
+        if (J > High(Tokens)) or (Tokens[J].Kind <> tkRoundOpen) then begin
+          Inc(I);
+          Continue;
+        end;
+        Inc(J); // skip '('
+        ParamCount := 0;
+        LastColon := -1;
+        while J <= High(Tokens) do begin
+          case Tokens[J].Kind of
+            tkRoundClose: begin
+              if (ParamCount = ParamIndex) and (LastColon >= 0) then
+                Result := ExtractTypeAfterColon(Tokens, LastColon);
+              Break;
+            end;
+            tkColon:
+              LastColon := J;
+            tkComma: begin
+              if ParamCount = ParamIndex then begin
+                if LastColon >= 0 then begin
+                  Result := ExtractTypeAfterColon(Tokens, LastColon);
+                  Exit;
+                end;
+              end;
+              Inc(ParamCount);
+            end;
+            tkSemiColon: begin
+              if ParamCount = ParamIndex then begin
+                if LastColon >= 0 then begin
+                  Result := ExtractTypeAfterColon(Tokens, LastColon);
+                  Exit;
+                end;
+              end;
+              Inc(ParamCount);
+              LastColon := -1;
+            end;
+          end;
+          Inc(J);
+        end;
+        if Result <> '' then
+          Exit;
+      end;
+    end;
+    Inc(I);
+  end;
+end;
+
+function TExternalTypeResolver.ParseFileForFuncReturn(const FilePath, FuncName: string): string;
+var
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+  Procs: TProcScopeArray;
+begin
+  Result := '';
+  if not GetCachedTokens(FilePath, Tokens, Procs, Classes) then
+    Exit;
+  Result := ScanForFuncReturnType(Tokens, FuncName);
+end;
+
+function TExternalTypeResolver.ParseFileForParamType(const FilePath, FuncName: string;
+  ParamIndex: Integer): string;
+var
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+  Procs: TProcScopeArray;
+begin
+  Result := '';
+  if not GetCachedTokens(FilePath, Tokens, Procs, Classes) then
+    Exit;
+  Result := ScanForParamType(Tokens, FuncName, ParamIndex);
+end;
+
+function TExternalTypeResolver.ParseFileForIdentType(const FilePath, IdentName: string): string;
+var
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+  Procs: TProcScopeArray;
+begin
+  Result := '';
+  if not GetCachedTokens(FilePath, Tokens, Procs, Classes) then
+    Exit;
+  // Try enum value first
+  Result := LookupEnumType(Tokens, IdentName);
+  if Result <> '' then
+    Exit;
+  // Try typed constant
+  Result := LookupConstType(Tokens, IdentName);
+end;
+
+function TExternalTypeResolver.Lookup(const Name: string; Kind: TExternalLookupKind;
+  ParamIndex: Integer): string;
+var
+  Found: TList;
+  I: Integer;
+  Export: TUnitExport;
+begin
+  Result := '';
+  if not Assigned(FIdentifiers) then
+    Exit;
+
+  Found := TList.Create;
+  try
+    if not FIdentifiers.FindExact(AnsiString(LowerCase(Name)), Found) then
+      Exit;
+
+    // Try each matching unit, prioritizing units in the uses clause
+    for I := 0 to Found.Count - 1 do begin
+      Export := TUnitExport(Found[I]);
+      if not IsUnitInUses(Export.FileName) then
+        Continue;
+
+      case Kind of
+        elkFuncReturn:
+          Result := ParseFileForFuncReturn(Export.FileName, Name);
+        elkParamType:
+          Result := ParseFileForParamType(Export.FileName, Name, ParamIndex);
+        elkIdentType:
+          Result := ParseFileForIdentType(Export.FileName, Name);
+      end;
+      if Result <> '' then
+        Exit;
+    end;
+  finally
+    Found.Free;
+  end;
+end;
 
 { TfmDeclareVariable }
 
@@ -272,6 +633,11 @@ var
   InsertPt: TInsertionPoint;
   DeclText, ModifiedSource: string;
   Step: string;
+  GExpertsObj: TGExperts;
+  UsesExpert: TGX_Expert;
+  Identifiers: TUnitExportlist;
+  Resolver: TExternalTypeResolver;
+  ExternalLookup: TExternalTypeLookup;
 begin
   Step := 'GetSourceEditor';
   try
@@ -291,49 +657,65 @@ begin
     Src := AdjustLineBreaks(Src, tlbsCRLF);
     CursorCharIdx := LinePosToCharPos(Point(CharPos.CharIndex + 1, CharPos.Line), Src);
 
-    Step := 'AnalyzeForDeclaration';
-    if not AnalyzeForDeclaration(Src, CursorCharIdx, DeclInfo) then begin
-      MessageBeep($FFFFFFFF);
-      Exit;
+    Step := 'SetupExternalLookup';
+    Resolver := nil;
+    ExternalLookup := nil;
+    if TryGetGExpertsInst(GExpertsObj) then begin
+      if GExpertsObj.FindExpert('UsesClauseMgr', UsesExpert) then begin
+        if TUsesClauseMgrExpert(UsesExpert).TryGetIdentifiers(Identifiers) then begin
+          Resolver := TExternalTypeResolver.Create(Identifiers, SourceEditor);
+          ExternalLookup := Resolver.Lookup;
+        end;
+      end;
     end;
 
-    if DeclInfo.IsReservedWord then begin
-      ShowError(DeclInfo.ErrorMsg);
-      Exit;
-    end;
-
-    if Length(DeclInfo.InsertionPoints) = 0 then begin
-      ShowError(DeclInfo.ErrorMsg);
-      Exit;
-    end;
-
-    Step := 'ShowDialog';
-    Dlg := TfmDeclareVariable.Create(nil);
     try
-      SetFormIcon(Dlg);
-      Dlg.SetInfo(DeclInfo);
-      if Dlg.ShowModal <> mrOk then
+      Step := 'AnalyzeForDeclaration';
+      if not AnalyzeForDeclaration(Src, CursorCharIdx, DeclInfo, ExternalLookup) then begin
+        MessageBeep($FFFFFFFF);
         Exit;
+      end;
 
-      InsertPt := Dlg.GetSelectedInsertionPoint;
-      DeclText := BuildDeclarationText(
-        DeclInfo.IdentName,
-        Dlg.GetTypeName,
-        Dlg.GetSelectedKind,
-        InsertPt.Indent,
-        Dlg.GetPropertyRead,
-        Dlg.GetPropertyWrite
-      );
+      if DeclInfo.IsReservedWord then begin
+        ShowError(DeclInfo.ErrorMsg);
+        Exit;
+      end;
+
+      if Length(DeclInfo.InsertionPoints) = 0 then begin
+        ShowError(DeclInfo.ErrorMsg);
+        Exit;
+      end;
+
+      Step := 'ShowDialog';
+      Dlg := TfmDeclareVariable.Create(nil);
+      try
+        SetFormIcon(Dlg);
+        Dlg.SetInfo(DeclInfo);
+        if Dlg.ShowModal <> mrOk then
+          Exit;
+
+        InsertPt := Dlg.GetSelectedInsertionPoint;
+        DeclText := BuildDeclarationText(
+          DeclInfo.IdentName,
+          Dlg.GetTypeName,
+          Dlg.GetSelectedKind,
+          InsertPt.Indent,
+          Dlg.GetPropertyRead,
+          Dlg.GetPropertyWrite
+        );
+      finally
+        FreeAndNil(Dlg);
+      end;
+
+      Step := 'InsertDeclaration';
+      ModifiedSource := InsertDeclaration(Src, InsertPt, DeclText);
+
+      Step := 'ReplaceEditorText';
+      Ota.ReplaceEditorText(SourceEditor, ModifiedSource);
+      IncCallCount;
     finally
-      FreeAndNil(Dlg);
+      FreeAndNil(Resolver);
     end;
-
-    Step := 'InsertDeclaration';
-    ModifiedSource := InsertDeclaration(Src, InsertPt, DeclText);
-
-    Step := 'ReplaceEditorText';
-    Ota.ReplaceEditorText(SourceEditor, ModifiedSource);
-    IncCallCount;
   except
     on E: Exception do
       ShowError('Declare Variable error at step: ' + Step + sLineBreak

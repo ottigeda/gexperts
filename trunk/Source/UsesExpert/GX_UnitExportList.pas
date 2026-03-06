@@ -104,6 +104,13 @@ type
     function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
     function FindIdentifierCasing(const _Identifier: AnsiString;
       const _IdeSourcePath: string; out _Casing: string; _Logger: IGxLogger): Boolean;
+    /// <summary>
+    /// Finds all entries with an exact case-insensitive identifier match.
+    /// @param _LCIdentifier the lowercase identifier to search for
+    /// @param _Found receives matching TUnitExport items (caller owns the list,
+    ///               items are borrowed pointers — do not free them)
+    /// @returns True if at least one match was found </summary>
+    function FindExact(const _LCIdentifier: AnsiString; _Found: TList): Boolean;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
   end;
 
@@ -448,6 +455,25 @@ begin
   end else if HasIdeCasing then begin
     _Casing := IdeCasing;
     Result := True;
+  end;
+end;
+
+function TUnitExportlist.FindExact(const _LCIdentifier: AnsiString; _Found: TList): Boolean;
+var
+  Idx: Integer;
+  Item: TUnitExport;
+begin
+  Result := False;
+  if not BinarySearch(0, Count - 1, Idx, _LCIdentifier, CompareToItem, True) then
+    Exit;
+  // Idx points to the first match. Collect all consecutive matches.
+  while Idx < Count do begin
+    Item := Items[Idx];
+    if CompareStr(_LCIdentifier, Item.LCIdentifier) <> 0 then
+      Break;
+    _Found.Add(Item);
+    Result := True;
+    Inc(Idx);
   end;
 end;
 

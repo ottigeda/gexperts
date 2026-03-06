@@ -86,6 +86,11 @@ type
     procedure Execute(Sender: TObject); override;
     function TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string;
       _Logger: IGxLogger): Boolean;
+    /// <summary>
+    /// Returns the parsed identifier list if available (parser thread finished).
+    /// @param _Identifiers receives the identifier list (borrowed pointer — do not free)
+    /// @returns True if the list is available </summary>
+    function TryGetIdentifiers(out _Identifiers: TUnitExportlist): Boolean;
   end;
 
 type
@@ -955,6 +960,17 @@ begin
     _Logger.InfoFmt('TryLookup: Result=True Casing="%s"', [_Casing])
   else
     _Logger.Info('TryLookup: Result=False');
+end;
+
+function TUsesClauseMgrExpert.TryGetIdentifiers(out _Identifiers: TUnitExportlist): Boolean;
+begin
+  Result := False;
+  if not Assigned(FUnitExportParserThread) then
+    Exit;
+  if not FUnitExportParserThread.HasFinished then
+    Exit;
+  _Identifiers := FUnitExportParserThread.Identifiers;
+  Result := Assigned(_Identifiers);
 end;
 
 procedure TAction_SetEnabled(const _Actions: array of TCustomAction; _Value: Boolean);

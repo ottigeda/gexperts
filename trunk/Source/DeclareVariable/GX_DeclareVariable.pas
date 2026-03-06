@@ -12,6 +12,14 @@ uses
   mPasLex, mwPasParserTypes;
 
 type
+  TExternalLookupKind = (elkFuncReturn, elkParamType, elkIdentType);
+
+  /// Callback for resolving types from external units (UCM, intrinsics, etc.).
+  /// Name is the identifier to look up; Kind indicates what type of lookup;
+  /// ParamIndex is the 0-based parameter position (only for elkParamType).
+  TExternalTypeLookup = function(const Name: string;
+    Kind: TExternalLookupKind; ParamIndex: Integer): string of object;
+
   TDeclKind = (dkLocalVar, dkField, dkProperty);
 
   TInsertionPoint = record
@@ -37,11 +45,12 @@ type
 function IsReservedWord(const Name: string): Boolean;
 
 function AnalyzeForDeclaration(const Source: string; CursorPos: Integer;
-  out Info: TDeclareInfo): Boolean;
+  out Info: TDeclareInfo; ExternalLookup: TExternalTypeLookup = nil): Boolean;
 
 function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
-  const Classes: TClassScopeArray): string;
+  const Classes: TClassScopeArray;
+  ExternalLookup: TExternalTypeLookup = nil): string;
 
 function FindInsertionPoints(const Source: string; const Tokens: TTokenArray;
   const Procs: TProcScopeArray; const Classes: TClassScopeArray;
@@ -154,9 +163,35 @@ begin
   end;
 end;
 
+/// Looks up the return type of a compiler intrinsic function.
+/// Returns '' if the function is not a known intrinsic.
+function LookupIntrinsicReturnType(const FuncName: string): string;
+begin
+  Result := '';
+  if SameText(FuncName, 'Length') then Result := 'Integer'
+  else if SameText(FuncName, 'High') then Result := 'Integer'
+  else if SameText(FuncName, 'Low') then Result := 'Integer'
+  else if SameText(FuncName, 'Ord') then Result := 'Integer'
+  else if SameText(FuncName, 'Chr') then Result := 'Char'
+  else if SameText(FuncName, 'SizeOf') then Result := 'Integer'
+  else if SameText(FuncName, 'Assigned') then Result := 'Boolean'
+  else if SameText(FuncName, 'Copy') then Result := 'string'
+  else if SameText(FuncName, 'Pos') then Result := 'Integer'
+  else if SameText(FuncName, 'Round') then Result := 'Int64'
+  else if SameText(FuncName, 'Trunc') then Result := 'Int64'
+  // Pred, Succ, Abs, Sqr omitted — return type depends on argument type
+  else if SameText(FuncName, 'Odd') then Result := 'Boolean'
+  else if SameText(FuncName, 'Swap') then Result := 'Integer'
+  else if SameText(FuncName, 'Lo') then Result := 'Byte'
+  else if SameText(FuncName, 'Hi') then Result := 'Byte'
+  else if SameText(FuncName, 'StringOfChar') then Result := 'string'
+  else if SameText(FuncName, 'Concat') then Result := 'string';
+end;
+
 function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
-  const Classes: TClassScopeArray): string;
+  const Classes: TClassScopeArray;
+  ExternalLookup: TExternalTypeLookup = nil): string;
 var
   I, NI, PI, AssignIdx, RhsIdx, LhsIdx, FuncIdx: Integer;
   ParenLevel, ParamIndex: Integer;
@@ -238,17 +273,28 @@ begin
                 Result := LookupFuncReturnType(Tokens, Tokens[AssignIdx].Text,
                   FuncName, Procs);
             end;
+            // Fallback: try external lookup for Obj.Method
+            if (Result = '') and Assigned(ExternalLookup) then
+              Result := ExternalLookup(Tokens[AssignIdx].Text, elkFuncReturn, -1);
             if Result <> '' then
               Exit;
           end;
         end else if (AssignIdx <= High(Tokens)) and (Tokens[AssignIdx].Kind = tkRoundOpen) then begin
           // Plain call: Ident := Func(...)
           Result := LookupFuncReturnType(Tokens, Tokens[RhsIdx].Text, '', Procs);
+          if Result = '' then
+            Result := LookupIntrinsicReturnType(Tokens[RhsIdx].Text);
+          if (Result = '') and Assigned(ExternalLookup) then
+            Result := ExternalLookup(Tokens[RhsIdx].Text, elkFuncReturn, -1);
           if Result <> '' then
             Exit;
         end else begin
-          // Plain call without parens: Ident := Func
+          // Plain identifier or call without parens: Ident := Func
           Result := LookupFuncReturnType(Tokens, Tokens[RhsIdx].Text, '', Procs);
+          if Result = '' then
+            Result := LookupIntrinsicReturnType(Tokens[RhsIdx].Text);
+          if (Result = '') and Assigned(ExternalLookup) then
+            Result := ExternalLookup(Tokens[RhsIdx].Text, elkFuncReturn, -1);
           if Result <> '' then
             Exit;
         end;
@@ -258,6 +304,12 @@ begin
           Result := LookupVarType(Tokens, Tokens[RhsIdx].Text, Procs, Classes, I);
           if Result <> '' then
             Exit;
+          // Try external lookup for enum values, external constants, etc.
+          if Assigned(ExternalLookup) then begin
+            Result := ExternalLookup(Tokens[RhsIdx].Text, elkIdentType, -1);
+            if Result <> '' then
+              Exit;
+          end;
         end;
 
         // Fallback: check if expression contains '/' (always float in Delphi)
@@ -300,6 +352,8 @@ begin
               if (FuncIdx >= 0) and (Tokens[FuncIdx].Kind in IdentDirect) then begin
                 FuncName := Tokens[FuncIdx].Text;
                 Result := LookupParamType(Tokens, FuncName, ParamIndex, Procs);
+                if (Result = '') and Assigned(ExternalLookup) then
+                  Result := ExternalLookup(FuncName, elkParamType, ParamIndex);
                 if Result <> '' then
                   Exit;
               end;
@@ -645,7 +699,7 @@ begin
 end;
 
 function AnalyzeForDeclaration(const Source: string; CursorPos: Integer;
-  out Info: TDeclareInfo): Boolean;
+  out Info: TDeclareInfo; ExternalLookup: TExternalTypeLookup = nil): Boolean;
 var
   Tokens: TTokenArray;
   Procs: TProcScopeArray;
@@ -702,7 +756,7 @@ begin
 
   // Infer type from context
   Info.InferredType := InferTypeFromContext(Tokens, CursorTokenIdx,
-    Info.IdentName, Procs, Classes);
+    Info.IdentName, Procs, Classes, ExternalLookup);
 
   // Find insertion points
   Info.InsertionPoints := FindInsertionPoints(Source, Tokens, Procs, Classes,

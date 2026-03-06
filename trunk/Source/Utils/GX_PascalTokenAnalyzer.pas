@@ -223,6 +223,27 @@ function LookupParamType(const Tokens: TTokenArray;
   const FuncName: string; ParamIndex: Integer;
   const Procs: TProcScopeArray): string;
 
+/// <summary>
+/// Looks up the enum type that contains a given enum value name.
+/// Scans the token array for type declarations of the form
+/// TMyEnum = (val1, val2, val3) and returns the type name if
+/// ValueName matches any of the values.
+/// @param Tokens the token array
+/// @param ValueName the enum value name to look up
+/// @returns the enum type name, or '' if not found </summary>
+function LookupEnumType(const Tokens: TTokenArray;
+  const ValueName: string): string;
+
+/// <summary>
+/// Looks up the declared type of a constant by name.
+/// Scans for typed constant declarations like "MyConst: Integer = 42"
+/// and returns the type name.
+/// @param Tokens the token array
+/// @param ConstName the constant name to look up
+/// @returns the declared type name, or '' if not found or untyped </summary>
+function LookupConstType(const Tokens: TTokenArray;
+  const ConstName: string): string;
+
 implementation
 
 uses
@@ -1399,6 +1420,86 @@ begin
       if Pos('(implementation)', Result.ScopeDesc) = 0 then
         // Don't add redundant info — scope description already tells the story
     end;
+  end;
+end;
+
+function LookupEnumType(const Tokens: TTokenArray;
+  const ValueName: string): string;
+var
+  I, NI, J: Integer;
+  InTypeSection: Boolean;
+  TypeName: string;
+  ParenLevel: Integer;
+begin
+  Result := '';
+  InTypeSection := False;
+  I := 0;
+  while I <= High(Tokens) do begin
+    case Tokens[I].Kind of
+      tkType: InTypeSection := True;
+      tkVar, tkConst, tkProcedure, tkFunction, tkConstructor, tkDestructor:
+        InTypeSection := False;
+      tkImplementation:
+        Break; // Only search interface section
+    end;
+    // Look for pattern: TypeName = (val1, val2, ...)
+    if InTypeSection and (Tokens[I].Kind in IdentDirect) then begin
+      NI := NextNonJunk(Tokens, I);
+      if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkEqual) then begin
+        TypeName := Tokens[I].Text;
+        NI := NextNonJunk(Tokens, NI);
+        if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkRoundOpen) then begin
+          // Scan enum values inside parentheses
+          ParenLevel := 1;
+          J := NI + 1;
+          while (J <= High(Tokens)) and (ParenLevel > 0) do begin
+            case Tokens[J].Kind of
+              tkRoundOpen: Inc(ParenLevel);
+              tkRoundClose: Dec(ParenLevel);
+            end;
+            if (ParenLevel > 0) and (Tokens[J].Kind in IdentDirect) and
+               SameText(Tokens[J].Text, ValueName) then begin
+              Result := TypeName;
+              Exit;
+            end;
+            Inc(J);
+          end;
+          I := J;
+          Continue;
+        end;
+      end;
+    end;
+    Inc(I);
+  end;
+end;
+
+function LookupConstType(const Tokens: TTokenArray;
+  const ConstName: string): string;
+var
+  I, NI: Integer;
+  InConstSection: Boolean;
+begin
+  Result := '';
+  InConstSection := False;
+  I := 0;
+  while I <= High(Tokens) do begin
+    case Tokens[I].Kind of
+      tkConst: InConstSection := True;
+      tkVar, tkType, tkProcedure, tkFunction, tkConstructor, tkDestructor:
+        InConstSection := False;
+      tkImplementation:
+        Break; // Only search interface section
+    end;
+    if InConstSection and (Tokens[I].Kind in IdentDirect) and
+       SameText(Tokens[I].Text, ConstName) then begin
+      NI := NextNonJunk(Tokens, I);
+      // Typed constant: Name: Type = Value
+      if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkColon) then begin
+        Result := ExtractTypeAfterColon(Tokens, NI);
+        Exit;
+      end;
+    end;
+    Inc(I);
   end;
 end;
 

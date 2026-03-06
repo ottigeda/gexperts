@@ -37,6 +37,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Rename Components: After renaming a component, source code references are also renamed (optional, controlled by new checkbox in config)
 - Declare Variable: New editor expert that declares an undeclared identifier as a local variable, class field, or property with type inference and configurable insertion point
 - Declare Variable: Type inference from literals, booleans, nil, constructors, existing variable types, function return types, and parameter types of locally declared functions/methods
+- Declare Variable: Type inference from compiler intrinsic functions (Length, High, Low, Ord, Chr, Copy, Pos, Assigned, etc.)
+- Declare Variable: Type inference from external units via Uses Clause Manager — resolves function return types, parameter types, enum value types, and typed constant types from units in the current uses clause
 
 ## Bug Fixes
 

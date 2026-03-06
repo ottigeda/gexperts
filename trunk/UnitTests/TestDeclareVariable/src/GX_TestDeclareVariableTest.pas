@@ -42,6 +42,12 @@ type
     procedure TestInferFromSecondParamType;
     procedure TestInferFromParamTypeMultiNames;
     procedure TestNoInferFromUnknownFunction;
+    procedure TestInferFromIntrinsicLength;
+    procedure TestInferFromIntrinsicPos;
+    procedure TestInferFromIntrinsicAssigned;
+    procedure TestInferFromIntrinsicCopy;
+    procedure TestInferFromIntrinsicOrd;
+    procedure TestInferFromIntrinsicChr;
   end;
 
   TTestFindInsertionPoints = class(TTestCase)
@@ -349,6 +355,60 @@ begin
     'procedure Foo;'#13#10 +
     'begin'#13#10 +
     '  X := UnknownFunc(42);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromIntrinsicLength;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Length(S);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromIntrinsicPos;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Pos(A, B);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromIntrinsicAssigned;
+begin
+  CheckEquals('Boolean', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Assigned(P);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromIntrinsicCopy;
+begin
+  CheckEquals('string', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Copy(S, 1, 5);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromIntrinsicOrd;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Ord(C);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromIntrinsicChr;
+begin
+  CheckEquals('Char', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Chr(65);'#13#10 +
     'end;', 'X'));
 end;
 
