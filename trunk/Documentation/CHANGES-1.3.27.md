@@ -35,6 +35,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Rename Identifier: Dialog now shows identifier kind (variable, constant, type, parameter, field, property, method), declared type, and scope with interface/implementation distinction (feature #182)
 - Rename Identifier: Conflict detection warns when the new name clashes with a visible identifier (200ms debounce, informational only) (feature #182)
 - Rename Components: After renaming a component, source code references are also renamed (optional, controlled by new checkbox in config)
+- Declare Variable: New editor expert that declares an undeclared identifier as a local variable, class field, or property with type inference and configurable insertion point
+- Declare Variable: Type inference from literals, booleans, nil, constructors, existing variable types, function return types, and parameter types of locally declared functions/methods
 
 ## Bug Fixes
 
