@@ -5,7 +5,7 @@ unit GX_eDeclareVariable;
 interface
 
 uses
-  Classes, StdCtrls, Controls, Forms, ExtCtrls, GX_BaseForm,
+  Classes, Graphics, StdCtrls, Controls, Forms, ExtCtrls, GX_BaseForm,
   GX_DeclareVariable;
 
 type
@@ -37,13 +37,15 @@ type
     procedure ValidateInput;
     procedure UpdateLayout;
     function GetSelectedKind: TDeclKind;
-  public
-    constructor Create(_Owner: TComponent); override;
     procedure SetInfo(const _Info: TDeclareInfo);
     function GetTypeName: string;
     function GetSelectedInsertionPoint: TInsertionPoint;
     function GetPropertyRead: string;
     function GetPropertyWrite: string;
+  public
+    constructor Create(_Owner: TComponent); override;
+    class function Execute(_bmp: Graphics.TBitmap; const _Info: TDeclareInfo;
+      out _InsertPt: TInsertionPoint; out _DeclText: string): Boolean; reintroduce;
   end;
 
 implementation
@@ -662,6 +664,33 @@ begin
   Result := Trim(edtWrite.Text);
 end;
 
+class function TfmDeclareVariable.Execute(_bmp: Graphics.TBitmap; const _Info: TDeclareInfo;
+  out _InsertPt: TInsertionPoint; out _DeclText: string): Boolean;
+var
+  Dlg: TfmDeclareVariable;
+begin
+  Result := False;
+  Dlg := Self.Create(nil);
+  try
+    ConvertBitmapToIcon(_bmp, Dlg.Icon);
+    Dlg.SetInfo(_Info);
+    if Dlg.ShowModal <> mrOk then
+      Exit;
+    _InsertPt := Dlg.GetSelectedInsertionPoint;
+    _DeclText := BuildDeclarationText(
+      _Info.IdentName,
+      Dlg.GetTypeName,
+      Dlg.GetSelectedKind,
+      _InsertPt.Indent,
+      Dlg.GetPropertyRead,
+      Dlg.GetPropertyWrite
+    );
+    Result := True;
+  finally
+    FreeAndNil(Dlg);
+  end;
+end;
+
 { TDeclareVariableExpert }
 
 class function TDeclareVariableExpert.GetName: string;
@@ -702,7 +731,6 @@ var
   CharPos: TOTACharPos;
   CursorCharIdx: Integer;
   DeclInfo: TDeclareInfo;
-  Dlg: TfmDeclareVariable;
   InsertPt: TInsertionPoint;
   DeclText, ModifiedSource: string;
   Step: string;
@@ -760,25 +788,8 @@ begin
       end;
 
       Step := 'ShowDialog';
-      Dlg := TfmDeclareVariable.Create(nil);
-      try
-        SetFormIcon(Dlg);
-        Dlg.SetInfo(DeclInfo);
-        if Dlg.ShowModal <> mrOk then
-          Exit;
-
-        InsertPt := Dlg.GetSelectedInsertionPoint;
-        DeclText := BuildDeclarationText(
-          DeclInfo.IdentName,
-          Dlg.GetTypeName,
-          Dlg.GetSelectedKind,
-          InsertPt.Indent,
-          Dlg.GetPropertyRead,
-          Dlg.GetPropertyWrite
-        );
-      finally
-        FreeAndNil(Dlg);
-      end;
+      if not TfmDeclareVariable.Execute(GetBitmap, DeclInfo, InsertPt, DeclText) then
+        Exit;
 
       Step := 'InsertDeclaration';
       ModifiedSource := InsertDeclaration(Src, InsertPt, DeclText);
