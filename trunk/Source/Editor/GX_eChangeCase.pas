@@ -141,7 +141,7 @@ var
   EditPos: TOTAEditPos;
 begin
   Result := 0;
-  View := GxOtaGetTopMostEditView(SourceEditor);
+  View := Ota.GetTopMostEditView(SourceEditor);
   Assert(Assigned(View));
   CharPos.Line := View.Block.EndingRow;
   CharPos.CharIndex := View.Block.EndingColumn;

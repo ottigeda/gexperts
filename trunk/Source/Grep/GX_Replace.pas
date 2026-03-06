@@ -95,7 +95,7 @@ var
     begin
       if IsForm(MatchFile) then
         raise ESkipFileReplaceException.Create(SNoOpenForms);
-      Module := GxOtaGetModule(GxOtaGetBaseModuleFileName(MatchFile));
+      Module := Ota.GetModule(GxOtaGetBaseModuleFileName(MatchFile));
       if not Assigned(Module) then
         raise Exception.Create(SUnableToOpen + MatchFile);
       SourceEditor := GxOtaGetSourceEditorFromModule(Module, MatchFile);

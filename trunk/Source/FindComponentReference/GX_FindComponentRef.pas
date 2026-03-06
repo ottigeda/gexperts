@@ -57,7 +57,7 @@ var
   FrmEditor: IOTAFormEditor;
   SrcEditor: IOTASourceEditor;
 begin
-  Module := GxOtaGetCurrentModule;
+  Module := Ota.GetCurrentModule;
   if not Assigned(Module) then
     Exit;
   CurEditor := Ota.GetCurrentEditor;

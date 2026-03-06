@@ -127,7 +127,7 @@ begin
   Assert(Assigned(FEditor));
 
   FEditor.ClearAll;
-  GxOtaGetEditorFont(FEditor.Font);
+  Ota.GetEditorFont(FEditor.Font);
 
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
 
@@ -492,7 +492,7 @@ procedure TSourceExportExpert.UpdateAction(Action: TCustomAction);
 const
   SAllowableFileExtensions = '.pas;.inc;.dpr;.txt;.cpp;.hpp;.c;.h;.sql;.htm;.html;.aspx';
 begin
-  Action.Enabled := FileMatchesExtensions(GxOtaGetCurrentSourceFile, SAllowableFileExtensions);
+  Action.Enabled := FileMatchesExtensions(Ota.GetCurrentSourceFile, SAllowableFileExtensions);
 end;
 
 initialization

@@ -172,7 +172,7 @@ begin
   if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit;
 
-  Result := GxOtaGetCurrentSyntaxHighlighter(SourceEditor);
+  Result := Ota.GetCurrentSyntaxHighlighter(SourceEditor);
 end;
 
 const

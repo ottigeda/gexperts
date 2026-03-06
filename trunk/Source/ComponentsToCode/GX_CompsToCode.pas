@@ -291,7 +291,7 @@ constructor TfmCompsToCode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  GxOtaGetEditorFont(pnlView.Font, 0);
+  Ota.GetEditorFont(pnlView.Font, 0);
 
   FCodeText := TGXEnhancedEditor.Create(Self);
   FCodeText.Highlighter := gxpNone;

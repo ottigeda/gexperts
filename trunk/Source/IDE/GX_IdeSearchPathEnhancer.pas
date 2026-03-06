@@ -399,7 +399,7 @@ begin
   FMemo.Font.Color := GetIdeEditorForegroundColor;
   FMemo.ActiveLineColor := GetIdeEditorLineHighlightColor;
 
-  GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
+  Ota.GetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
 
   FListbox.Parent := FTabSheetList;
   FListbox.Align := alClient;

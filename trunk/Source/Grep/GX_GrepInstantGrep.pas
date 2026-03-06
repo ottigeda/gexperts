@@ -194,7 +194,7 @@ var
 begin
   if Assigned(BorlandIDEServices)
     and Ota.TryGetCurrentSourceEditor(ISourceEditor) then begin
-    if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
+    if Ota.TryGetTopMostEditView(ISourceEditor, EditView) then begin
       FOriginalEditPos := EditView.CursorPos;
     end else begin
       FOriginalEditPos.Col := -1;

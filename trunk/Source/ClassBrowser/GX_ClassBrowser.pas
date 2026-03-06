@@ -1747,7 +1747,7 @@ begin
     FMethodText.Color := GetThemedColor(clWindow);
     FMethodText.Font.Color := GetThemedColor(clWindowText);
 
-    GxOtaGetEditorFont(FCodeText.Font, -1);
+    Ota.GetEditorFont(FCodeText.Font, -1);
     FCodeText.Highlighter := gxpPas;
     FCodeText.Color := GetThemedColor(clWindow);
     FCodeText.Font.Color := GetThemedColor(clWindowText);
@@ -2002,13 +2002,13 @@ begin
   FCodeText.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
 
 {$IFDEF GX_SUPPORTS_THEMING} // do we need this one? Test with Delphi 2007
-  GxOtaGetEditorFont(FMethodText.Font, -1);
+  Ota.GetEditorFont(FMethodText.Font, -1);
   FMethodText.Color := GetThemedColor(clWindow);
   FMethodText.Font.Color := GetThemedColor(clWindowText);
   Splitter1.Color := GetThemedColor(clBtnFace);
   Splitter2.Color := GetThemedColor(clBtnFace);
 
-  GxOtaGetEditorFont(FCodeText.Font, -1);
+  Ota.GetEditorFont(FCodeText.Font, -1);
   FCodeText.Color := GetThemedColor(clWindow);
   FCodeText.Font.Color := GetThemedColor(clWindowText);
   FCodeText.ActiveLineColor := GetThemedColor(clInfoBk);

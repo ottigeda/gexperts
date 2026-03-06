@@ -298,7 +298,7 @@ begin
     Exit; //==>
 
   if not Assigned(_EditForm) then begin
-    if not GxOtaTryGetTopMostEditView(EditView) then
+    if not Ota.TryGetTopMostEditView(EditView) then
       Exit; //==>
     _EditForm := EditView.GetEditWindow.Form;
   end;
@@ -334,7 +334,7 @@ procedure TGotoPrevModificationExpert.Execute(Sender: TObject);
 var
   View: IOTAEditView;
 begin
-  if not GxOtaTryGetTopMostEditView(View) then
+  if not Ota.TryGetTopMostEditView(View) then
     Exit; //==>
 
   View.NavigateToModification(sdBackward, mtAnyMod);
@@ -375,7 +375,7 @@ procedure TGotoNextModificationExpert.Execute(Sender: TObject);
 var
   View: IOTAEditView;
 begin
-  if not GxOtaTryGetTopMostEditView(View) then
+  if not Ota.TryGetTopMostEditView(View) then
     Exit; //==>
   View.NavigateToModification(sdForward, mtAnyMod);
 end;

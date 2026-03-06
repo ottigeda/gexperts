@@ -474,7 +474,7 @@ var
   Idx: Integer;
 begin
   Result := '';
-  if not GxOtaTryGetTopMostEditView(EditView) then
+  if not Ota.TryGetTopMostEditView(EditView) then
     Exit;
 
   Result := Ota.GetPreceedingCharactersInLine(EditView);
@@ -559,7 +559,7 @@ begin
     EOLOnEndOfSel := HasTrailingEOL(GxOtaGetCurrentSelection);
   end;
 
-  DoParseSource := GxOtaGetCurrentSyntaxHighlighter = gxpPAS;
+  DoParseSource := Ota.GetCurrentSyntaxHighlighter = gxpPAS;
   // Cursor moving is disabled for now, since it clears %SELECTION% in Delphi 7
   //SetNewCursorPos(PosAfter);
     VText := ReplaceStrings(VText, DoParseSource);
@@ -602,7 +602,7 @@ begin
   Result.Col := 1;
   Result.Line := 1;
 
-  if not GxOtaTryGetTopMostEditView(EditView) then
+  if not Ota.TryGetTopMostEditView(EditView) then
     Exit;
 
   EditView.ConvertPos(False, Result, ACharPos);
@@ -613,7 +613,7 @@ var
   EditView: IOTAEditView;
   CharPos: TOTACharPos;
 begin
-  if not GxOtaTryGetTopMostEditView(EditView) then
+  if not Ota.TryGetTopMostEditView(EditView) then
     raise Exception.Create('No edit view present');
 
   CharPos := Ota.GetCharPosFromPos(AOffset, EditView);
@@ -854,7 +854,7 @@ resourcestring
 var
   EditView: IOTAEditView;
 begin
-  if GxOtaTryGetTopMostEditView(EditView) then
+  if Ota.TryGetTopMostEditView(EditView) then
     EditView.CursorPos := ANewEditPos
   else
     raise Exception.Create(SNoEditView);

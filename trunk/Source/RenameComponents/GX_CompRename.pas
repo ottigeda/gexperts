@@ -945,7 +945,7 @@ begin
   begin
     // If the form being edited isn't the active designer, assume some
     // automated tool is doing the editing, and GExperts ignores the change
-    if FormEditor.FileName <> GxOtaGetCurrentSourceFile then
+    if FormEditor.FileName <> Ota.GetCurrentSourceFile then
       Exit;
     // Don't change the names of components that are not a default component
     // name based on the class.  This prevents renaming pasted components.
@@ -1002,7 +1002,7 @@ begin
   if SameText(OldCompName, NewCompName) then
     Exit;
 
-  Module := GxOtaGetModule(GxOtaGetBaseModuleFileName(FFormEditor.FileName));
+  Module := Ota.GetModule(GxOtaGetBaseModuleFileName(FFormEditor.FileName));
   if not Assigned(Module) then
     Exit;
 

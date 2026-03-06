@@ -384,7 +384,7 @@ begin
   FStringGrid.TabOrder := 1;
   FStringGrid.ColWidths[0] := 50;
   FStringGrid.ColWidths[1] := 200;
-  GxOtaGetEditorFont(FStringGrid.Font, 0);
+  Ota.GetEditorFont(FStringGrid.Font, 0);
 
   pnl := TPanel.Create(_Form);
   pnl.Name := '';

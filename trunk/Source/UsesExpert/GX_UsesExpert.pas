@@ -521,7 +521,7 @@ begin
 {$IF declared(TStopwatch)}
   FIdentifierTabTimer := TStopwatch_StartNew;
 {$IFEND}
-  AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
+  AssertIsDprOrPasOrInc(Ota.GetCurrentSourceFile);
 
   frm := TfmUsesManager.Create(Application, Self);
   try
@@ -1046,7 +1046,7 @@ begin
   // call the code that previously was in the FormCreate event
   InitializeForm;
 
-  IsInDprMode := IsDpr(GxOtaGetCurrentSourceFile);
+  IsInDprMode := IsDpr(Ota.GetCurrentSourceFile);
   if IsInDprMode then begin
     sg_Implementation.Visible := False;
     lblDprWarning.Visible := True;
@@ -2792,7 +2792,7 @@ begin
   NameSpaces := TStringList.Create;
   try
     Ota.GetProjectNamespaces(DefaultNamespace, NameSpaces);
-    CurrentUnitName := GxOtaGetCurrentSourceFile;
+    CurrentUnitName := Ota.GetCurrentSourceFile;
     if CurrentUnitName <> '' then begin
       // remove .pas
       CurrentUnitName := ChangeFileExt(ExtractFilename(CurrentUnitName), '');

@@ -75,7 +75,7 @@ begin
     Exit;
 
   FIsNavbarVisible := _Value;
-  if GxOtaTryGetTopMostEditView(EditView) then begin
+  if Ota.TryGetTopMostEditView(EditView) then begin
     TrySetNavbarVisible(EditView)
   end;
 {$ENDIF GX_HIDE_NAVBAR_NECESSARY}

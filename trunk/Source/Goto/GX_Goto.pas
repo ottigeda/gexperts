@@ -94,7 +94,7 @@ begin
   Items := lb_UnitPositions.Items;
   Items.BeginUpdate;
   try
-    FCurrentSourceFn := GxOtaGetCurrentSourceFile;
+    FCurrentSourceFn := Ota.GetCurrentSourceFile;
     FUnitPositions := TUnitPositions.Create(FCurrentSourceFn);
     for i := 0 to FUnitPositions.Count - 1 do begin
       Items.Add(FUnitPositions.Positions[i].Name);
@@ -286,7 +286,7 @@ var
   CursorPos: TOTAEditPos;
 begin
 //    SetFormIcon(fmAsciiChart);
-  if not GxOtaTryGetTopMostEditView(View) then
+  if not Ota.TryGetTopMostEditView(View) then
     Exit; //==>
 
   CursorPos := View.CursorPos;

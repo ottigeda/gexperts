@@ -205,7 +205,7 @@ begin
 
   // Get module interface
   Assert(FModIntf = nil);
-  FModIntf := GxOtaGetModule(FFileName);
+  FModIntf := Ota.GetModule(FFileName);
   if FModIntf = nil then
   begin
     {$IFOPT D+} SendDebug('EditReader: Module not open in the IDE - opening "' + FFilename + '" from disk'); {$ENDIF}
@@ -310,7 +310,7 @@ var
 {$ENDIF}
 begin
 {$IFDEF GX_DELPHI2005_UP}
-  if GxOtaTryGetTopMostEditView(FEditIntf, EditView) then
+  if Ota.TryGetTopMostEditView(FEditIntf, EditView) then
     (EditView as IOTAElideActions).UnElideNearestBlock;
 {$ENDIF}
 end;

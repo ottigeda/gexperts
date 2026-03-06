@@ -256,7 +256,7 @@ begin
   TWinControl_ActivateDropFiles(ed_CapitalizationFile, HandleCaptitalizationFileDropped);
   TEdit_ActivateAutoComplete(ed_CapitalizationFile, [acsFileSystem], [actSuggest]);
 
-  GxOtaGetEditorFont(p_Preview.Font, -1);
+  Ota.GetEditorFont(p_Preview.Font, -1);
 
   m_PreviewBefore := TGxEnhancedEditor.Create(Self);
   m_PreviewBefore.Name := 'm_PreviewBefore';

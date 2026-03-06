@@ -151,8 +151,8 @@ begin
 
   InitDpiScaler;
 
-  GxOtaGetEditorFont(m_Input.Font, 0);
-  GxOtaGetEditorFont(m_Output.Font, 0);
+  Ota.GetEditorFont(m_Input.Font, 0);
+  Ota.GetEditorFont(m_Output.Font, 0);
 end;
 
 destructor TfmEConvertStrings.Destroy;

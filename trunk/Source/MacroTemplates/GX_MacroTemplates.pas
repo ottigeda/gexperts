@@ -1087,7 +1087,7 @@ begin
   else
     FCurrentSyntaxMode := gxpPas;
 
-  GxOtaGetEditorFont(pnlMacroText.Font, 0);
+  Ota.GetEditorFont(pnlMacroText.Font, 0);
 
   FTemplateText := TGXEnhancedEditor.Create(Self);
   FTemplateText.Highlighter := FCurrentSyntaxMode;

@@ -212,12 +212,12 @@ begin
    coModule.Items.AddObject(ExtractFileName(UI.Filename),UI);
    end;
 
- CurrentSource:=ExtractFileName(GxOtaGetCurrentSourceFile); // consider file not in project list
+ CurrentSource:=ExtractFileName(Ota.GetCurrentSourceFile); // consider file not in project list
  if coModule.Items.IndexOf(CurrentSource)<0 then begin
   UI:=TUnitInfo.Create;
   UI.FormName  :=''; // not refused
   UI.SourceName:=''; // ..
-  UI.FileName  :=GxOtaGetCurrentSourceFile;
+  UI.FileName  :=Ota.GetCurrentSourceFile;
   coModule.Items.InsertObject(0,CurrentSource,UI);
   end;
 

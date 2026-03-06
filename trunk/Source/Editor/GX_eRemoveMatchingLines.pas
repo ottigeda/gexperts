@@ -274,7 +274,7 @@ begin
     // German
     _Matches.Add('\s*\{ (Private|Protected|Public|Published)-Deklarationen \}');
     // French
-    _Matches.Add('\s*\{ Déclarations (privées|protégées|publiques|publiées) \}');
+    _Matches.Add('\s*\{ Dï¿½clarations (privï¿½es|protï¿½gï¿½es|publiques|publiï¿½es) \}');
   end else begin
     // English
     _Matches.Add('{ Private declarations }');
@@ -283,10 +283,10 @@ begin
     _Matches.Add('{ Published declarations }');
 
     // French
-    _Matches.Add('{ Déclarations privées }');
-    _Matches.Add('{ Déclarations protégées }');
-    _Matches.Add('{ Déclarations publiques }');
-    _Matches.Add('{ Déclarations publiées }');
+    _Matches.Add('{ Dï¿½clarations privï¿½es }');
+    _Matches.Add('{ Dï¿½clarations protï¿½gï¿½es }');
+    _Matches.Add('{ Dï¿½clarations publiques }');
+    _Matches.Add('{ Dï¿½clarations publiï¿½es }');
 
     // German
     _Matches.Add('{ Private-Deklarationen }');
@@ -330,7 +330,7 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
 
-  GxOtaGetEditorFont(m_Lines.Font);
+  Ota.GetEditorFont(m_Lines.Font);
 
   InitDpiScaler;
 end;

@@ -93,7 +93,7 @@ constructor TProcedureListOptions.Create;
 begin
   FDialogFont := TFont.Create;
   FCodeViewFont := TFont.Create;
-  GxOtaGetEditorFont(FCodeViewFont, -1);
+  Ota.GetEditorFont(FCodeViewFont, -1);
   AlignmentChanged := False;
   ObjectNameVisible := True;
   SortOnColumn := 1;

@@ -119,7 +119,7 @@ begin
   FWords.Parent := p_Items;
   FWords.HighLighter := gxpNone;
   FWords.Align := alClient;
-  GxOtaGetEditorFont(p_Items.Font, -1);
+  Ota.GetEditorFont(p_Items.Font, -1);
   FWords.OnEnter := HandleOnEnterList;
   FWords.OnExit := HandleOnExitList;
   FWords.ActiveLineColor := clYellow;

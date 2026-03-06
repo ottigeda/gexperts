@@ -187,7 +187,7 @@ begin
         end;
 
         if Patches.Count > 0 then begin
-          EditView := GxOtaGetTopMostEditView(SourceEditor);
+          EditView := Ota.GetTopMostEditView(SourceEditor);
           OffsToCP := TOffsetToCursorPos.Create(Lines);
           try
 //            for i := Patches.Count - 1 downto 0 do
@@ -313,7 +313,7 @@ procedure TInsertAutoTodoExpert.UpdateAction(Action: TCustomAction);
 const
   SAllowableFileExtensions = '.pas;.dpr;.inc';
 begin
-  Action.Enabled := FileMatchesExtensions(GxOtaGetCurrentSourceFile, SAllowableFileExtensions);
+  Action.Enabled := FileMatchesExtensions(Ota.GetCurrentSourceFile, SAllowableFileExtensions);
 end;
 
 { TfmInsertAutoTodoForm }

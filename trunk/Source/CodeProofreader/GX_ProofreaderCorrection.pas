@@ -486,7 +486,7 @@ begin
   // (which breaks parameter hints), or limit the corrections to only happen
   // after whitespace is typed, when the IDE seems to correct better, so we only
   // support correcting in Delphi files after whitespace.
-  if KibitzOta and (GxOtaGetCurrentSyntaxHighlighter(SourceEditor) = gxpPAS) and NotEmpty(OriginalSourceString) and (not IsCharWhiteSpace(RightStr(OriginalSourceString, 1)[1])) then
+  if KibitzOta and (Ota.GetCurrentSyntaxHighlighter(SourceEditor) = gxpPAS) and NotEmpty(OriginalSourceString) and (not IsCharWhiteSpace(RightStr(OriginalSourceString, 1)[1])) then
     Exit;
 
   Assert(Assigned(EditorPositionInformation));
@@ -764,7 +764,7 @@ begin
     Exit;
   end;
 
-  SyntaxHighlighter := GxOtaGetCurrentSyntaxHighlighter(SourceEditor);
+  SyntaxHighlighter := Ota.GetCurrentSyntaxHighlighter(SourceEditor);
   if not DetermineReplacementSource(Element, SyntaxHighlighter, ReplacementSourceTable) then
     Exit;
 
@@ -798,7 +798,7 @@ begin
     if not Ota.CurrentlyEditingSource then
       Exit;
 
-    if not GxOtaTryGetTopMostEditView(SourceEditor, EditView) then begin
+    if not Ota.TryGetTopMostEditView(SourceEditor, EditView) then begin
       // Editor change notifiers may fire if the IDE auto-creates some
       // code behind the scenes. Since we only want to react on user
       // input, we exit if there is no edit view active.

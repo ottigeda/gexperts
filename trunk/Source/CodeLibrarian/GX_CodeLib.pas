@@ -588,7 +588,7 @@ procedure TfmCodeLib.CopyFromIdeExecute(Sender: TObject);
 var
   FileName: TGXUnicodeString;
 begin
-  FileName := GxOtaGetCurrentSourceFile;
+  FileName := Ota.GetCurrentSourceFile;
   if IsForm(FileName) then
     raise Exception.Create(SNotForFormFiles);
 
@@ -601,7 +601,7 @@ procedure TfmCodeLib.PasteToIdeExecute(Sender: TObject);
 var
   FileName: TGXUnicodeString;
 begin
-  FileName := GxOtaGetCurrentSourceFile;
+  FileName := Ota.GetCurrentSourceFile;
   if IsForm(FileName) then
     raise Exception.Create(SNotForFormFiles);
 

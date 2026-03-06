@@ -245,7 +245,7 @@ var
   FormEditor: IOTAFormEditor;
   RootComponent: IOTAComponent;
 begin
-  if not IsForm(GxOtaGetCurrentSourceFile) then
+  if not IsForm(Ota.GetCurrentSourceFile) then
   begin
     MessageDlg(SOnlyForFormFiles, mtError, [mbOK], 0);
     Exit;

@@ -214,7 +214,7 @@ begin
 
     Logger.Info('TCodeFormatterExpert.Execute:Format selection ?');
     FormatSelection := GxOtaGetSelection(
-      GxOtaGetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength);
+      Ota.GetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength);
     if FormatSelection then
       FormatSelection := (SelLength > 0) and (BlockStart.Line < BlockEnd.Line);
 

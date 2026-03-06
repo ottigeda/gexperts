@@ -736,7 +736,7 @@ begin
 
   l_UnitSearchPath.FocusControl := FMemo;
 
-  GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
+  Ota.GetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
   TWinControl_SetFocus(FMemo);
 
   TWinControl_ActivateDropFiles(FMemo, HandleDropFiles);

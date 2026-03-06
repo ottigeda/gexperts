@@ -416,7 +416,7 @@ begin
   FEditor.Options := FEditor.Options - [eoScrollPastEof, eoScrollPastEol] + [eoHideShowScrollbars];
   FEditor.ReadOnly := True;
   FEditor.RightEdge := 0;
-  GxOtaGetEditorFont(FEditor.Font);
+  Ota.GetEditorFont(FEditor.Font);
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
 
   UpdatePreview;
@@ -1058,7 +1058,7 @@ var
   SourceType: TSourceType;
   DefaultMsg: string;
 begin
-  FileName := GxOtaGetCurrentSourceFile;
+  FileName := Ota.GetCurrentSourceFile;
   if IsCpp(FileName) then
     SourceType := stCpp
   else if (IsPascalSourceFile(FileName)) then
@@ -1083,7 +1083,7 @@ begin
 
       if FSettings.FSourceType = stPascal then
       begin
-        if not IsDpr(GxOtaGetCurrentSourceFile) then
+        if not IsDpr(Ota.GetCurrentSourceFile) then
         begin
           if Ota.ActiveDesignerIsVCL or Ota.ActiveDesignerIsNFM then
             TUsesManager.UseUnitInImplementation(frm.UsesUnit)
@@ -1135,7 +1135,7 @@ procedure TMessageDialogExpert.UpdateAction(Action: TCustomAction);
 const
   SAllowableFileExtensions = '.pas;.dpr;.inc;.cpp';
 begin
-  Action.Enabled := FileMatchesExtensions(GxOtaGetCurrentSourceFile, SAllowableFileExtensions);
+  Action.Enabled := FileMatchesExtensions(Ota.GetCurrentSourceFile, SAllowableFileExtensions);
 end;
 
 { TMessageDialogSettings }

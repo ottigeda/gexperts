@@ -90,7 +90,7 @@ begin
   FSampleEditor.Gutter.Width := 0;
   FSampleEditor.Options := FSampleEditor.Options + [eoNoCaret, eoNoSelection, eoHideShowScrollbars, eoAutoSizeMaxScrollWidth] - [eoScrollPastEof, eoScrollPastEol];
   FSampleEditor.OnStatusChange := SynEditSelectionChange;
-  GxOtaGetEditorFont(FSampleEditor.Font);
+  Ota.GetEditorFont(FSampleEditor.Font);
 
   GXHighlighter := GetGXHighlighterForCurrentSourceEditor;
 

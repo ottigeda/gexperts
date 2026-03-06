@@ -581,7 +581,7 @@ begin
   IModuleServices := BorlandIDEServices as IOTAModuleServices;
   Assert(Assigned(IModuleServices));
 
-  IModule := GxOtaGetModule(IdeNotifiedFileName);
+  IModule := Ota.GetModule(IdeNotifiedFileName);
   if not Assigned(IModule) then begin
     {$IFOPT D+} SendDebugError('Module interface not found by the IDE: ' + IdeNotifiedFileName); {$ENDIF}
     Exit;
@@ -1089,7 +1089,7 @@ begin
   Result := nil;
   if Assigned(FAssociatedSourceEditor) then
   begin
-    if GxOtaTryGetTopMostEditView(FAssociatedSourceEditor, EditView) then
+    if Ota.TryGetTopMostEditView(FAssociatedSourceEditor, EditView) then
     begin
       EditWindow := EditView.GetEditWindow;
       if Assigned(EditWindow) then

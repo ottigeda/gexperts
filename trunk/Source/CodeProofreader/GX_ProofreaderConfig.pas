@@ -257,7 +257,7 @@ begin
   if not cbEnableCompiler.Enabled then
     cbEnableCompiler.Checked := False;
 
-  case GxOtaGetCurrentSyntaxHighlighter of
+  case Ota.GetCurrentSyntaxHighlighter of
     gxpNone, gxpPlaceHolder, gxpPAS:
       cbLanguage.ItemIndex := Ord(rtPasSrc);
     gxpCPP:

@@ -205,7 +205,7 @@ end;
 
 function TBasicSourceParser.GetFileName: string;
 begin
-  Result := GxOtaGetCurrentSourceFile;
+  Result := Ota.GetCurrentSourceFile;
 end;
 
 procedure TBasicSourceParser.InitSource(AScope: TSourceScope);
@@ -451,14 +451,14 @@ end;
 function TMacroReplacer.GetUnitName: string;
 begin
   if not FParseSource then
-    Result := ExtractPureFileName(GxOtaGetCurrentSourceFile)
+    Result := ExtractPureFileName(Ota.GetCurrentSourceFile)
   else
     Result := GetParserToken(matUnit);
 end;
 
 function TMacroReplacer.GetUnitDir: string;
 begin
-  Result := ExtractFileDir(GxOtaGetCurrentSourceFile);
+  Result := ExtractFileDir(Ota.GetCurrentSourceFile);
 end;
 
 // First identifier after the cursor

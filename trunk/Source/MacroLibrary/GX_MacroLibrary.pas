@@ -892,7 +892,7 @@ begin
 
     InsertMacro(0, OldInfo);
     SelectFirstMacro;
-    GxOtaShowCurrentSourceEditor;
+    Ota.ShowCurrentSourceEditor;
   end;
 end;
 
@@ -1131,7 +1131,7 @@ begin
     begin
       // Start recording
       KS.ResumeRecord;
-      GxOtaShowCurrentSourceEditor;
+      Ota.ShowCurrentSourceEditor;
     end;
   end;
 end;

@@ -546,7 +546,7 @@ resourcestring
   SPasOrDprOrCPPOnly = 'This expert is for use in .pas, .dpr, .inc, .cpp, .c, and .h files only';
 begin
   TCursor_TempHourglass;
-  FileName := GxOtaGetCurrentSourceFile;
+  FileName := Ota.GetCurrentSourceFile;
   if IsForm(FileName) then
   begin
     TempFileName := ChangeFileExt(FileName, '.pas');
@@ -792,7 +792,7 @@ begin
     FCodeText.Highlighter := gxpNone;
   FCodeText.Parent := pnlFunctionBody;
   FCodeText.Align := alClient;
-  GxOtaGetEditorFont(pnlFunctionBody.Font, -1);
+  Ota.GetEditorFont(pnlFunctionBody.Font, -1);
   FCodeText.ReadOnly := True;
 end;
 
@@ -839,7 +839,7 @@ const
   SAllowableFileExtensions =
     '.pas;.dpr;.inc;.dfm;.xfm;.nfm;.tlb;.ocx;.olb;.dll;.exe;.cpp;.c;.h'; // Do not localize.
 begin
-  Action.Enabled := FileMatchesExtensions(GxOtaGetCurrentSourceFile, SAllowableFileExtensions);
+  Action.Enabled := FileMatchesExtensions(Ota.GetCurrentSourceFile, SAllowableFileExtensions);
 end;
 
 procedure TfmProcedureList.actOptionsExecute(Sender: TObject);

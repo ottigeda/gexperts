@@ -151,7 +151,7 @@ begin
   LinePos := CharPosToLinePos(_CharIdx, _Src);
   CharPos.Line := LinePos.Y;
   CharPos.CharIndex := LinePos.X - 1;
-  EditView := GxOtaGetTopMostEditView;
+  EditView := Ota.GetTopMostEditView;
 
   EditPos.Col := CharPos.CharIndex + 1;
   EditPos.Line := CharPos.Line;

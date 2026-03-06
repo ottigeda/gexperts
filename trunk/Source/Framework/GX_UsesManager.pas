@@ -728,7 +728,7 @@ var
   InsertCharPos: TOTACharPos;
   InsertEditPos: TOTAEditPos;
 begin
-  EditView := GxOtaGetTopMostEditView;
+  EditView := Ota.GetTopMostEditView;
   Assert(Assigned(EditView));
   InsertCharPos := Ota.GetCharPosFromPos(InsertPos, EditView);
   EditView.ConvertPos(False, InsertEditPos, InsertCharPos);

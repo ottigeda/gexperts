@@ -384,7 +384,7 @@ end;
    function TryGetEditView(const _fn:String;out _EditView:IOTAEditView):Boolean; // warum das auch noch ???
    var SourceEditor : IOTASourceEditor;
    begin
-    SourceEditor:=GxOtaGetSourceEditor(_fn);
+    SourceEditor:=Ota.GetSourceEditor(_fn);
     Result      :=Assigned(SourceEditor) and (SourceEditor.EditViewCount>0);
     if Result then _EditView := SourceEditor.EditViews[0];
    end;
@@ -453,7 +453,7 @@ begin
 
  if not(GxOtaMakeSourceVisible(BM.Module)) then raise Exception.CreateFmt('Could not open file %s',[BM.Module]);
 
- Module:=GxOtaGetModule(BM.Module);
+ Module:=Ota.GetModule(BM.Module);
  if not(Assigned(Module)) then exit;
 
  SourceEditor:=GxOtaGetSourceEditorFromModule(Module,BM.Module);
@@ -461,7 +461,7 @@ begin
 
  SourceEditor.Show;
 
- if not(GxOtaTryGetTopMostEditView(SourceEditor,EditView)) then exit;
+ if not(Ota.TryGetTopMostEditView(SourceEditor,EditView)) then exit;
 
  EditView.BookmarkGoto(BM.Number);
  EditView.MoveViewToCursor;

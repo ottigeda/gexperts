@@ -87,7 +87,7 @@ procedure VerifyCompatibleFileType;
 var
   FileName: string;
 begin
-  FileName := GxOtaGetCurrentSourceFile;
+  FileName := Ota.GetCurrentSourceFile;
   if not IsPascalSourceFile(FileName) then
     raise Exception.Create('This editor expert only supports Delphi source code.');
 end;
@@ -194,7 +194,7 @@ begin
   Result := False;
 
   VerifyCompatibleFileType;
-  EditView := GxOtaGetTopMostEditView;
+  EditView := Ota.GetTopMostEditView;
   if EditView = nil then
     Exit;
 
@@ -315,7 +315,7 @@ begin
   Result := False;
   VerifyCompatibleFileType;
 
-  EditView := GxOtaGetTopMostEditView;
+  EditView := Ota.GetTopMostEditView;
   if EditView = nil then
     Exit;
 
@@ -349,7 +349,7 @@ begin
   VerifyCompatibleFileType;
   Lines := TStringList.Create;
   try
-    EditView := GxOtaGetTopMostEditView;
+    EditView := Ota.GetTopMostEditView;
     Assert(Assigned(EditView), 'No edit view found');
     Lines.Text := Clipboard.AsText;
     QuoteLines(Lines, EndOfLine, EditView.CursorPos.Col);

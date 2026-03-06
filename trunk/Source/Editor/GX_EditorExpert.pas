@@ -151,7 +151,7 @@ begin
   SendingAction := Sender as TCustomAction;
   Assert(Assigned(SendingAction));
 
-  SendingAction.Enabled := GxOtaGetTopMostEditView <> nil;
+  SendingAction.Enabled := Ota.GetTopMostEditView <> nil;
 end;
 
 procedure TEditorExpert.DoExecute(Sender: TObject);

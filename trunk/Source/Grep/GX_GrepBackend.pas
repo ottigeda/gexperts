@@ -585,7 +585,7 @@ begin
   if IsStandAlone then
     Exit; //==>
 
-  CurrentFile := GxOtaGetBaseModuleFileName(GxOtaGetCurrentSourceFile);
+  CurrentFile := GxOtaGetBaseModuleFileName(Ota.GetCurrentSourceFile);
 
   Assert(FFileResult = nil, 'FFileResult leak');
   FFileResult := nil;
@@ -861,7 +861,7 @@ begin
   FormEditor := nil;
   if not IsStandAlone then
   begin
-    Module := GxOtaGetModule(FileName);
+    Module := Ota.GetModule(FileName);
     FormEditor := GxOtaGetFormEditorFromModule(Module);
   end;
   if Assigned(FormEditor) then

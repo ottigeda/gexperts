@@ -205,7 +205,7 @@ var
   Index: Integer;
   TemplateName: string;
 begin
-  if not GxOtaTryGetTopMostEditView(SourceEditor, EditView) then
+  if not Ota.TryGetTopMostEditView(SourceEditor, EditView) then
     Exit;
 
   LineText := Ota.GetPreceedingCharactersInLine(EditView);
@@ -226,7 +226,7 @@ begin
         Element := atString;
     end;
 
-    SyntaxHighlighter := GxOtaGetCurrentSyntaxHighlighter(SourceEditor);
+    SyntaxHighlighter := Ota.GetCurrentSyntaxHighlighter(SourceEditor);
     if not DetermineReplacement(Element, SyntaxHighlighter) then
       Exit;
 

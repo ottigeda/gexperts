@@ -610,7 +610,7 @@ begin
   else
     raise Exception.Create(SPasOrCFilesOnly);
 
-  Module := GxOtaGetCurrentModule;
+  Module := Ota.GetCurrentModule;
   if (not Assigned(Module)) or not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit; //==>
 
@@ -669,7 +669,7 @@ var
   EditView: IOTAEditView;
   EditPos, CurPos: TOTAEditPos;
 begin
-  EditView := GxOtaGetTopMostEditView(Editor);
+  EditView := Ota.GetTopMostEditView(Editor);
 
   EditView.ConvertPos(False, EditPos, EChar);
 
@@ -722,7 +722,7 @@ var
   EditView: IOTAEditView;
   EditPos: TOTAEditPos;
 begin
-  EditView := GxOtaGetTopMostEditView(Editor);
+  EditView := Ota.GetTopMostEditView(Editor);
   EditView.ConvertPos(False, EditPos, CursorPos); // SChar);
   EditView.CursorPos := EditPos;
 

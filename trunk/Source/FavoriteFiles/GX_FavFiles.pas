@@ -1586,7 +1586,7 @@ begin
   else
     Exit;
   end;
-  fn := GxOtaGetCurrentSourceFile;
+  fn := Ota.GetCurrentSourceFile;
   if IsForm(fn) then
     fn := GxOtaGetBaseModuleFileName(fn);
   AddFileToCurrentFolder(fn);
@@ -1806,7 +1806,7 @@ begin
   FFileViewer := TFileViewer.Create(nil);
   FFileViewer.Parent := pnlFileView;
   FFileViewer.Align := alClient;
-  GxOtaGetEditorFont(pnlFileView.Font, 0);
+  Ota.GetEditorFont(pnlFileView.Font, 0);
 
   FMRUEntryFiles := TStringList.Create;
 

@@ -164,7 +164,7 @@ begin
     if not FForceEditorActive then
       Exit; //==>
 
-    EditorForm := GxOtaGetTopMostEditView.GetEditWindow.Form;
+    EditorForm := Ota.GetTopMostEditView.GetEditWindow.Form;
     if Assigned(EditorForm) then begin
       EditorControl := EditorForm.FindComponent('Editor');
       if Assigned(EditorControl) and EditorControl.ClassNameIs('TEditControl') then

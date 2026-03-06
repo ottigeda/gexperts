@@ -392,7 +392,7 @@ var
   i: Integer;
   UsesItem: TUsesItem;
 begin
-  AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
+  AssertIsDprOrPasOrInc(Ota.GetCurrentSourceFile);
   TList_ClearAndFreeAllItems(FUnitList);
   Aliases := TStringList.Create;
   try
@@ -473,7 +473,7 @@ begin
 
   GxOtaMakeSourceVisible(FCurrentSourceFn);
 
-  if not GxOtaTryGetTopMostEditView(View) then
+  if not Ota.TryGetTopMostEditView(View) then
     Exit; //==>
 
   CursorPos := View.CursorPos;
@@ -489,7 +489,7 @@ var
   i: Integer;
   UnitPosition: TUnitPosition;
 begin
-  FCurrentSourceFn := GxOtaGetCurrentSourceFile;
+  FCurrentSourceFn := Ota.GetCurrentSourceFile;
   AssertIsDprOrPasOrInc(FCurrentSourceFn);
   UnitPositions := TUnitPositions.Create(FCurrentSourceFn);
   try
