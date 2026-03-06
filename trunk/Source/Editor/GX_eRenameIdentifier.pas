@@ -33,11 +33,10 @@ type
     procedure edtNewNameChange(Sender: TObject);
     procedure ValidateInput;
     procedure ConflictTimerFired(Sender: TObject);
-    procedure SetInfo(const _OldName: string; const _IdentInfo: TIdentifierInfo;
-      _OccurrenceCount: Integer);
-    procedure SetSource(const _Source: string; _CursorPos: Integer);
-    procedure SetIsComponent(Value: Boolean);
-    function GetNewName: string;
+    procedure SetData(const _OldName: string; const _IdentInfo: TIdentifierInfo;
+      _OccurrenceCount: Integer; const _Source: string; _CursorPos: Integer;
+      _IsComponent: Boolean);
+    procedure GetData(out _NewName: string);
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -86,10 +85,13 @@ begin
   inherited;
 end;
 
-procedure TfmRenameIdentifier.SetInfo(const _OldName: string;
-  const _IdentInfo: TIdentifierInfo; _OccurrenceCount: Integer);
+procedure TfmRenameIdentifier.SetData(const _OldName: string;
+  const _IdentInfo: TIdentifierInfo; _OccurrenceCount: Integer;
+  const _Source: string; _CursorPos: Integer; _IsComponent: Boolean);
 begin
   FOldName := _OldName;
+  FSource := _Source;
+  FCursorPos := _CursorPos;
   lblCurrentNameValue.Caption := _OldName;
   lblKindValue.Caption := _IdentInfo.KindDesc;
   if _IdentInfo.TypeName <> '' then begin
@@ -106,6 +108,8 @@ begin
       '''Result'' is a compiler-managed implicit variable. Renaming it may cause unexpected behavior.';
     lblComponentWarning.Visible := True;
   end;
+  if _IsComponent and not lblComponentWarning.Visible then
+    lblComponentWarning.Visible := True;
   if _OccurrenceCount = 1 then
     lblOccurrences.Caption := '1 occurrence will be renamed'
   else
@@ -115,23 +119,9 @@ begin
   ValidateInput;
 end;
 
-procedure TfmRenameIdentifier.SetSource(const _Source: string; _CursorPos: Integer);
+procedure TfmRenameIdentifier.GetData(out _NewName: string);
 begin
-  FSource := _Source;
-  FCursorPos := _CursorPos;
-end;
-
-procedure TfmRenameIdentifier.SetIsComponent(Value: Boolean);
-begin
-  if Value then
-    lblComponentWarning.Visible := True
-  else if not SameText(FOldName, 'Result') then
-    lblComponentWarning.Visible := False;
-end;
-
-function TfmRenameIdentifier.GetNewName: string;
-begin
-  Result := Trim(edtNewName.Text);
+  _NewName := Trim(edtNewName.Text);
 end;
 
 class function TfmRenameIdentifier.Execute(_bmp: Graphics.TBitmap;
@@ -141,17 +131,13 @@ class function TfmRenameIdentifier.Execute(_bmp: Graphics.TBitmap;
 var
   Dlg: TfmRenameIdentifier;
 begin
-  Result := False;
   Dlg := Self.Create(nil);
   try
     ConvertBitmapToIcon(_bmp, Dlg.Icon);
-    Dlg.SetInfo(_OldName, _IdentInfo, _OccurrenceCount);
-    Dlg.SetSource(_Source, _CursorPos);
-    Dlg.SetIsComponent(_IsComponent);
-    if Dlg.ShowModal <> mrOk then
-      Exit;
-    _NewName := Dlg.GetNewName;
-    Result := True;
+    Dlg.SetData(_OldName, _IdentInfo, _OccurrenceCount, _Source, _CursorPos, _IsComponent);
+    Result := (Dlg.ShowModal = mrOk);
+    if Result then
+      Dlg.GetData(_NewName);
   finally
     FreeAndNil(Dlg);
   end;

@@ -37,11 +37,8 @@ type
     procedure ValidateInput;
     procedure UpdateLayout;
     function GetSelectedKind: TDeclKind;
-    procedure SetInfo(const _Info: TDeclareInfo);
-    function GetTypeName: string;
-    function GetSelectedInsertionPoint: TInsertionPoint;
-    function GetPropertyRead: string;
-    function GetPropertyWrite: string;
+    procedure SetData(const _Info: TDeclareInfo);
+    procedure GetData(out _InsertPt: TInsertionPoint; out _DeclText: string);
   public
     constructor Create(_Owner: TComponent); override;
     class function Execute(_bmp: Graphics.TBitmap; const _Info: TDeclareInfo;
@@ -510,7 +507,7 @@ begin
   btnCancel.Anchors := [akRight, akBottom];
 end;
 
-procedure TfmDeclareVariable.SetInfo(const _Info: TDeclareInfo);
+procedure TfmDeclareVariable.SetData(const _Info: TDeclareInfo);
 var
   I: Integer;
   HasLocalVar, HasField: Boolean;
@@ -636,32 +633,24 @@ begin
     and not FInfo.IsReservedWord;
 end;
 
-function TfmDeclareVariable.GetTypeName: string;
-begin
-  Result := Trim(edtType.Text);
-end;
-
-function TfmDeclareVariable.GetSelectedInsertionPoint: TInsertionPoint;
+procedure TfmDeclareVariable.GetData(out _InsertPt: TInsertionPoint;
+  out _DeclText: string);
 var
   Idx: Integer;
 begin
   if cmbInsertAt.ItemIndex >= 0 then begin
     Idx := Integer(cmbInsertAt.Items.Objects[cmbInsertAt.ItemIndex]);
-    Result := FInfo.InsertionPoints[Idx];
-  end else begin
-    // Fallback — should not happen when OK is enabled
-    Result := FInfo.InsertionPoints[0];
-  end;
-end;
-
-function TfmDeclareVariable.GetPropertyRead: string;
-begin
-  Result := Trim(edtRead.Text);
-end;
-
-function TfmDeclareVariable.GetPropertyWrite: string;
-begin
-  Result := Trim(edtWrite.Text);
+    _InsertPt := FInfo.InsertionPoints[Idx];
+  end else
+    _InsertPt := FInfo.InsertionPoints[0];
+  _DeclText := BuildDeclarationText(
+    FInfo.IdentName,
+    Trim(edtType.Text),
+    GetSelectedKind,
+    _InsertPt.Indent,
+    Trim(edtRead.Text),
+    Trim(edtWrite.Text)
+  );
 end;
 
 class function TfmDeclareVariable.Execute(_bmp: Graphics.TBitmap; const _Info: TDeclareInfo;
@@ -669,23 +658,13 @@ class function TfmDeclareVariable.Execute(_bmp: Graphics.TBitmap; const _Info: T
 var
   Dlg: TfmDeclareVariable;
 begin
-  Result := False;
   Dlg := Self.Create(nil);
   try
     ConvertBitmapToIcon(_bmp, Dlg.Icon);
-    Dlg.SetInfo(_Info);
-    if Dlg.ShowModal <> mrOk then
-      Exit;
-    _InsertPt := Dlg.GetSelectedInsertionPoint;
-    _DeclText := BuildDeclarationText(
-      _Info.IdentName,
-      Dlg.GetTypeName,
-      Dlg.GetSelectedKind,
-      _InsertPt.Indent,
-      Dlg.GetPropertyRead,
-      Dlg.GetPropertyWrite
-    );
-    Result := True;
+    Dlg.SetData(_Info);
+    Result := (Dlg.ShowModal = mrOk);
+    if Result then
+      Dlg.GetData(_InsertPt, _DeclText);
   finally
     FreeAndNil(Dlg);
   end;

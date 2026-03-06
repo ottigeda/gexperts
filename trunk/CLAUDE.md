@@ -288,6 +288,44 @@ Each expert implements:
 - `Configure()` - Configuration dialog
 - `CanHaveShortCut()` - Keyboard binding support
 
+### Modal Dialog Pattern
+
+Modal dialogs should use a `class function Execute` that encapsulates creating, populating, showing, and extracting results from the dialog. This keeps the calling code clean and the dialog's setup methods private.
+
+```pascal
+TfmMyDialog = class(TfmBaseForm)
+private
+  procedure SetData(...);
+  procedure GetData(out _Result: string);
+public
+  class function Execute(_bmp: Graphics.TBitmap; ...;
+    out _Result: string): Boolean; reintroduce;
+end;
+
+class function TfmMyDialog.Execute(_bmp: Graphics.TBitmap; ...;
+  out _Result: string): Boolean;
+var
+  Dlg: TfmMyDialog;
+begin
+  Dlg := Self.Create(nil);
+  try
+    ConvertBitmapToIcon(_bmp, Dlg.Icon);
+    Dlg.SetData(...);
+    Result := (Dlg.ShowModal = mrOk);
+    if Result then
+      Dlg.GetData(_Result);
+  finally
+    FreeAndNil(Dlg);
+  end;
+end;
+```
+
+Notes:
+- Use `reintroduce` (not `overload`) because `TfmBaseForm` already has a virtual `Execute`
+- Use `Graphics.TBitmap` (qualified) to avoid ambiguity with `Windows.TBitmap` in Delphi 6
+- The expert calls it as: `TfmMyDialog.Execute(GetBitmap, ..., Result)`
+- Examples: `TfmConfigureIfDef`, `TfmDeclareVariable`, `TfmRenameIdentifier`
+
 ### Key Framework Files
 
 | File | Purpose |
