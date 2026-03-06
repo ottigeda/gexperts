@@ -110,46 +110,6 @@ begin
     Inc(Result);
 end;
 
-function LookupVarType(const Tokens: TTokenArray; const VarName: string;
-  const Procs: TProcScopeArray; const Classes: TClassScopeArray;
-  ContextTokenIdx: Integer): string;
-var
-  FoundScope: TRenameScope;
-  FoundInfo: TIdentifierInfo;
-  EnclosingProcs: TProcScopeArray;
-  I, J: Integer;
-begin
-  Result := '';
-
-  // First, search within the enclosing proc(s) of the context token.
-  // This ensures we find parameters and local vars of the current scope.
-  EnclosingProcs := FindEnclosingProcs(Procs, ContextTokenIdx);
-  for J := 0 to High(EnclosingProcs) do begin
-    for I := EnclosingProcs[J].HeaderStart to EnclosingProcs[J].BodyEnd do begin
-      if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, VarName) then begin
-        FoundScope := DetectScope(Tokens, I, VarName, Procs, Classes);
-        FoundInfo := DetectIdentifierKind(Tokens, FoundScope, Procs, Classes, VarName, I);
-        if FoundInfo.TypeName <> '' then begin
-          Result := FoundInfo.TypeName;
-          Exit;
-        end;
-      end;
-    end;
-  end;
-
-  // Fallback: search the entire source
-  for I := 0 to High(Tokens) do begin
-    if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, VarName) then begin
-      FoundScope := DetectScope(Tokens, I, VarName, Procs, Classes);
-      FoundInfo := DetectIdentifierKind(Tokens, FoundScope, Procs, Classes, VarName, I);
-      if FoundInfo.TypeName <> '' then begin
-        Result := FoundInfo.TypeName;
-        Exit;
-      end;
-    end;
-  end;
-end;
-
 /// Checks whether a numeric expression starting at RhsIdx contains a '/'
 /// operator or a float literal, which would make the result floating-point.
 /// In Delphi, '/' always returns Extended (floating-point), while 'div' is
@@ -198,7 +158,9 @@ function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
   const Classes: TClassScopeArray): string;
 var
-  I, NI, PI, AssignIdx, RhsIdx, LhsIdx: Integer;
+  I, NI, PI, AssignIdx, RhsIdx, LhsIdx, FuncIdx: Integer;
+  ParenLevel, ParamIndex: Integer;
+  FuncName: string;
 begin
   Result := '';
 
@@ -260,6 +222,37 @@ begin
           end;
         end;
 
+        // Pattern: Ident := Func(...) -> lookup function return type
+        AssignIdx := NextNonJunk(Tokens, RhsIdx);
+        if (AssignIdx <= High(Tokens)) and (Tokens[AssignIdx].Kind = tkPoint) then begin
+          // Qualified call: Ident := Obj.Method or Ident := Obj.Method(...)
+          AssignIdx := NextNonJunk(Tokens, AssignIdx);
+          if (AssignIdx <= High(Tokens)) and (Tokens[AssignIdx].Kind in IdentDirect) then begin
+            // Try exact class match first (e.g. TMyObj.GetValue)
+            Result := LookupFuncReturnType(Tokens, Tokens[AssignIdx].Text,
+              Tokens[RhsIdx].Text, Procs);
+            if Result = '' then begin
+              // Qualifier may be a variable, not a class — look up its type
+              FuncName := LookupVarType(Tokens, Tokens[RhsIdx].Text, Procs, Classes, I);
+              if FuncName <> '' then
+                Result := LookupFuncReturnType(Tokens, Tokens[AssignIdx].Text,
+                  FuncName, Procs);
+            end;
+            if Result <> '' then
+              Exit;
+          end;
+        end else if (AssignIdx <= High(Tokens)) and (Tokens[AssignIdx].Kind = tkRoundOpen) then begin
+          // Plain call: Ident := Func(...)
+          Result := LookupFuncReturnType(Tokens, Tokens[RhsIdx].Text, '', Procs);
+          if Result <> '' then
+            Exit;
+        end else begin
+          // Plain call without parens: Ident := Func
+          Result := LookupFuncReturnType(Tokens, Tokens[RhsIdx].Text, '', Procs);
+          if Result <> '' then
+            Exit;
+        end;
+
         // Pattern: Ident := SomeVar -> lookup SomeVar's type
         if not SameText(Tokens[RhsIdx].Text, IdentName) then begin
           Result := LookupVarType(Tokens, Tokens[RhsIdx].Text, Procs, Classes, I);
@@ -284,6 +277,41 @@ begin
         Result := LookupVarType(Tokens, Tokens[LhsIdx].Text, Procs, Classes, I);
         if Result <> '' then
           Exit;
+      end;
+    end;
+
+    // Pattern: Func(... Ident ...) -> lookup parameter type by position
+    // Walk backward from Ident, counting commas to determine parameter index,
+    // until we find the opening '(' and the function name before it.
+    if (PI >= 0) and (Tokens[PI].Kind in [tkRoundOpen, tkComma]) then begin
+      ParamIndex := 0;
+      ParenLevel := 0;
+      FuncIdx := PI;
+      // Count commas backward at the same paren level to get parameter index
+      while FuncIdx >= 0 do begin
+        case Tokens[FuncIdx].Kind of
+          tkRoundClose: Inc(ParenLevel);
+          tkRoundOpen: begin
+            if ParenLevel > 0 then
+              Dec(ParenLevel)
+            else begin
+              // Found our opening paren — function name is before it
+              FuncIdx := PrevNonJunk(Tokens, FuncIdx);
+              if (FuncIdx >= 0) and (Tokens[FuncIdx].Kind in IdentDirect) then begin
+                FuncName := Tokens[FuncIdx].Text;
+                Result := LookupParamType(Tokens, FuncName, ParamIndex, Procs);
+                if Result <> '' then
+                  Exit;
+              end;
+              Break;
+            end;
+          end;
+          tkComma: begin
+            if ParenLevel = 0 then
+              Inc(ParamIndex);
+          end;
+        end;
+        Dec(FuncIdx);
       end;
     end;
   end;

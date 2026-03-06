@@ -35,6 +35,13 @@ type
     procedure TestInferFromMixedArithmetic;
     procedure TestInferIntegerDivision;
     procedure TestNoInference;
+    procedure TestInferFromFunctionReturnType;
+    procedure TestInferFromFunctionReturnTypeNoParens;
+    procedure TestInferFromMethodReturnType;
+    procedure TestInferFromParamType;
+    procedure TestInferFromSecondParamType;
+    procedure TestInferFromParamTypeMultiNames;
+    procedure TestNoInferFromUnknownFunction;
   end;
 
   TTestFindInsertionPoints = class(TTestCase)
@@ -254,6 +261,94 @@ begin
     'procedure Foo;'#13#10 +
     'begin'#13#10 +
     '  Bar(X);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromFunctionReturnType;
+begin
+  // X := GetCount(...) where GetCount is a local function returning Integer
+  CheckEquals('Integer', DoInfer(
+    'function GetCount(S: string): Integer;'#13#10 +
+    'begin Result := 0; end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := GetCount(''test'');'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromFunctionReturnTypeNoParens;
+begin
+  // X := GetName where GetName is a function returning string (called without parens)
+  CheckEquals('string', DoInfer(
+    'function GetName: string;'#13#10 +
+    'begin Result := ''''; end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := GetName;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromMethodReturnType;
+begin
+  // X := Obj.GetValue where Obj is declared as TMyObj and GetValue returns Double
+  CheckEquals('Double', DoInfer(
+    'type'#13#10 +
+    '  TMyObj = class'#13#10 +
+    '    function GetValue: Double;'#13#10 +
+    '  end;'#13#10 +
+    'function TMyObj.GetValue: Double;'#13#10 +
+    'begin Result := 0.0; end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  Obj: TMyObj;'#13#10 +
+    'begin'#13#10 +
+    '  X := Obj.GetValue;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromParamType;
+begin
+  // DoSomething(X) where DoSomething takes a string parameter
+  CheckEquals('string', DoInfer(
+    'procedure DoSomething(Name: string);'#13#10 +
+    'begin end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  DoSomething(X);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromSecondParamType;
+begin
+  // Func(A, X) where X is the second parameter
+  CheckEquals('Integer', DoInfer(
+    'procedure Func(Name: string; Count: Integer);'#13#10 +
+    'begin end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  Func(''hello'', X);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromParamTypeMultiNames;
+begin
+  // Func(A, B, X) where params are (A, B: string; C: Integer) — X is at index 2
+  CheckEquals('Integer', DoInfer(
+    'procedure Func(A, B: string; C: Integer);'#13#10 +
+    'begin end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  Func(''a'', ''b'', X);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestNoInferFromUnknownFunction;
+begin
+  // X := UnknownFunc(...) where UnknownFunc is not declared in source
+  CheckEquals('', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := UnknownFunc(42);'#13#10 +
     'end;', 'X'));
 end;
 

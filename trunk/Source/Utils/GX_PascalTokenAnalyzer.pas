@@ -57,27 +57,171 @@ type
     ClassIndex: Integer;
   end;
 
+/// <summary>
+/// Tokenizes Pascal source code into a flat array of token records.
+/// @param Source the Pascal source code to tokenize
+/// @returns the token array </summary>
 function TokenizeSource(const Source: string): TTokenArray;
+
+/// <summary>
+/// Finds the token index at a given 0-based cursor position.
+/// @param Tokens the token array from TokenizeSource
+/// @param CursorPos0 0-based character offset in source
+/// @returns the token index, or -1 if no identifier token is found at the position </summary>
 function FindTokenAtCursor(const Tokens: TTokenArray; CursorPos0: Integer): Integer;
+
+/// <summary>
+/// Checks if the token kind is a structural keyword (class, record, object, interface).
+/// @param Kind the token kind to check
+/// @returns True if Kind is a structural keyword </summary>
 function IsStructKeyword(Kind: TTokenKind): Boolean;
+
+/// <summary>
+/// Checks if the token kind is a procedure/function keyword
+/// (procedure, function, constructor, destructor).
+/// @param Kind the token kind to check
+/// @returns True if Kind is a proc/function keyword </summary>
 function IsProcKeyword(Kind: TTokenKind): Boolean;
+
+/// <summary>
+/// Finds the previous non-whitespace, non-comment token before index I.
+/// @param Tokens the token array
+/// @param I the starting index (exclusive)
+/// @returns the token index, or -1 if none found </summary>
 function PrevNonJunk(const Tokens: TTokenArray; I: Integer): Integer;
+
+/// <summary>
+/// Finds the next non-whitespace, non-comment token after index I.
+/// @param Tokens the token array
+/// @param I the starting index (exclusive)
+/// @returns the token index, or High(Tokens)+1 if none found </summary>
 function NextNonJunk(const Tokens: TTokenArray; I: Integer): Integer;
+
+/// <summary>
+/// Scans tokens to find all class/record declarations and their start/end boundaries.
+/// @param Tokens the token array
+/// @returns an array of class scope records </summary>
 function BuildClassScopes(const Tokens: TTokenArray): TClassScopeArray;
+
+/// <summary>
+/// Scans tokens to find all procedure/function declarations with their
+/// header start, body start/end, class name, and whether they are functions.
+/// @param Tokens the token array
+/// @param Classes the class scopes from BuildClassScopes
+/// @returns an array of proc scope records </summary>
 function BuildProcScopes(const Tokens: TTokenArray; const Classes: TClassScopeArray): TProcScopeArray;
+
+/// <summary>
+/// Finds all proc scopes that enclose the given token index,
+/// ordered from outermost to innermost.
+/// @param Procs the proc scopes from BuildProcScopes
+/// @param TokenIndex the token index to find enclosing procs for
+/// @returns an array of enclosing proc scopes </summary>
 function FindEnclosingProcs(const Procs: TProcScopeArray; TokenIndex: Integer): TProcScopeArray;
+
+/// <summary>
+/// Checks whether the given identifier is declared as a local variable or
+/// parameter within the given proc scope.
+/// @param Tokens the token array
+/// @param Proc the proc scope to search within
+/// @param IdentName the identifier name to look for
+/// @returns True if the identifier is declared locally in Proc </summary>
 function IsLocalDeclaration(const Tokens: TTokenArray; const Proc: TProcScope;
   const IdentName: string): Boolean;
+
+/// <summary>
+/// Determines the scope context (unit-level, class, or procedure) for an
+/// identifier at a given token position.
+/// @param Tokens the token array
+/// @param CursorTokenIdx the token index of the identifier
+/// @param IdentName the identifier name
+/// @param Procs the proc scopes from BuildProcScopes
+/// @param Classes the class scopes from BuildClassScopes
+/// @returns a TRenameScope describing the enclosing scope </summary>
 function DetectScope(const Tokens: TTokenArray; CursorTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
   const Classes: TClassScopeArray): TRenameScope;
+
+/// <summary>
+/// Determines the kind and declared type of an identifier (variable, constant,
+/// parameter, field, property, procedure, etc.) based on its context.
+/// @param Tokens the token array
+/// @param Scope the scope context from DetectScope
+/// @param Procs the proc scopes from BuildProcScopes
+/// @param Classes the class scopes from BuildClassScopes
+/// @param IdentName the identifier name
+/// @param CursorTokenIdx the token index of the identifier
+/// @returns a TIdentifierInfo with Kind, TypeName, KindDesc, and ScopeDesc </summary>
 function DetectIdentifierKind(const Tokens: TTokenArray; const Scope: TRenameScope;
   const Procs: TProcScopeArray; const Classes: TClassScopeArray;
   const IdentName: string; CursorTokenIdx: Integer): TIdentifierInfo;
+
+/// <summary>
+/// Extracts the type name following a colon token (e.g. in "X: Integer"
+/// returns "Integer"). Handles generics, dotted names, and "array of".
+/// @param Tokens the token array
+/// @param ColonIdx the token index of the colon
+/// @returns the type name string, or '' if none found </summary>
 function ExtractTypeAfterColon(const Tokens: TTokenArray; ColonIdx: Integer): string;
+
+/// <summary>
+/// Extracts the return type of a function from its header declaration.
+/// @param Tokens the token array
+/// @param Proc the proc scope whose return type to extract
+/// @returns the return type string, or '' for procedures/constructors/destructors </summary>
 function ExtractFunctionReturnType(const Tokens: TTokenArray; const Proc: TProcScope): string;
+
+/// <summary>
+/// Finds the 'implementation' keyword in the token array.
+/// @param Tokens the token array
+/// @returns the token index of 'implementation', or -1 if not found </summary>
 function FindImplementationToken(const Tokens: TTokenArray): Integer;
+
+/// <summary>
+/// Checks if the given token index falls inside any class/record declaration.
+/// @param TokenIndex the token index to check
+/// @param Classes the class scopes from BuildClassScopes
+/// @returns True if TokenIndex is inside a class/record body </summary>
 function IsTokenInsideAnyClass(TokenIndex: Integer; const Classes: TClassScopeArray): Boolean;
+
+/// <summary>
+/// Looks up the declared type of a variable/parameter by name.
+/// Searches first within the enclosing procedures of the context token,
+/// then falls back to the entire source.
+/// @param Tokens the token array
+/// @param VarName the variable name to look up
+/// @param Procs the proc scopes from BuildProcScopes
+/// @param Classes the class scopes from BuildClassScopes
+/// @param ContextTokenIdx the token index providing scope context for the search
+/// @returns the declared type name, or '' if not found </summary>
+function LookupVarType(const Tokens: TTokenArray; const VarName: string;
+  const Procs: TProcScopeArray; const Classes: TClassScopeArray;
+  ContextTokenIdx: Integer): string;
+
+/// <summary>
+/// Looks up the return type of a function or method by name.
+/// For methods, provide the class name; for standalone functions, pass ''.
+/// @param Tokens the token array
+/// @param FuncName the function/method name to look up
+/// @param ClassName the class name for methods, or '' for standalone functions
+/// @param Procs the proc scopes from BuildProcScopes
+/// @returns the return type string, or '' if not found </summary>
+function LookupFuncReturnType(const Tokens: TTokenArray;
+  const FuncName: string; const ClassName: string;
+  const Procs: TProcScopeArray): string;
+
+/// <summary>
+/// Looks up the declared type of a parameter at a given argument position
+/// in a function/procedure call.
+/// Parameters like (A, B: Integer; C: string) count as indices 0, 1, 2.
+/// @param Tokens the token array
+/// @param FuncName the function/procedure name to look up
+/// @param ParamIndex the 0-based parameter position
+/// @param Procs the proc scopes from BuildProcScopes
+/// @returns the parameter type string, or '' if not found </summary>
+function LookupParamType(const Tokens: TTokenArray;
+  const FuncName: string; ParamIndex: Integer;
+  const Procs: TProcScopeArray): string;
 
 implementation
 
@@ -783,6 +927,130 @@ begin
     end else if (ParenLevel = 0) and (Tokens[I].Kind = tkSemiColon) then
       Exit; // no return type found (constructor/destructor)
     Inc(I);
+  end;
+end;
+
+function LookupVarType(const Tokens: TTokenArray; const VarName: string;
+  const Procs: TProcScopeArray; const Classes: TClassScopeArray;
+  ContextTokenIdx: Integer): string;
+var
+  FoundScope: TRenameScope;
+  FoundInfo: TIdentifierInfo;
+  EnclosingProcs: TProcScopeArray;
+  I, J: Integer;
+begin
+  Result := '';
+
+  // First, search within the enclosing proc(s) of the context token.
+  // This ensures we find parameters and local vars of the current scope.
+  EnclosingProcs := FindEnclosingProcs(Procs, ContextTokenIdx);
+  for J := 0 to High(EnclosingProcs) do begin
+    for I := EnclosingProcs[J].HeaderStart to EnclosingProcs[J].BodyEnd do begin
+      if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, VarName) then begin
+        FoundScope := DetectScope(Tokens, I, VarName, Procs, Classes);
+        FoundInfo := DetectIdentifierKind(Tokens, FoundScope, Procs, Classes, VarName, I);
+        if FoundInfo.TypeName <> '' then begin
+          Result := FoundInfo.TypeName;
+          Exit;
+        end;
+      end;
+    end;
+  end;
+
+  // Fallback: search the entire source
+  for I := 0 to High(Tokens) do begin
+    if (Tokens[I].Kind in IdentDirect) and SameText(Tokens[I].Text, VarName) then begin
+      FoundScope := DetectScope(Tokens, I, VarName, Procs, Classes);
+      FoundInfo := DetectIdentifierKind(Tokens, FoundScope, Procs, Classes, VarName, I);
+      if FoundInfo.TypeName <> '' then begin
+        Result := FoundInfo.TypeName;
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+function LookupFuncReturnType(const Tokens: TTokenArray;
+  const FuncName: string; const ClassName: string;
+  const Procs: TProcScopeArray): string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to High(Procs) do begin
+    if not Procs[I].IsFunction then
+      Continue;
+    if not SameText(Procs[I].Name, FuncName) then
+      Continue;
+    if (ClassName <> '') then begin
+      if not SameText(Procs[I].ClassName, ClassName) then
+        Continue;
+    end else begin
+      if Procs[I].ClassName <> '' then
+        Continue;
+    end;
+    Result := ExtractFunctionReturnType(Tokens, Procs[I]);
+    if Result <> '' then
+      Exit;
+  end;
+end;
+
+function LookupParamType(const Tokens: TTokenArray;
+  const FuncName: string; ParamIndex: Integer;
+  const Procs: TProcScopeArray): string;
+var
+  ProcIdx, I, ParamCount, LastColon: Integer;
+begin
+  Result := '';
+  for ProcIdx := 0 to High(Procs) do begin
+    if not SameText(Procs[ProcIdx].Name, FuncName) then
+      Continue;
+    // Find opening paren
+    I := Procs[ProcIdx].HeaderStart;
+    while (I <= High(Tokens)) and (Tokens[I].Kind <> tkRoundOpen) do
+      Inc(I);
+    if I > High(Tokens) then
+      Continue;
+    Inc(I); // skip '('
+    // Walk parameters: count commas and semicolons, track last colon
+    ParamCount := 0;
+    LastColon := -1;
+    while I <= High(Tokens) do begin
+      case Tokens[I].Kind of
+        tkRoundClose: begin
+          // End of param list — if we're at the right index, use last colon
+          if (ParamCount = ParamIndex) and (LastColon >= 0) then
+            Result := ExtractTypeAfterColon(Tokens, LastColon);
+          Break;
+        end;
+        tkColon:
+          LastColon := I;
+        tkComma: begin
+          // Same type group — param index increments, colon stays
+          if ParamCount = ParamIndex then begin
+            if LastColon >= 0 then begin
+              Result := ExtractTypeAfterColon(Tokens, LastColon);
+              Exit;
+            end;
+          end;
+          Inc(ParamCount);
+        end;
+        tkSemiColon: begin
+          // New type group
+          if ParamCount = ParamIndex then begin
+            if LastColon >= 0 then begin
+              Result := ExtractTypeAfterColon(Tokens, LastColon);
+              Exit;
+            end;
+          end;
+          Inc(ParamCount);
+          LastColon := -1;
+        end;
+      end;
+      Inc(I);
+    end;
+    if Result <> '' then
+      Exit;
   end;
 end;
 
