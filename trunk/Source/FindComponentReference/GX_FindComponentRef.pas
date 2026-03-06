@@ -82,7 +82,7 @@ var
   FrmEditor: IOTAFormEditor;
   Comp: IOTAComponent;
 begin
-  FrmEditor := GxOtaGetFormEditorFromModule(Module);
+  FrmEditor := Ota.GetFormEditorFromModule(Module);
   if Assigned(FrmEditor) then
   begin
     Ota.GetActiveEditorTextAsString(SrcText, False);
@@ -120,7 +120,7 @@ begin
     CompName := Ota.GetComponentName(Comp);
     if CompName <> '' then
     begin
-      SrcEditor := GxOtaGetSourceEditorFromModule(Module);
+      SrcEditor := Ota.GetSourceEditorFromModule(Module);
       if Assigned(SrcEditor) then
       begin
         SrcEditor.Show;

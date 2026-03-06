@@ -456,7 +456,7 @@ begin
  Module:=Ota.GetModule(BM.Module);
  if not(Assigned(Module)) then exit;
 
- SourceEditor:=GxOtaGetSourceEditorFromModule(Module,BM.Module);
+ SourceEditor:=Ota.GetSourceEditorFromModule(Module,BM.Module);
  if not(Assigned(SourceEditor)) then exit;
 
  SourceEditor.Show;

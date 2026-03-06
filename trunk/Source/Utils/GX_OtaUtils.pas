@@ -717,6 +717,87 @@ type
     /// @param EditView receives the edit view if found
     /// @returns True if an edit view was found </summary>
     class function TryGetTopMostEditView(SourceEditor: IOTASourceEditor; out EditView: IOTAEditView): Boolean; overload;
+
+    // Batch 10: Form Editor
+    /// <summary>
+    /// Returns the form editor for the file specified by FileName.
+    /// @param FileName the file name to look up
+    /// @returns the form editor, or nil if none exists </summary>
+    class function GetFormEditorForFileName(const FileName: string): IOTAFormEditor;
+    /// <summary>
+    /// Returns the form editor for the active module, or nil if none is present.
+    /// @returns the current form editor or nil </summary>
+    class function GetCurrentFormEditor: IOTAFormEditor;
+    /// <summary>
+    /// Tries to get the form editor for the active module.
+    /// @param FormEditor receives the form editor if found
+    /// @returns True if a form editor was found </summary>
+    class function TryGetCurrentFormEditor(out FormEditor: IOTAFormEditor): Boolean;
+    /// <summary>
+    /// Returns the number of selected components on the current form editor.
+    /// @returns the selection count, or 0 if no form editor </summary>
+    class function GetCurrentFormEditorSelectionCount: Integer;
+    /// <summary>
+    /// Checks if the current form editor has a selected component that is not
+    /// the root designer.
+    /// @returns True if a non-root component is selected </summary>
+    class function FormEditorHasSelectedComponent: Boolean;
+    /// <summary>
+    /// Returns a form editor for the given module if one exists.
+    /// @param Module the module to query (may be nil)
+    /// @returns the form editor, or nil </summary>
+    class function GetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
+    /// <summary>
+    /// Shows the form editor for the given module.
+    /// @param Module the module whose form to show
+    /// @returns True if the form was shown successfully </summary>
+    class function ShowFormForModule(const Module: IOTAModule): Boolean;
+    /// <summary>
+    /// Gets an open form's text representation into a stream.
+    /// @param Form the form editor to read
+    /// @param OutStream receives the form text </summary>
+    class procedure GetFormAsText(Form: IOTAFormEditor; OutStream: TStream); overload;
+    /// <summary>
+    /// Gets an open form's text representation as a string.
+    /// @param Form the form editor to read
+    /// @returns the form text as a string </summary>
+    class function GetFormAsText(Form: IOTAFormEditor): string; overload;
+    /// <summary>
+    /// Returns the source editor for the given module.
+    /// @param Module the module to query
+    /// @param FileName optional file name filter (empty matches any)
+    /// @returns the source editor, or nil </summary>
+    class function GetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
+    /// <summary>
+    /// Tries to get a source editor from the given module.
+    /// @param Module the module to query
+    /// @param FileName optional file name filter (empty matches any)
+    /// @param SourceEditor receives the source editor if found
+    /// @returns True if a matching source editor was found </summary>
+    class function TryGetSourceEditorFromModule(Module: IOTAModule; const FileName: string;
+      out SourceEditor: IOTASourceEditor): Boolean;
+    /// <summary>
+    /// Returns the editor for the file indicated by FileName in the given module.
+    /// @param Module the module to query
+    /// @param FileName the file name to match
+    /// @returns the editor, or nil </summary>
+    class function GetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
+    /// <summary>
+    /// Returns the Index-th editor for the given module.
+    /// Works around a BCB 5 bug with simple units.
+    /// @param Module the module to query
+    /// @param Index the editor index
+    /// @returns the editor interface </summary>
+    class function GetFileEditorForModule(Module: IOTAModule; Index: Integer): IOTAEditor;
+    /// <summary>
+    /// Returns the edit actions interface for the given module.
+    /// @param Module the module to query
+    /// @returns the edit actions, or nil </summary>
+    class function GetEditActionsFromModule(Module: IOTAModule): IOTAEditActions;
+    /// <summary>
+    /// Returns the edit actions interface for the current module.
+    /// @returns the edit actions, or nil </summary>
+    class function GetEditActions: IOTAEditActions;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1367,29 +1448,29 @@ function GxOtaGetCurrentSyntaxHighlighter(SourceEditor: IOTASourceEditor = nil):
 // Property names are insensitive to case.
 function GxOtaPropertyExists(const Component: IOTAComponent; const PropertyName: string): Boolean; deprecated; // use Ota.PropertyExists
 
-function GxOtaGetFormEditorForFileName(const FileName: string): IOTAFormEditor;
+function GxOtaGetFormEditorForFileName(const FileName: string): IOTAFormEditor; deprecated; // use Ota.GetFormEditorForFileName
 // Gets the form editor for the active module, or nil if none is present
-function GxOtaGetCurrentFormEditor: IOTAFormEditor;
-function GxOtaTryGetCurrentFormEditor(out FormEditor: IOTAFormEditor): boolean;
+function GxOtaGetCurrentFormEditor: IOTAFormEditor; deprecated; // use Ota.GetCurrentFormEditor
+function GxOtaTryGetCurrentFormEditor(out FormEditor: IOTAFormEditor): boolean; deprecated; // use Ota.TryGetCurrentFormEditor
 // Gets the number of selected components on the current form editor (if any)
-function GxOtaGetCurrentFormEditorSelectionCount: Integer;
+function GxOtaGetCurrentFormEditorSelectionCount: Integer; deprecated; // use Ota.GetCurrentFormEditorSelectionCount
 // Determine if the curent form editor has a selected component (not the root designer)
-function GxOtaFormEditorHasSelectedComponent: Boolean;
+function GxOtaFormEditorHasSelectedComponent: Boolean; deprecated; // use Ota.FormEditorHasSelectedComponent
 // Returns a form editor for Module if it exists; nil otherwise.
 // Module can be nil, if it is , this function will return nil
-function GxOtaGetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
+function GxOtaGetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor; deprecated; // use Ota.GetFormEditorFromModule
 // Shows the form editor for a module.  Returns True if successful.
-function GxOtaShowFormForModule(const Module: IOTAModule): Boolean;
+function GxOtaShowFormForModule(const Module: IOTAModule): Boolean; deprecated; // use Ota.ShowFormForModule
 // Get an open form's text representation into a stream or as a string
-procedure GxOtaGetFormAsText(Form: IOTAFormEditor; OutStream: TStream); overload;
-function GxOtaGetFormAsText(Form: IOTAFormEditor): string; overload;
+procedure GxOtaGetFormAsText(Form: IOTAFormEditor; OutStream: TStream); overload; deprecated; // use Ota.GetFormAsText
+function GxOtaGetFormAsText(Form: IOTAFormEditor): string; overload; deprecated; // use Ota.GetFormAsText
 
 // Returns the IOTASourceEditor interface for a module
 // if there is a file that supports one; returns nil
 // if there is no IOTASourceEditor
-function GxOtaGetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
+function GxOtaGetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor; deprecated; // use Ota.GetSourceEditorFromModule
 function GxOtaTryGetSourceEditorFromModule(Module: IOTAModule; const FileName: string;
-  out SourceEditor: IOTASourceEditor): Boolean;
+  out SourceEditor: IOTASourceEditor): Boolean; deprecated; // use Ota.TryGetSourceEditorFromModule
 
 // Get the active IOTAEditor (which can be an IOTASourceEditor or IOTAFormEditor
 // (or maybe even more in future IDE versions)
@@ -1397,16 +1478,16 @@ function GxOtaGetCurrentEditor: IOTAEditor; deprecated; // use Ota.GetCurrentEdi
 
 // Get an editor for the file indicated by FileName
 // contained in the passed Module
-function GxOtaGetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
+function GxOtaGetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor; deprecated; // use Ota.GetEditorFromModule
 
 // Get the Index-th IOTAEditor for the given module
 // Works around a BCB 5 bug with simple units
-function GxOtaGetFileEditorForModule(Module: IOTAModule; Index: Integer): IOTAEditor;
+function GxOtaGetFileEditorForModule(Module: IOTAModule; Index: Integer): IOTAEditor; deprecated; // use Ota.GetFileEditorForModule
 
 // Obtain the IOTAEditActions interface for a given module
-function GxOtaGetEditActionsFromModule(Module: IOTAModule): IOTAEditActions;
+function GxOtaGetEditActionsFromModule(Module: IOTAModule): IOTAEditActions; deprecated; // use Ota.GetEditActionsFromModule
 // Obtain the IOTAEditActions interface for the current module
-function GxOtaGetEditActions: IOTAEditActions;
+function GxOtaGetEditActions: IOTAEditActions; deprecated; // use Ota.GetEditActions
 
 // Returns True if the only selected component on FormEditor is the "root"
 // of all components, i.e. the data module or form on which everything
@@ -1578,7 +1659,7 @@ var
 begin
   Assert(Assigned(List));
 
-  if GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if Ota.TryGetCurrentFormEditor(FormEditor) then
   begin
     RootComponent := FormEditor.GetRootComponent;
     Assert(Assigned(RootComponent), 'FormEditor has no root component');
@@ -1598,124 +1679,48 @@ begin
 end;
 
 function GxOtaGetFormEditorForFileName(const FileName: string): IOTAFormEditor;
-var
-  Module: IOTAModule;
 begin
-  Module := Ota.GetModule(GxOtaGetBaseModuleFileName(FileName));
-  Result := GxOtaGetFormEditorFromModule(Module);
+  Result := Ota.GetFormEditorForFileName(FileName);
 end;
 
 function GxOtaGetCurrentFormEditor: IOTAFormEditor;
 begin
-  Result := GxOtaGetFormEditorFromModule(Ota.GetCurrentModule);
+  Result := Ota.GetCurrentFormEditor;
 end;
 
 function GxOtaTryGetCurrentFormEditor(out FormEditor: IOTAFormEditor): boolean;
 begin
-  FormEditor := GxOtaGetCurrentFormEditor;
-  Result := Assigned(FormEditor);
+  Result := Ota.TryGetCurrentFormEditor(FormEditor);
 end;
 
 function GxOtaGetCurrentFormEditorSelectionCount: Integer;
-var
-  FormEditor: IOTAFormEditor;
 begin
-  Result := 0;
-  if GxOtaTryGetCurrentFormEditor(FormEditor) then
-    Result := FormEditor.GetSelCount;
+  Result := Ota.GetCurrentFormEditorSelectionCount;
 end;
 
 function GxOtaFormEditorHasSelectedComponent: Boolean;
-var
-  FormEditor: IOTAFormEditor;
-  FileName: string;
 begin
-  Result := False;
-  FileName := Ota.GetCurrentSourceFile;
-  if not IsForm(FileName) then
-    Exit;
-
-  if GxOtaTryGetCurrentFormEditor(FormEditor) then
-  begin
-    Result := (FormEditor.GetSelCount > 0) and
-      not GxOtaSelectedComponentIsRoot(FormEditor);
-  end;
+  Result := Ota.FormEditorHasSelectedComponent;
 end;
 
 function GxOtaGetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
-var
-  i: Integer;
-  Editor: IOTAEditor;
-  FormEditor: IOTAFormEditor;
 begin
-  Result := nil;
-  if not Assigned(Module) then
-    Exit;
-  for i := 0 to Module.GetModuleFileCount-1 do
-  begin
-    Editor := GxOtaGetFileEditorForModule(Module, i);
-    if Supports(Editor, IOTAFormEditor, FormEditor) then
-    begin
-      Assert(not Assigned(Result), 'There should never be more than one form for a module');
-      Result := FormEditor;
-      // In order to assert our assumptions that only one form
-      // is ever associated with a module, do not call Break; here.
-    end;
-  end;
+  Result := Ota.GetFormEditorFromModule(Module);
 end;
 
 function GxOtaShowFormForModule(const Module: IOTAModule): Boolean;
-var
-  FormEditor: IOTAFormEditor;
 begin
-  Result := False;
-  Assert(Assigned(Module));
-  FormEditor := GxOtaGetFormEditorFromModule(Module);
-  if Assigned(FormEditor) then
-  begin
-    FormEditor.Show;
-    Result := True;
-  end;
+  Result := Ota.ShowFormForModule(Module);
 end;
 
-procedure GxOtaGetFormAsText(Form: IOTAFormEditor; OutStream: TStream); overload;
-var
-  MemoryStream: TMemoryStream;
-  Stream: IStream;
-  StreamFormat: TStreamOriginalFormat;
+procedure GxOtaGetFormAsText(Form: IOTAFormEditor; OutStream: TStream);
 begin
-  Assert(Assigned(OutStream));
-  Assert(Assigned(Form));
-
-  Stream := TStreamAdapter.Create(OutStream);
-  Form.GetFormResource(Stream);
-  StreamFormat := TestStreamFormat(OutStream);
-  if StreamFormat = sofBinary then begin
-    MemoryStream := TMemoryStream.Create;
-    try
-      MemoryStream.CopyFrom(OutStream, OutStream.Size);
-      MemoryStream.Position := 0;
-      OutStream.Position := 0;
-      ObjectResourceToText(MemoryStream, OutStream);
-    finally
-      FreeAndNil(MemoryStream);
-    end;
-  end;
-  OutStream.Position := 0;
+  Ota.GetFormAsText(Form, OutStream);
 end;
 
 function GxOtaGetFormAsText(Form: IOTAFormEditor): string;
-var
-  StringStream: TStringStream;
 begin
-  Assert(Assigned(Form));
-  StringStream := TStringStream.Create('');
-  try
-    GxOtaGetFormAsText(Form, StringStream);
-    Result := StringStream.DataString;
-  finally
-    FreeAndNil(StringStream);
-  end;
+  Result := Ota.GetFormAsText(Form);
 end;
 
 procedure GxOtaSelectComponentOnCurrentForm(const ComponentName: string);
@@ -1726,7 +1731,7 @@ begin
   if Length(ComponentName) = 0 then
     Exit;
 
-  FormEditor := GxOtaGetCurrentFormEditor;
+  FormEditor := Ota.GetCurrentFormEditor;
   Assert(Assigned(FormEditor));
 
   FoundComponent := FormEditor.FindComponent(ComponentName);
@@ -1743,7 +1748,7 @@ var
   PersistentForm: TPersistent;
   Designer: IDesigner;
 begin
-  if GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if Ota.TryGetCurrentFormEditor(FormEditor) then
   begin
     if Assigned(FormEditor.GetRootComponent) then
     begin
@@ -1765,7 +1770,7 @@ begin
   Assert(Assigned(Components));
   Components.Clear;
   if Form = nil then
-    Form := GxOtaGetCurrentFormEditor;
+    Form := Ota.GetCurrentFormEditor;
   if Assigned(Form) then
   begin
     for i := 0 to Form.GetSelCount - 1 do
@@ -1805,7 +1810,7 @@ begin
   Assert(Assigned(Components));
   Components.Clear;
   if Form = nil then
-    Form := GxOtaGetCurrentFormEditor;
+    Form := Ota.GetCurrentFormEditor;
   if Assigned(Form) then
   begin
     Root := Ota.GetNativeComponent(Form.GetRootComponent);
@@ -1825,7 +1830,7 @@ var
 begin
   Result := nil;
 
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit;
 
   FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
@@ -1850,7 +1855,7 @@ var
 begin
   Result := False;
 
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit;
 
   FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
@@ -3799,7 +3804,7 @@ procedure GxOtaCloseCurrentEditorTab;
 var
   EditActions: IOTAEditActions;
 begin
-  EditActions := GxOtaGetEditActions;
+  EditActions := Ota.GetEditActions;
   if Assigned(EditActions) then
     EditActions.ClosePage;
 end;
@@ -3822,7 +3827,7 @@ function GxOtaOpenFileOrForm(const FileName: string): Boolean;
 begin
   if IsForm(FileName) then begin
     Result := GxOtaOpenFile(GxOtaGetBaseModuleFileName(FileName));
-    GxOtaShowFormForModule(Ota.GetCurrentModule);
+    Ota.ShowFormForModule(Ota.GetCurrentModule);
   end
   else
     Result := GxOtaOpenFile(FileName);
@@ -3852,7 +3857,7 @@ begin
   begin
     for i := 0 to Module.GetModuleFileCount-1 do
     begin
-      FileEditor := GxOtaGetFileEditorForModule(Module, i);
+      FileEditor := Ota.GetFileEditorForModule(Module, i);
       Assert(Assigned(FileEditor));
 
       Result := SameFileName(FileName, FileEditor.FileName);
@@ -3890,14 +3895,14 @@ begin
     begin
       if not GxOtaModuleIsShowingFormSource(Module) then
       begin
-        SourceEditor := GxOtaGetSourceEditorFromModule(Module, BaseFileName);
+        SourceEditor := Ota.GetSourceEditorFromModule(Module, BaseFileName);
         if Assigned(SourceEditor) then
           SourceEditor.Show;
         SourceEditor := nil;
-        EditActions := GxOtaGetEditActionsFromModule(Module);
+        EditActions := Ota.GetEditActionsFromModule(Module);
         if EditActions <> nil then
         begin
-          FormEditor := GxOtaGetFormEditorFromModule(Module);
+          FormEditor := Ota.GetFormEditorFromModule(Module);
           FormEditor.Show;
           EditActions.SwapSourceFormView;
         end;
@@ -3907,11 +3912,11 @@ begin
     begin
       if GxOtaModuleIsShowingFormSource(Module) then
       begin
-        SourceEditor := GxOtaGetSourceEditorFromModule(Module);
+        SourceEditor := Ota.GetSourceEditorFromModule(Module);
         if Assigned(SourceEditor) then
           SourceEditor.Show;
         SourceEditor := nil;
-        EditActions := GxOtaGetEditActionsFromModule(Module);
+        EditActions := Ota.GetEditActionsFromModule(Module);
         if EditActions <> nil then
           EditActions.SwapSourceFormView;
       end;
@@ -4016,7 +4021,7 @@ begin
   if not Assigned(Module) then
     Exit;
 
-  SourceEditor := GxOtaGetSourceEditorFromModule(Module, FileName);
+  SourceEditor := Ota.GetSourceEditorFromModule(Module, FileName);
   if not Assigned(SourceEditor) then
     Exit;
 
@@ -5083,9 +5088,9 @@ var
 begin
   SourceEditor := nil;
   if TryGetTopMostEditBuffer(EditBuffer) and (EditBuffer.FileName <> '') then
-    SourceEditor := GxOtaGetSourceEditorFromModule(Ota.GetCurrentModule, EditBuffer.FileName);
+    SourceEditor := Ota.GetSourceEditorFromModule(Ota.GetCurrentModule, EditBuffer.FileName);
   if SourceEditor = nil then
-    SourceEditor := GxOtaGetSourceEditorFromModule(Ota.GetCurrentModule);
+    SourceEditor := Ota.GetSourceEditorFromModule(Ota.GetCurrentModule);
   Result := Assigned(SourceEditor);
 end;
 
@@ -5183,7 +5188,7 @@ begin
   Result := False;
   Module := Ota.GetModule(FileName);
   if Assigned(Module) then begin
-    Editor := GxOtaGetSourceEditorFromModule(Module, FileName);
+    Editor := Ota.GetSourceEditorFromModule(Module, FileName);
     if Assigned(Editor) then begin
       SourceEditor := Editor;
       Result := True;
@@ -6071,38 +6076,13 @@ end;
 
 function GxOtaGetSourceEditorFromModule(Module: IOTAModule; const FileName: string): IOTASourceEditor;
 begin
-  if not GxOtaTryGetSourceEditorFromModule(Module, FileName, Result) then
-    Result := nil;
+  Result := Ota.GetSourceEditorFromModule(Module, FileName);
 end;
 
 function GxOtaTryGetSourceEditorFromModule(Module: IOTAModule; const FileName: string;
   out SourceEditor: IOTASourceEditor): Boolean;
-var
-  i: Integer;
-  IEditor: IOTAEditor;
-  ISourceEditor: IOTASourceEditor;
 begin
-  Result := False;
-  if not Assigned(Module) then
-    Exit;
-
-  for i := 0 to Module.GetModuleFileCount-1 do
-  begin
-    IEditor := GxOtaGetFileEditorForModule(Module, i);
-
-    if Supports(IEditor, IOTASourceEditor, ISourceEditor) then
-    begin
-      if Assigned(ISourceEditor) then
-      begin
-        if (FileName = '') or SameFileName(ISourceEditor.FileName, FileName) then
-        begin
-          SourceEditor := ISourceEditor;
-          Result := True;
-          Exit;
-        end;
-      end;
-    end;
-  end;
+  Result := Ota.TryGetSourceEditorFromModule(Module, FileName, SourceEditor);
 end;
 
 class function Ota.TryGetCurrentEditor(out Editor: IOTAEditor): boolean;
@@ -6119,7 +6099,7 @@ begin
       TopFile := Editor.FileName
     else // C++Builder 6 returns nil for some old-style modules without DFMs
       TopFile := Module.FileName;
-    Editor := GxOtaGetEditorFromModule(Module, TopFile);
+    Editor := Ota.GetEditorFromModule(Module, TopFile);
     Result := Assigned(Editor);
   end;
 end;
@@ -6168,6 +6148,34 @@ begin
 end;
 
 function GxOtaGetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
+begin
+  Result := Ota.GetEditorFromModule(Module, FileName);
+end;
+
+function GxOtaGetFileEditorForModule(Module: IOTAModule; Index: Integer): IOTAEditor;
+begin
+  Result := Ota.GetFileEditorForModule(Module, Index);
+end;
+
+function GxOtaGetEditActionsFromModule(Module: IOTAModule): IOTAEditActions;
+begin
+  Result := Ota.GetEditActionsFromModule(Module);
+end;
+
+function GxOtaGetEditActions: IOTAEditActions;
+begin
+  Result := Ota.GetEditActions;
+end;
+
+// Batch 10: Form Editor - Ota class method implementations
+
+class function Ota.GetFileEditorForModule(Module: IOTAModule; Index: Integer): IOTAEditor;
+begin
+  Assert(Assigned(Module));
+  Result := Module.GetModuleFileEditor(Index);
+end;
+
+class function Ota.GetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
 var
   i: Integer;
   Editor: IOTAEditor;
@@ -6178,7 +6186,7 @@ begin
 
   for i := 0 to Module.GetModuleFileCount-1 do
   begin
-    Editor := GxOtaGetFileEditorForModule(Module, i);
+    Editor := Ota.GetFileEditorForModule(Module, i);
     if SameFileName(Editor.FileName, FileName) then
     begin
       Result := Editor;
@@ -6187,13 +6195,164 @@ begin
   end;
 end;
 
-function GxOtaGetFileEditorForModule(Module: IOTAModule; Index: Integer): IOTAEditor;
+class function Ota.TryGetSourceEditorFromModule(Module: IOTAModule; const FileName: string;
+  out SourceEditor: IOTASourceEditor): Boolean;
+var
+  i: Integer;
+  IEditor: IOTAEditor;
+  ISourceEditor: IOTASourceEditor;
 begin
-  Assert(Assigned(Module));
-  Result := Module.GetModuleFileEditor(Index);
+  Result := False;
+  if not Assigned(Module) then
+    Exit;
+
+  for i := 0 to Module.GetModuleFileCount-1 do
+  begin
+    IEditor := Ota.GetFileEditorForModule(Module, i);
+
+    if Supports(IEditor, IOTASourceEditor, ISourceEditor) then
+    begin
+      if Assigned(ISourceEditor) then
+      begin
+        if (FileName = '') or SameFileName(ISourceEditor.FileName, FileName) then
+        begin
+          SourceEditor := ISourceEditor;
+          Result := True;
+          Exit;
+        end;
+      end;
+    end;
+  end;
 end;
 
-function GxOtaGetEditActionsFromModule(Module: IOTAModule): IOTAEditActions;
+class function Ota.GetSourceEditorFromModule(Module: IOTAModule; const FileName: string): IOTASourceEditor;
+begin
+  if not TryGetSourceEditorFromModule(Module, FileName, Result) then
+    Result := nil;
+end;
+
+class function Ota.GetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
+var
+  i: Integer;
+  Editor: IOTAEditor;
+  FormEditor: IOTAFormEditor;
+begin
+  Result := nil;
+  if not Assigned(Module) then
+    Exit;
+  for i := 0 to Module.GetModuleFileCount-1 do
+  begin
+    Editor := Ota.GetFileEditorForModule(Module, i);
+    if Supports(Editor, IOTAFormEditor, FormEditor) then
+    begin
+      Assert(not Assigned(Result), 'There should never be more than one form for a module');
+      Result := FormEditor;
+      // In order to assert our assumptions that only one form
+      // is ever associated with a module, do not call Break; here.
+    end;
+  end;
+end;
+
+class function Ota.GetFormEditorForFileName(const FileName: string): IOTAFormEditor;
+var
+  Module: IOTAModule;
+begin
+  Module := Ota.GetModule(GxOtaGetBaseModuleFileName(FileName));
+  Result := Ota.GetFormEditorFromModule(Module);
+end;
+
+class function Ota.GetCurrentFormEditor: IOTAFormEditor;
+begin
+  Result := Ota.GetFormEditorFromModule(Ota.GetCurrentModule);
+end;
+
+class function Ota.TryGetCurrentFormEditor(out FormEditor: IOTAFormEditor): Boolean;
+begin
+  FormEditor := Ota.GetCurrentFormEditor;
+  Result := Assigned(FormEditor);
+end;
+
+class function Ota.GetCurrentFormEditorSelectionCount: Integer;
+var
+  FormEditor: IOTAFormEditor;
+begin
+  Result := 0;
+  if Ota.TryGetCurrentFormEditor(FormEditor) then
+    Result := FormEditor.GetSelCount;
+end;
+
+class function Ota.FormEditorHasSelectedComponent: Boolean;
+var
+  FormEditor: IOTAFormEditor;
+  FileName: string;
+begin
+  Result := False;
+  FileName := Ota.GetCurrentSourceFile;
+  if not IsForm(FileName) then
+    Exit;
+
+  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  begin
+    Result := (FormEditor.GetSelCount > 0) and
+      not GxOtaSelectedComponentIsRoot(FormEditor);
+  end;
+end;
+
+class function Ota.ShowFormForModule(const Module: IOTAModule): Boolean;
+var
+  FormEditor: IOTAFormEditor;
+begin
+  Result := False;
+  Assert(Assigned(Module));
+  FormEditor := Ota.GetFormEditorFromModule(Module);
+  if Assigned(FormEditor) then
+  begin
+    FormEditor.Show;
+    Result := True;
+  end;
+end;
+
+class procedure Ota.GetFormAsText(Form: IOTAFormEditor; OutStream: TStream);
+var
+  MemoryStream: TMemoryStream;
+  Stream: IStream;
+  StreamFormat: TStreamOriginalFormat;
+begin
+  Assert(Assigned(OutStream));
+  Assert(Assigned(Form));
+
+  Stream := TStreamAdapter.Create(OutStream);
+  Form.GetFormResource(Stream);
+  StreamFormat := TestStreamFormat(OutStream);
+  if StreamFormat = sofBinary then begin
+    MemoryStream := TMemoryStream.Create;
+    try
+      MemoryStream.CopyFrom(OutStream, OutStream.Size);
+      MemoryStream.Position := 0;
+      OutStream.Position := 0;
+      ObjectResourceToText(MemoryStream, OutStream);
+    finally
+      FreeAndNil(MemoryStream);
+    end;
+  end;
+  OutStream.Position := 0;
+end;
+
+class function Ota.GetFormAsText(Form: IOTAFormEditor): string;
+var
+  StringStream: TStringStream;
+begin
+  Assert(Assigned(Form));
+  StringStream := TStringStream.Create('');
+  try
+    Ota.GetFormAsText(Form, StringStream);
+    Result := StringStream.DataString;
+  finally
+    FreeAndNil(StringStream);
+  end;
+end;
+
+class function Ota.GetEditActionsFromModule(Module: IOTAModule): IOTAEditActions;
 var
   i: Integer;
   EditView: IOTAEditView;
@@ -6202,7 +6361,7 @@ begin
   Result := nil;
   if Module = nil then
     Exit;
-  SourceEditor := GxOtaGetSourceEditorFromModule(Module);
+  SourceEditor := Ota.GetSourceEditorFromModule(Module);
   if SourceEditor = nil then
     Exit;
   for i := 0 to SourceEditor.GetEditViewCount - 1 do
@@ -6214,9 +6373,9 @@ begin
   Result := nil;
 end;
 
-function GxOtaGetEditActions: IOTAEditActions;
+class function Ota.GetEditActions: IOTAEditActions;
 begin
-  Result := GxOtaGetEditActionsFromModule(Ota.GetCurrentModule);
+  Result := Ota.GetEditActionsFromModule(Ota.GetCurrentModule);
 end;
 
 function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
@@ -6251,7 +6410,7 @@ var
   CurrentComponent: IOTAComponent;
 begin
   Result := '';
-  if GxOtaTryGetCurrentFormEditor(FormEditor) then begin
+  if Ota.TryGetCurrentFormEditor(FormEditor) then begin
     if FormEditor.GetSelCount = 1 then begin
       CurrentComponent := FormEditor.GetSelComponent(0);
       if Assigned(CurrentComponent) then
@@ -6960,7 +7119,7 @@ begin
       GxOtaLoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data)
     else if GxOtaIsFileOpen(BaseFileName) then
     begin
-      FormEditor := GxOtaGetFormEditorFromModule(BaseModule);
+      FormEditor := Ota.GetFormEditorFromModule(BaseModule);
       GxOtaLoadFormEditorToUnicodeStrings(FormEditor, Data);
     end
     else if FileExists(FileName) then
@@ -6968,7 +7127,7 @@ begin
   end
   else
   begin
-    SourceEditor := GxOtaGetSourceEditorFromModule(BaseModule, FileName);
+    SourceEditor := Ota.GetSourceEditorFromModule(BaseModule, FileName);
     // If there is no source editor for the file name, we can't load it
     // We might be trying to load a .pas with the .dfm open as text
     if Assigned(SourceEditor) then begin

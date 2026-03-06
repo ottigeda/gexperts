@@ -155,7 +155,7 @@ begin
   TheGrid.Cells[COL_SECONDARY, 0] := 'Secondary Shortcuts';
 
   TGrid_SetNonfixedRowCount(TheGrid, 0);
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit; //==>
 
   Root := FormEditor.GetRootComponent;
@@ -309,7 +309,7 @@ var
 begin
   IsAssignShortcutAllowed := False;
   IsGotoActionAllowed := False;
-  if GxOtaTryGetCurrentFormEditor(FormEditor) then begin
+  if Ota.TryGetCurrentFormEditor(FormEditor) then begin
     r := TGrid_GetNonfixedRow(TheGrid);
     if (r >= Low(FCompRecs)) and (r <= High(FCompRecs)) then begin
       rec := @FCompRecs[r];
@@ -336,7 +336,7 @@ var
   CompName: string;
   CompShortcut: TShortCut;
 begin
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit; //==>
 
   r := TGrid_GetNonfixedRow(TheGrid);
@@ -383,7 +383,7 @@ var
   NativeCmp: TComponent;
   r: Integer;
 begin
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit; //==>
 
   r := TGrid_GetNonfixedRow(TheGrid);

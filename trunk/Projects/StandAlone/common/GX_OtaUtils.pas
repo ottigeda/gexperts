@@ -26,6 +26,10 @@ type
     class function GetCurrentIdent: string;
     // always returns False
     class function IdeStyleIsDark: Boolean;
+    // always returns nil
+    class function GetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
+    // always returns nil
+    class function GetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
   end;
 
 ///<summary>
@@ -356,6 +360,16 @@ end;
 class function Ota.InitTheming(AForm: TCustomForm): Boolean;
 begin
   Result := False;
+end;
+
+class function Ota.GetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
+begin
+  Result := nil;
+end;
+
+class function Ota.GetSourceEditorFromModule(Module: IOTAModule; const FileName: string): IOTASourceEditor;
+begin
+  Result := nil;
 end;
 
 { TThemeChangedNotifier }

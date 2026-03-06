@@ -251,7 +251,7 @@ begin
     Exit;
   end;
 
-  FormEditor := GxOtaGetCurrentFormEditor;
+  FormEditor := Ota.GetCurrentFormEditor;
   Assert(Assigned(FormEditor));
 
   RootComponent := FormEditor.GetRootComponent;

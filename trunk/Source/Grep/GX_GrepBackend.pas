@@ -862,7 +862,7 @@ begin
   if not IsStandAlone then
   begin
     Module := Ota.GetModule(FileName);
-    FormEditor := GxOtaGetFormEditorFromModule(Module);
+    FormEditor := Ota.GetFormEditorFromModule(Module);
   end;
   if Assigned(FormEditor) then
     ExecuteSearchOnFile(FormEditor.FileName, Context)

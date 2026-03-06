@@ -814,7 +814,7 @@ begin
 
   for i := 0 to FAssociatedModule.GetModuleFileCount - 1 do
   begin
-    IEditor := GxOtaGetFileEditorForModule(FAssociatedModule, i);
+    IEditor := Ota.GetFileEditorForModule(FAssociatedModule, i);
     Assert(Assigned(IEditor));
 
     if Trim(IEditor.FileName) = '' then

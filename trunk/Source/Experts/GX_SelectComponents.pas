@@ -483,7 +483,7 @@ begin
     SearchEdit.Enabled := False;
     TreeView.Items.Clear;
 
-    if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
+    if not Ota.TryGetCurrentFormEditor(FFormEditor) then
       Abort;
 
     Root := FFormEditor.GetRootComponent;

@@ -26,7 +26,7 @@ uses
 
 procedure TCopyComponentNamesExpert.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := GxOtaFormEditorHasSelectedComponent;
+  Action.Enabled := Ota.FormEditorHasSelectedComponent;
 end;
 
 function InternalComponentSort(List: TStringList; Index1, Index2: Integer): Integer;
@@ -52,7 +52,7 @@ var
   LTabOrder : Integer;
   i: Integer;
 begin
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit;
   SelCount := FormEditor.GetSelCount;
   Names := TStringList.Create;

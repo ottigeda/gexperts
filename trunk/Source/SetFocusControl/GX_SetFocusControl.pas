@@ -174,7 +174,7 @@ var
   end;
 
 begin
-  Form := GxOtaGetCurrentFormEditor;
+  Form := Ota.GetCurrentFormEditor;
   FirstControlSelected := False;
   if not ProcessFixed then
     ProcessAutomatic;

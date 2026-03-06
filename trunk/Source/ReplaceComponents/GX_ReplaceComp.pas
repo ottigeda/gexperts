@@ -408,7 +408,7 @@ procedure TfmReplaceComp.ReplaceComponentsOnCurrentForm(OnlySelected: Boolean);
 var
   CurrentForm: IOTAFormEditor;
 begin
-  CurrentForm := GxOtaGetCurrentFormEditor;
+  CurrentForm := Ota.GetCurrentFormEditor;
   Assert(Assigned(CurrentForm));
 
   ReplaceComponentsOnForm(CurrentForm, OnlySelected);
@@ -438,7 +438,7 @@ begin
     if not Assigned(Module) then
       Continue;
 
-    FormEditor := GxOtaGetFormEditorFromModule(Module);
+    FormEditor := Ota.GetFormEditorFromModule(Module);
     if Assigned(FormEditor) then
       ReplaceComponentsOnForm(FormEditor, False);
   end;
@@ -468,7 +468,7 @@ begin
 
   LoadComponentList;
 
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
   begin
     if Ota.GetCurrentProject = nil then
       raise Exception.Create(SOpenSomethingFirst);
@@ -534,7 +534,7 @@ procedure TReplaceCompExpert.UpdateAction(Action: TCustomAction);
 var
   FormEditor: IOTAFormEditor;
 begin
-  Action.Enabled := GxOtaTryGetCurrentFormEditor(FormEditor) or (Ota.HaveCurrentProject);
+  Action.Enabled := Ota.TryGetCurrentFormEditor(FormEditor) or (Ota.HaveCurrentProject);
 end;
 
 procedure TReplaceCompExpert.Execute(Sender: TObject);

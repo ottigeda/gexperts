@@ -475,7 +475,7 @@ var
 begin
   Result := nil;
 
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     Exit;
 
   SetLength(Result, FormEditor.GetSelCount);

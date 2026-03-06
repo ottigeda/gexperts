@@ -277,7 +277,7 @@ begin
     // Check if identifier is a component in the form designer
     Step := 'DetectComponent';
     IsComponent := False;
-    FormEditor := GxOtaGetFormEditorFromModule(Ota.GetCurrentModule);
+    FormEditor := Ota.GetFormEditorFromModule(Ota.GetCurrentModule);
     if Assigned(FormEditor) then begin
       // Block renaming the form's name or type (e.g. Form1 or TForm1)
       Component := FormEditor.GetRootComponent;

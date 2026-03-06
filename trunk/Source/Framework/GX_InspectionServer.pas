@@ -1337,7 +1337,7 @@ function TGxInspectServer.CmdShowDesigner: string;
 var
   FormEditor: IOTAFormEditor;
 begin
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then begin
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then begin
     Result := 'ERROR No form editor active (open a unit with a form first)'#13#10;
     Exit;
   end;

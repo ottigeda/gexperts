@@ -232,7 +232,7 @@ begin
     // Get Editor Interface
     Assert(FEditIntf = nil);
 
-    FEditIntf := GxOtaGetSourceEditorFromModule(FModIntf, FFileName);
+    FEditIntf := Ota.GetSourceEditorFromModule(FModIntf, FFileName);
     {$IFOPT D+} SendDebug('EditReader: Got FEditIntf for module'); {$ENDIF}
     if FEditIntf = nil then
     begin
@@ -321,7 +321,7 @@ begin
   Assert(Assigned(FModIntf));
 
   if FMode = mmModule then
-    GxOtaShowFormForModule(FModIntf);
+    Ota.ShowFormForModule(FModIntf);
 end;
 
 procedure TEditReader.GotoLine(L: Integer);

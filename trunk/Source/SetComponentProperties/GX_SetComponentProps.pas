@@ -350,7 +350,7 @@ begin
           Module := ModuleInfo.OpenModule;
           if Assigned(Module) then
           begin
-            FormEditor := GxOtaGetFormEditorFromModule(Module);
+            FormEditor := Ota.GetFormEditorFromModule(Module);
             if Assigned(FormEditor) then
             begin
               RootComponent := FormEditor.GetRootComponent;

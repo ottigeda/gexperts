@@ -98,7 +98,7 @@ var
       Module := Ota.GetModule(GxOtaGetBaseModuleFileName(MatchFile));
       if not Assigned(Module) then
         raise Exception.Create(SUnableToOpen + MatchFile);
-      SourceEditor := GxOtaGetSourceEditorFromModule(Module, MatchFile);
+      SourceEditor := Ota.GetSourceEditorFromModule(Module, MatchFile);
       if not Assigned(SourceEditor) then
         raise Exception.Create(SUnableToOpen + MatchFile);
       GxOtaLoadFileToUnicodeStrings(SourceEditor.FileName, TempFile, WasBinary);

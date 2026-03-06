@@ -422,7 +422,7 @@ begin
   IsMultiSelection := False;
   FirstTabOrder := -1;
 
-  if not GxOtaTryGetCurrentFormEditor(FormEditor) then
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
     raise Exception.Create(SNoFormForCurrentModule);
 
   if FormEditor.GetSelCount > 1 then

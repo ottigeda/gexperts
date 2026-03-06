@@ -835,11 +835,11 @@ begin
     Exit;
   end;
 
-  if not GxOtaFormEditorHasSelectedComponent then
+  if not Ota.FormEditorHasSelectedComponent then
     Configure(nil)
   else
   begin
-    if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
+    if not Ota.TryGetCurrentFormEditor(FFormEditor) then
       Exit;
     try
       SelCount := FFormEditor.GetSelCount;
@@ -1006,7 +1006,7 @@ begin
   if not Assigned(Module) then
     Exit;
 
-  SourceEditor := GxOtaGetSourceEditorFromModule(Module);
+  SourceEditor := Ota.GetSourceEditorFromModule(Module);
   if not Assigned(SourceEditor) then
     Exit;
 
@@ -1153,7 +1153,7 @@ var
 begin
   FTimer.Enabled := False;
   try
-    if (GxOtaGetCurrentFormEditor = nil) then
+    if (Ota.GetCurrentFormEditor = nil) then
       Exit;
     Assert(FFormNames.Count = FComponentNames.Count);
     for i := 0 to FComponentNames.Count - 1 do
@@ -1163,7 +1163,7 @@ begin
       SearchName := FComponentNames[i];
       if (FormName = '') or (SearchName = '') then
         Break;
-      FFormEditor := GxOtaGetFormEditorForFileName(FormName);
+      FFormEditor := Ota.GetFormEditorForFileName(FormName);
       if not Assigned(FFormEditor) then
         Break;
 
