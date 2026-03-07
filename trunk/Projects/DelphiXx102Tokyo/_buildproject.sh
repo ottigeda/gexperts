@@ -8,7 +8,8 @@ if [ "$1" = "--quiet" ]; then
   shift
 fi
 if [ "$QUIET" -eq 1 ]; then
-  LOGFILE=/tmp/build_$(basename "$(pwd)").txt
+  LOGFILE=../../tmp/build_$(basename "$(pwd)").txt
+  mkdir -p ../../tmp
   cmd.exe /c "__Build_Project.cmd --nowait $*" > "$LOGFILE" 2>&1
   RC=$?
   if [ $RC -ne 0 ]; then

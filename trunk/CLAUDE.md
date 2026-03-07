@@ -73,7 +73,7 @@ bash _buildproject.sh
 
 Each project directory has a `_buildproject.sh` script that calls `__Build_Project.cmd --nowait`.
 
-**Quiet builds:** Use `--quiet` to suppress output on success and only show the last 30 lines on failure. The full log is written to `/tmp/build_<dirname>.txt`. This is the preferred way to run builds from Claude Code since it avoids output redirection in the shell command (which triggers manual approval).
+**Quiet builds:** Use `--quiet` to suppress output on success (but still show any compiler warnings) and only show the last 30 lines on failure. The full log is written to `tmp/build_<dirname>.txt` (project-local `tmp/` directory). This is the preferred way to run builds from Claude Code since it avoids output redirection in the shell command (which triggers manual approval).
 ```bash
 bash _buildproject.sh --quiet
 ```
