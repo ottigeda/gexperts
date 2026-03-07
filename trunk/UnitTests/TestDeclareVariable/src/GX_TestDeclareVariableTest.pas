@@ -21,6 +21,8 @@ type
   TTestInferType = class(TTestCase)
   private
     function DoInfer(const Source: string; const IdentName: string): string;
+    function DoInferWithAlternatives(const Source: string; const IdentName: string;
+      out Alternatives: TTypeAlternatives): string;
   published
     procedure TestInferFromIntegerLiteral;
     procedure TestInferFromFloatLiteral;
@@ -48,6 +50,25 @@ type
     procedure TestInferFromIntrinsicCopy;
     procedure TestInferFromIntrinsicOrd;
     procedure TestInferFromIntrinsicChr;
+    // Overloaded intrinsics
+    procedure TestInferAbsOfInteger;
+    procedure TestInferAbsOfInt64;
+    procedure TestInferAbsOfDouble;
+    procedure TestInferAbsOfUnknown;
+    procedure TestInferSqrOfInteger;
+    procedure TestInferSqrOfDouble;
+    procedure TestInferPredOfInteger;
+    procedure TestInferPredOfChar;
+    procedure TestInferPredOfBoolean;
+    procedure TestInferPredOfUnknown;
+    procedure TestInferSuccOfByte;
+    procedure TestInferAbsOfNegativeFloat;
+    procedure TestInferAbsOfNegativeInteger;
+    procedure TestInferSqrOfPositiveFloat;
+    // Alternatives
+    procedure TestAbsAlternativesWhenUnknown;
+    procedure TestAbsAlternativesWhenKnownInteger;
+    procedure TestPredAlternativesWhenUnknown;
   end;
 
   TTestFindInsertionPoints = class(TTestCase)
@@ -410,6 +431,235 @@ begin
     'begin'#13#10 +
     '  X := Chr(65);'#13#10 +
     'end;', 'X'));
+end;
+
+function TTestInferType.DoInferWithAlternatives(const Source: string;
+  const IdentName: string; out Alternatives: TTypeAlternatives): string;
+var
+  Tokens: TTokenArray;
+  Procs: TProcScopeArray;
+  Classes: TClassScopeArray;
+  I: Integer;
+  IdentIdx: Integer;
+begin
+  Tokens := TokenizeSource(Source);
+  Classes := BuildClassScopes(Tokens);
+  Procs := BuildProcScopes(Tokens, Classes);
+
+  IdentIdx := -1;
+  for I := 0 to High(Tokens) do begin
+    if SameText(Tokens[I].Text, IdentName) then begin
+      IdentIdx := I;
+      Break;
+    end;
+  end;
+
+  if IdentIdx >= 0 then
+    Result := InferTypeFromContext(Tokens, IdentIdx, IdentName, Procs, Classes,
+      nil, Alternatives)
+  else begin
+    Result := '';
+    Alternatives := nil;
+  end;
+end;
+
+procedure TTestInferType.TestInferAbsOfInteger;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  N: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(N);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferAbsOfInt64;
+begin
+  CheckEquals('Int64', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  N: Int64;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(N);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferAbsOfDouble;
+begin
+  CheckEquals('Double', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  D: Double;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(D);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferAbsOfUnknown;
+begin
+  // When argument type is unknown, default to Integer
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(Y);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferSqrOfInteger;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Sqr(3);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferSqrOfDouble;
+begin
+  CheckEquals('Double', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  D: Double;'#13#10 +
+    'begin'#13#10 +
+    '  X := Sqr(D);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferPredOfInteger;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  N: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X := Pred(N);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferPredOfChar;
+begin
+  CheckEquals('Char', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  C: Char;'#13#10 +
+    'begin'#13#10 +
+    '  X := Pred(C);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferPredOfBoolean;
+begin
+  CheckEquals('Boolean', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  B: Boolean;'#13#10 +
+    'begin'#13#10 +
+    '  X := Pred(B);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferPredOfUnknown;
+begin
+  // When argument type is unknown, default to Integer
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Pred(Y);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferSuccOfByte;
+begin
+  CheckEquals('Byte', DoInfer(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  B: Byte;'#13#10 +
+    'begin'#13#10 +
+    '  X := Succ(B);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferAbsOfNegativeFloat;
+begin
+  CheckEquals('Double', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(-7.5);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferAbsOfNegativeInteger;
+begin
+  CheckEquals('Integer', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(-42);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferSqrOfPositiveFloat;
+begin
+  CheckEquals('Double', DoInfer(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Sqr(+3.14);'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestAbsAlternativesWhenUnknown;
+var
+  Alts: TTypeAlternatives;
+  Typ: string;
+begin
+  Typ := DoInferWithAlternatives(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(Y);'#13#10 +
+    'end;', 'X', Alts);
+  CheckEquals('Integer', Typ);
+  CheckEquals(4, Length(Alts), 'Should have 4 alternatives');
+  CheckEquals('Cardinal', Alts[0]);
+  CheckEquals('Int64', Alts[1]);
+  CheckEquals('UInt64', Alts[2]);
+  CheckEquals('Extended', Alts[3]);
+end;
+
+procedure TTestInferType.TestAbsAlternativesWhenKnownInteger;
+var
+  Alts: TTypeAlternatives;
+  Typ: string;
+begin
+  // Even when argument type is known, Abs/Sqr always offer alternatives
+  Typ := DoInferWithAlternatives(
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  N: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X := Abs(N);'#13#10 +
+    'end;', 'X', Alts);
+  CheckEquals('Integer', Typ);
+  CheckEquals(4, Length(Alts), 'Should have Cardinal, Int64, UInt64, Extended as alternatives');
+  CheckEquals('Cardinal', Alts[0]);
+  CheckEquals('Int64', Alts[1]);
+  CheckEquals('UInt64', Alts[2]);
+  CheckEquals('Extended', Alts[3]);
+end;
+
+procedure TTestInferType.TestPredAlternativesWhenUnknown;
+var
+  Alts: TTypeAlternatives;
+  Typ: string;
+begin
+  Typ := DoInferWithAlternatives(
+    'procedure Foo;'#13#10 +
+    'begin'#13#10 +
+    '  X := Pred(Y);'#13#10 +
+    'end;', 'X', Alts);
+  CheckEquals('Integer', Typ);
+  CheckEquals(2, Length(Alts), 'Should have 2 alternatives');
+  CheckEquals('Char', Alts[0]);
+  CheckEquals('Byte', Alts[1]);
 end;
 
 { TTestFindInsertionPoints }

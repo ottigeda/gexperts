@@ -35,6 +35,8 @@ type
   end;
   TInsertionPointArray = array of TInsertionPoint;
 
+  TTypeAlternatives = array of string;
+
   TDeclareInfo = record
     IdentName: string;
     InferredType: string;       // guessed from context, empty if unknown
@@ -42,6 +44,7 @@ type
     ExistingDecl: string;       // non-empty if already declared
     IsReservedWord: Boolean;
     InsertionPoints: TInsertionPointArray;
+    AlternativeTypes: TTypeAlternatives;  // alternative type suggestions for overloaded functions
     DefaultKindIndex: Integer;  // index into InsertionPoints for default
     ErrorMsg: string;
   end;
@@ -54,7 +57,13 @@ function AnalyzeForDeclaration(const Source: string; CursorPos: Integer;
 function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
   const Classes: TClassScopeArray;
-  ExternalLookup: TExternalTypeLookup = nil): string;
+  ExternalLookup: TExternalTypeLookup = nil): string; overload;
+
+function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
+  const IdentName: string; const Procs: TProcScopeArray;
+  const Classes: TClassScopeArray;
+  ExternalLookup: TExternalTypeLookup;
+  out AlternativeTypes: TTypeAlternatives): string; overload;
 
 function FindInsertionPoints(const Source: string; const Tokens: TTokenArray;
   const Procs: TProcScopeArray; const Classes: TClassScopeArray;
@@ -198,16 +207,150 @@ begin
   else if SameText(FuncName, 'Concat') then Result := 'string';
 end;
 
+function IsIntegerType(const TypeName: string): Boolean;
+begin
+  Result := SameText(TypeName, 'Integer') or SameText(TypeName, 'SmallInt') or
+    SameText(TypeName, 'ShortInt') or SameText(TypeName, 'Word') or
+    SameText(TypeName, 'Byte') or SameText(TypeName, 'Cardinal') or
+    SameText(TypeName, 'LongInt') or SameText(TypeName, 'LongWord') or
+    SameText(TypeName, 'NativeInt') or SameText(TypeName, 'NativeUInt');
+end;
+
+function IsInt64Type(const TypeName: string): Boolean;
+begin
+  Result := SameText(TypeName, 'Int64') or SameText(TypeName, 'UInt64');
+end;
+
+function IsFloatType(const TypeName: string): Boolean;
+begin
+  Result := SameText(TypeName, 'Extended') or SameText(TypeName, 'Double') or
+    SameText(TypeName, 'Single') or SameText(TypeName, 'Real') or
+    SameText(TypeName, 'Currency') or SameText(TypeName, 'Comp');
+end;
+
+/// <summary>
+/// Infers the type of the first argument in a function call.
+/// @param Tokens the token array
+/// @param OpenParenIdx index of the '(' token after the function name
+/// @param Procs procedure scopes for variable lookup
+/// @param Classes class scopes for variable lookup
+/// @param ContextIdx token index providing scope context for lookups
+/// @param ExternalLookup optional callback for external type resolution
+/// @returns the inferred argument type, or '' if unknown </summary>
+function InferArgumentType(const Tokens: TTokenArray; OpenParenIdx: Integer;
+  const Procs: TProcScopeArray; const Classes: TClassScopeArray;
+  ContextIdx: Integer;
+  ExternalLookup: TExternalTypeLookup): string;
+var
+  ArgIdx: Integer;
+begin
+  Result := '';
+  ArgIdx := NextNonJunk(Tokens, OpenParenIdx);
+  if ArgIdx > High(Tokens) then Exit;
+  if Tokens[ArgIdx].Kind = tkRoundClose then Exit;
+
+  // Skip unary minus/plus
+  if (Tokens[ArgIdx].Kind in [tkMinus, tkPlus]) then begin
+    ArgIdx := NextNonJunk(Tokens, ArgIdx);
+    if ArgIdx > High(Tokens) then Exit;
+  end;
+
+  case Tokens[ArgIdx].Kind of
+    tkInteger, tkNumber: begin
+      if ExpressionIsFloat(Tokens, ArgIdx) then
+        Result := 'Double'
+      else
+        Result := 'Integer';
+    end;
+    tkFloat: Result := 'Double';
+    tkString: begin
+      if (Length(Tokens[ArgIdx].Text) = 3) and (Tokens[ArgIdx].Text[1] = '''') then
+        Result := 'Char'
+      else
+        Result := 'string';
+    end;
+  else
+    if Tokens[ArgIdx].Kind in IdentDirect then begin
+      if SameText(Tokens[ArgIdx].Text, 'True') or SameText(Tokens[ArgIdx].Text, 'False') then
+        Result := 'Boolean'
+      else begin
+        Result := LookupVarType(Tokens, Tokens[ArgIdx].Text, Procs, Classes, ContextIdx);
+        if Result = '' then begin
+          Result := LookupFuncReturnType(Tokens, Tokens[ArgIdx].Text, '', Procs);
+          if Result = '' then
+            Result := LookupIntrinsicReturnType(Tokens[ArgIdx].Text);
+        end;
+      end;
+    end;
+  end;
+end;
+
+/// <summary>
+/// Looks up the return type of an overloaded compiler intrinsic (Abs, Sqr, Pred, Succ)
+/// based on the argument type.
+/// @param FuncName the intrinsic function name
+/// @param ArgType the determined argument type ('' if unknown)
+/// @param Alternatives receives alternative type suggestions when ArgType is unknown
+/// @returns the inferred return type, or '' if FuncName is not an overloaded intrinsic </summary>
+function LookupOverloadedIntrinsicType(const FuncName, ArgType: string;
+  out Alternatives: TTypeAlternatives): string;
+begin
+  Result := '';
+  Alternatives := nil;
+
+  if SameText(FuncName, 'Abs') or SameText(FuncName, 'Sqr') then begin
+    if IsInt64Type(ArgType) then
+      Result := 'Int64'
+    else if IsFloatType(ArgType) then
+      Result := ArgType
+    else
+      Result := 'Integer';
+    // Always offer alternatives for Abs/Sqr since the user may want a different type
+    SetLength(Alternatives, 0);
+    if not SameText(Result, 'Integer') then begin
+      SetLength(Alternatives, Length(Alternatives) + 1);
+      Alternatives[High(Alternatives)] := 'Integer';
+    end;
+    if not SameText(Result, 'Cardinal') then begin
+      SetLength(Alternatives, Length(Alternatives) + 1);
+      Alternatives[High(Alternatives)] := 'Cardinal';
+    end;
+    if not IsInt64Type(Result) then begin
+      SetLength(Alternatives, Length(Alternatives) + 1);
+      Alternatives[High(Alternatives)] := 'Int64';
+    end;
+    if not SameText(Result, 'UInt64') then begin
+      SetLength(Alternatives, Length(Alternatives) + 1);
+      Alternatives[High(Alternatives)] := 'UInt64';
+    end;
+    if not IsFloatType(Result) then begin
+      SetLength(Alternatives, Length(Alternatives) + 1);
+      Alternatives[High(Alternatives)] := 'Extended';
+    end;
+  end else if SameText(FuncName, 'Pred') or SameText(FuncName, 'Succ') then begin
+    if ArgType <> '' then
+      Result := ArgType
+    else begin
+      Result := 'Integer';
+      SetLength(Alternatives, 2);
+      Alternatives[0] := 'Char';
+      Alternatives[1] := 'Byte';
+    end;
+  end;
+end;
+
 function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
   const IdentName: string; const Procs: TProcScopeArray;
   const Classes: TClassScopeArray;
-  ExternalLookup: TExternalTypeLookup = nil): string;
+  ExternalLookup: TExternalTypeLookup;
+  out AlternativeTypes: TTypeAlternatives): string;
 var
   I, NI, PI, AssignIdx, RhsIdx, LhsIdx, FuncIdx: Integer;
   ParenLevel, ParamIndex: Integer;
-  FuncName: string;
+  FuncName, ArgType: string;
 begin
   Result := '';
+  AlternativeTypes := nil;
 
   // Scan all occurrences of the identifier to find assignment context
   for I := 0 to High(Tokens) do begin
@@ -294,6 +437,11 @@ begin
           Result := LookupFuncReturnType(Tokens, Tokens[RhsIdx].Text, '', Procs);
           if Result = '' then
             Result := LookupIntrinsicReturnType(Tokens[RhsIdx].Text);
+          if Result = '' then begin
+            // Try overloaded intrinsics (Abs, Sqr, Pred, Succ) with argument type analysis
+            ArgType := InferArgumentType(Tokens, AssignIdx, Procs, Classes, I, ExternalLookup);
+            Result := LookupOverloadedIntrinsicType(Tokens[RhsIdx].Text, ArgType, AlternativeTypes);
+          end;
           if (Result = '') and Assigned(ExternalLookup) then
             Result := ExternalLookup(Tokens[RhsIdx].Text, elkFuncReturn, -1);
           if Result <> '' then
@@ -379,6 +527,17 @@ begin
       end;
     end;
   end;
+end;
+
+function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
+  const IdentName: string; const Procs: TProcScopeArray;
+  const Classes: TClassScopeArray;
+  ExternalLookup: TExternalTypeLookup = nil): string;
+var
+  Alts: TTypeAlternatives;
+begin
+  Result := InferTypeFromContext(Tokens, IdentTokenIdx, IdentName, Procs, Classes,
+    ExternalLookup, Alts);
 end;
 
 type
@@ -725,6 +884,7 @@ begin
   Info.InferenceDesc := '';
   Info.ExistingDecl := '';
   Info.IsReservedWord := False;
+  Info.AlternativeTypes := nil;
   Info.InsertionPoints := nil;
   Info.DefaultKindIndex := 0;
   Info.ErrorMsg := '';
@@ -766,7 +926,7 @@ begin
 
   // Infer type from context
   Info.InferredType := InferTypeFromContext(Tokens, CursorTokenIdx,
-    Info.IdentName, Procs, Classes, ExternalLookup);
+    Info.IdentName, Procs, Classes, ExternalLookup, Info.AlternativeTypes);
 
   // Find insertion points
   Info.InsertionPoints := FindInsertionPoints(Source, Tokens, Procs, Classes,

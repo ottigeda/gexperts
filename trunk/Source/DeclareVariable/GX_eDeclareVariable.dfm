@@ -96,13 +96,28 @@ object fmDeclareVariable: TfmDeclareVariable
     Height = 14
     Caption = 'Type:'
   end
-  object edtType: TEdit
+  object cmbType: TComboBox
     Left = 120
     Top = 93
     Width = 283
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 3
+  end
+  object lblTypeHint: TLabel
+    Left = 120
+    Top = 117
+    Width = 283
+    Height = 14
+    Anchors = [akLeft, akTop, akRight]
+    Caption = '...'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
   end
   object lblInsertAt: TLabel
     Left = 16

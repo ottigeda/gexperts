@@ -18,7 +18,8 @@ type
     rbField: TRadioButton;
     rbProperty: TRadioButton;
     lblType: TLabel;
-    edtType: TEdit;
+    cmbType: TComboBox;
+    lblTypeHint: TLabel;
     lblInsertAt: TLabel;
     cmbInsertAt: TComboBox;
     lblRead: TLabel;
@@ -31,7 +32,7 @@ type
   private
     FInfo: TDeclareInfo;
     procedure rbDeclKindClick(Sender: TObject);
-    procedure edtTypeChange(Sender: TObject);
+    procedure cmbTypeChange(Sender: TObject);
     procedure UpdateInsertAtCombo;
     procedure UpdatePropertyFields;
     procedure ValidateInput;
@@ -75,12 +76,12 @@ type
     FSourceEditor: IOTASourceEditor;
     FCache: TCachedUnitTokensArray;
     FCacheCount: Integer;
+    FLastAlternatives: TTypeAlternatives;
     procedure InitUsesUnits;
     function IsUnitInUses(const UnitFileName: string): Boolean;
     function GetCachedTokens(const FilePath: string;
       out Tokens: TTokenArray; out Procs: TProcScopeArray;
       out Classes: TClassScopeArray): Boolean;
-    function ParseFileForFuncReturn(const FilePath, FuncName: string): string;
     function ParseFileForParamType(const FilePath, FuncName: string;
       ParamIndex: Integer): string;
     function ParseFileForIdentType(const FilePath, IdentName: string): string;
@@ -90,6 +91,7 @@ type
     destructor Destroy; override;
     function Lookup(const Name: string; Kind: TExternalLookupKind;
       ParamIndex: Integer): string;
+    property LastAlternatives: TTypeAlternatives read FLastAlternatives;
   end;
 
   TDeclareVariableExpert = class(TEditorExpert)
@@ -101,6 +103,57 @@ type
     function HasConfigOptions: Boolean; override;
     procedure Execute(Sender: TObject); override;
   end;
+
+procedure AddUniqueType(var Types: TTypeAlternatives; const TypeName: string);
+var
+  I: Integer;
+begin
+  for I := 0 to High(Types) do
+    if SameText(Types[I], TypeName) then
+      Exit;
+  SetLength(Types, Length(Types) + 1);
+  Types[High(Types)] := TypeName;
+end;
+
+/// <summary>
+/// Scans tokens for all overloaded function headers matching FuncName and collects
+/// their distinct return types.
+/// @param Tokens the token array
+/// @param FuncName the function name to search for
+/// @param Results receives all distinct return types found </summary>
+procedure ScanForAllFuncReturnTypes(const Tokens: TTokenArray;
+  const FuncName: string; var Results: TTypeAlternatives);
+var
+  I, J, NI, ParenLevel: Integer;
+  RetType: string;
+begin
+  I := 0;
+  while I <= High(Tokens) do begin
+    if Tokens[I].Kind = tkFunction then begin
+      NI := NextNonJunk(Tokens, I);
+      if (NI <= High(Tokens)) and (Tokens[NI].Kind in IdentDirect) and
+         SameText(Tokens[NI].Text, FuncName) then begin
+        J := NI + 1;
+        ParenLevel := 0;
+        while J <= High(Tokens) do begin
+          if Tokens[J].Kind = tkRoundOpen then
+            Inc(ParenLevel)
+          else if Tokens[J].Kind = tkRoundClose then
+            Dec(ParenLevel)
+          else if (ParenLevel = 0) and (Tokens[J].Kind = tkColon) then begin
+            RetType := ExtractTypeAfterColon(Tokens, J);
+            if RetType <> '' then
+              AddUniqueType(Results, RetType);
+            Break;
+          end else if (ParenLevel = 0) and (Tokens[J].Kind = tkSemiColon) then
+            Break;
+          Inc(J);
+        end;
+      end;
+    end;
+    Inc(I);
+  end;
+end;
 
 { TExternalTypeResolver }
 
@@ -244,48 +297,6 @@ end;
 
 /// <summary>
 /// Scans tokens for a function/procedure header matching FuncName and extracts
-/// its return type. Works directly on the token array without BuildProcScopes,
-/// making it safe for interface-only code.
-/// @param Tokens the token array
-/// @param FuncName the function name to search for
-/// @returns the return type, or '' if not found </summary>
-function ScanForFuncReturnType(const Tokens: TTokenArray;
-  const FuncName: string): string;
-var
-  I, J, NI, ParenLevel: Integer;
-begin
-  Result := '';
-  I := 0;
-  while I <= High(Tokens) do begin
-    if Tokens[I].Kind = tkFunction then begin
-      NI := NextNonJunk(Tokens, I);
-      if (NI <= High(Tokens)) and (Tokens[NI].Kind in IdentDirect) and
-         SameText(Tokens[NI].Text, FuncName) then begin
-        // Found matching function — skip past params to find ': ReturnType'
-        J := NI + 1;
-        ParenLevel := 0;
-        while J <= High(Tokens) do begin
-          if Tokens[J].Kind = tkRoundOpen then
-            Inc(ParenLevel)
-          else if Tokens[J].Kind = tkRoundClose then
-            Dec(ParenLevel)
-          else if (ParenLevel = 0) and (Tokens[J].Kind = tkColon) then begin
-            Result := ExtractTypeAfterColon(Tokens, J);
-            if Result <> '' then
-              Exit;
-            Break;
-          end else if (ParenLevel = 0) and (Tokens[J].Kind = tkSemiColon) then
-            Break;
-          Inc(J);
-        end;
-      end;
-    end;
-    Inc(I);
-  end;
-end;
-
-/// <summary>
-/// Scans tokens for a function/procedure header matching FuncName and extracts
 /// the type of the parameter at the given 0-based index.
 /// @param Tokens the token array
 /// @param FuncName the function name to search for
@@ -356,18 +367,6 @@ begin
   end;
 end;
 
-function TExternalTypeResolver.ParseFileForFuncReturn(const FilePath, FuncName: string): string;
-var
-  Tokens: TTokenArray;
-  Classes: TClassScopeArray;
-  Procs: TProcScopeArray;
-begin
-  Result := '';
-  if not GetCachedTokens(FilePath, Tokens, Procs, Classes) then
-    Exit;
-  Result := ScanForFuncReturnType(Tokens, FuncName);
-end;
-
 function TExternalTypeResolver.ParseFileForParamType(const FilePath, FuncName: string;
   ParamIndex: Integer): string;
 var
@@ -402,10 +401,15 @@ function TExternalTypeResolver.Lookup(const Name: string; Kind: TExternalLookupK
   ParamIndex: Integer): string;
 var
   Found: TList;
-  I: Integer;
+  I, J: Integer;
   Export: TUnitExport;
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+  Procs: TProcScopeArray;
+  AllTypes: TTypeAlternatives;
 begin
   Result := '';
+  FLastAlternatives := nil;
   if not Assigned(FIdentifiers) then
     Exit;
 
@@ -414,22 +418,41 @@ begin
     if not FIdentifiers.FindExact(AnsiString(LowerCase(Name)), Found) then
       Exit;
 
-    // Try each matching unit, prioritizing units in the uses clause
-    for I := 0 to Found.Count - 1 do begin
-      Export := TUnitExport(Found[I]);
-      if not IsUnitInUses(Export.FileName) then
-        Continue;
-
-      case Kind of
-        elkFuncReturn:
-          Result := ParseFileForFuncReturn(Export.FileName, Name);
-        elkParamType:
-          Result := ParseFileForParamType(Export.FileName, Name, ParamIndex);
-        elkIdentType:
-          Result := ParseFileForIdentType(Export.FileName, Name);
+    if Kind = elkFuncReturn then begin
+      // Collect all overloaded return types across units in uses clause
+      AllTypes := nil;
+      for I := 0 to Found.Count - 1 do begin
+        Export := TUnitExport(Found[I]);
+        if not IsUnitInUses(Export.FileName) then
+          Continue;
+        if not GetCachedTokens(Export.FileName, Tokens, Procs, Classes) then
+          Continue;
+        ScanForAllFuncReturnTypes(Tokens, Name, AllTypes);
       end;
-      if Result <> '' then
-        Exit;
+      if Length(AllTypes) > 0 then begin
+        Result := AllTypes[0];
+        if Length(AllTypes) > 1 then begin
+          SetLength(FLastAlternatives, Length(AllTypes) - 1);
+          for J := 1 to High(AllTypes) do
+            FLastAlternatives[J - 1] := AllTypes[J];
+        end;
+      end;
+    end else begin
+      // Other kinds: use existing first-match logic
+      for I := 0 to Found.Count - 1 do begin
+        Export := TUnitExport(Found[I]);
+        if not IsUnitInUses(Export.FileName) then
+          Continue;
+
+        case Kind of
+          elkParamType:
+            Result := ParseFileForParamType(Export.FileName, Name, ParamIndex);
+          elkIdentType:
+            Result := ParseFileForIdentType(Export.FileName, Name);
+        end;
+        if Result <> '' then
+          Exit;
+      end;
     end;
   finally
     Found.Free;
@@ -445,7 +468,7 @@ begin
   rbLocalVar.OnClick := rbDeclKindClick;
   rbField.OnClick := rbDeclKindClick;
   rbProperty.OnClick := rbDeclKindClick;
-  edtType.OnChange := edtTypeChange;
+  cmbType.OnChange := cmbTypeChange;
 end;
 
 procedure TfmDeclareVariable.UpdateLayout;
@@ -482,8 +505,13 @@ begin
 
   // Row 4: Type
   lblType.Top := Y + 3;
-  edtType.Top := Y;
-  Y := Y + edtType.Height + RowGap;
+  cmbType.Top := Y;
+  Y := Y + cmbType.Height;
+  if lblTypeHint.Visible then begin
+    lblTypeHint.Top := Y + 2;
+    Y := Y + lblTypeHint.Height + 2;
+  end;
+  Y := Y + RowGap;
 
   // Row 5: Insert at
   lblInsertAt.Top := Y + 3;
@@ -567,10 +595,20 @@ begin
   else if HasField then
     rbField.Checked := True;
 
-  edtType.Text := _Info.InferredType;
+  cmbType.Items.Clear;
+  if Length(_Info.AlternativeTypes) > 0 then begin
+    cmbType.Items.Add(_Info.InferredType);
+    for I := 0 to High(_Info.AlternativeTypes) do
+      cmbType.Items.Add(_Info.AlternativeTypes[I]);
+    lblTypeHint.Caption := IntToStr(cmbType.Items.Count) + ' type suggestions - use dropdown to select';
+    lblTypeHint.Visible := True;
+  end else
+    lblTypeHint.Visible := False;
+  cmbType.Text := _Info.InferredType;
   UpdateInsertAtCombo;
   UpdatePropertyFields;
   ValidateInput;
+  ActiveControl := cmbType;
 end;
 
 function TfmDeclareVariable.GetSelectedKind: TDeclKind;
@@ -634,14 +672,14 @@ begin
   ValidateInput;
 end;
 
-procedure TfmDeclareVariable.edtTypeChange(Sender: TObject);
+procedure TfmDeclareVariable.cmbTypeChange(Sender: TObject);
 begin
   ValidateInput;
 end;
 
 procedure TfmDeclareVariable.ValidateInput;
 begin
-  btnOK.Enabled := (Trim(edtType.Text) <> '') and (cmbInsertAt.Items.Count > 0)
+  btnOK.Enabled := (Trim(cmbType.Text) <> '') and (cmbInsertAt.Items.Count > 0)
     and not FInfo.IsReservedWord;
 end;
 
@@ -657,7 +695,7 @@ begin
     _InsertPt := FInfo.InsertionPoints[0];
   _DeclText := BuildDeclarationText(
     FInfo.IdentName,
-    Trim(edtType.Text),
+    Trim(cmbType.Text),
     GetSelectedKind,
     _InsertPt.Indent,
     Trim(edtRead.Text),
@@ -725,6 +763,7 @@ var
   InsertPt: TInsertionPoint;
   DeclText, ModifiedSource: string;
   Step: string;
+  I: Integer;
   GExpertsObj: TGExperts;
   UsesExpert: TGX_Expert;
   Identifiers: TUnitExportlist;
@@ -766,6 +805,14 @@ begin
       if not AnalyzeForDeclaration(Src, CursorCharIdx, DeclInfo, ExternalLookup) then begin
         MessageBeep($FFFFFFFF);
         Exit;
+      end;
+
+      // Merge external overload alternatives from resolver
+      if Assigned(Resolver) and (Length(Resolver.LastAlternatives) > 0) then begin
+        for I := 0 to High(Resolver.LastAlternatives) do begin
+          if not SameText(Resolver.LastAlternatives[I], DeclInfo.InferredType) then
+            AddUniqueType(DeclInfo.AlternativeTypes, Resolver.LastAlternatives[I]);
+        end;
       end;
 
       if DeclInfo.IsReservedWord then begin
