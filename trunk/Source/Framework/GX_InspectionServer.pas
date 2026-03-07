@@ -1323,7 +1323,7 @@ begin
     if FilePath[i] = '/' then
       FilePath[i] := '\';
   try
-    if GxOtaOpenFile(FilePath) then
+    if Ota.OpenFile(FilePath) then
       Result := 'OK ' + FilePath + #13#10
     else
       Result := 'ERROR Could not open file: ' + FilePath + #13#10;

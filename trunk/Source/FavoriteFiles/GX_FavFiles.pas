@@ -1588,7 +1588,7 @@ begin
   end;
   fn := Ota.GetCurrentSourceFile;
   if IsForm(fn) then
-    fn := GxOtaGetBaseModuleFileName(fn);
+    fn := Ota.GetBaseModuleFileName(fn);
   AddFileToCurrentFolder(fn);
 end;
 
@@ -1718,7 +1718,7 @@ begin
     case AFile.ExecType of
       etLoadInIDE:
         begin
-          if not GxOtaMakeSourceVisible(LoadFile) then
+          if not Ota.MakeSourceVisible(LoadFile) then
             MessageDlg(Format(SCouldNotOpen, [LoadFile]), mtError, [mbOK], 0)
           else begin
             if (not IsStandAlone) and FOptions.FExecHide then

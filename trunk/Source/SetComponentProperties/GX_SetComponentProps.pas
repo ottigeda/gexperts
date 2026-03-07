@@ -340,7 +340,7 @@ begin
         TfmSetComponentPropsStatus.GetInstance.ProcessedFile := FileName;
       if (not IsDcp(FileName)) and (FileName <> '') then
       begin
-        FileWasOpen := GxOtaIsFileOpen(FileName);
+        FileWasOpen := Ota.IsFileOpen(FileName);
         if Settings.OnlyOpenFiles then
         begin
           if not FileWasOpen then
@@ -360,7 +360,7 @@ begin
                 if (not FileChanged) and (not FileWasOpen) then
                   Module.CloseModule(True)
                 else if FileChanged and (not FileWasOpen) then
-                  GxOtaOpenFile(FileName);
+                  Ota.OpenFile(FileName);
               end;
             end;
           end;

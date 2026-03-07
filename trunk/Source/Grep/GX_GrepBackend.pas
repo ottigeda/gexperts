@@ -459,12 +459,12 @@ begin
       Assert(FFileResult = nil, 'FFileResult leak');
       FFileResult := nil;
 
-      if (FGrepSettings.GrepAction = gaOpenFilesGrep) and (not GxOtaIsFileOpen(FileName)) then
+      if (FGrepSettings.GrepAction = gaOpenFilesGrep) and (not Ota.IsFileOpen(FileName)) then
         Exit; //==>
 
       ExecuteSearchOnFile(FileName, Context, True);
       if IsCpp(FileName) and (FGrepSettings.GrepAction in [gaProjGrep, gaOpenFilesGrep, gaProjGroupGrep]) then
-        if GxOtaFileOrModuleExists(ChangeFileExt(FileName, '.h')) then
+        if Ota.FileOrModuleExists(ChangeFileExt(FileName, '.h')) then
           ExecuteSearchOnFile(ChangeFileExt(FileName, '.h'), Context, True);
       FFileResult := nil;
     end;
@@ -585,7 +585,7 @@ begin
   if IsStandAlone then
     Exit; //==>
 
-  CurrentFile := GxOtaGetBaseModuleFileName(Ota.GetCurrentSourceFile);
+  CurrentFile := Ota.GetBaseModuleFileName(Ota.GetCurrentSourceFile);
 
   Assert(FFileResult = nil, 'FFileResult leak');
   FFileResult := nil;
@@ -737,7 +737,7 @@ begin
   try
     for i := 0 to FFilesInResults.Count - 1 do
     begin
-      if GxOtaFileOrModuleExists(FFilesInResults[i]) then
+      if Ota.FileOrModuleExists(FFilesInResults[i]) then
       begin
         Logger.Info('ResultsGrep on ' + FFilesInResults[i]);
         ExecuteSearchOnFile(FFilesInResults[i], Context);

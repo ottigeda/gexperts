@@ -614,7 +614,7 @@ begin
       Exit;
 
     LineNo := def.GetLineNoOfCurrentEntry;
-    GxOtaGoToFileLine(def.Filename, LineNo);
+    Ota.GoToFileLine(def.Filename, LineNo);
     ModalResult := mrCancel;
   end;
 end;

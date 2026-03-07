@@ -944,6 +944,92 @@ type
     /// @param Text the replacement text </summary>
     class procedure ReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer;
       const Text: string);
+
+    // Batch 14: File Operations
+    /// <summary>
+    /// Closes the file with the given name in the IDE.
+    /// @param FileName the file to close
+    /// @returns True if the file was closed successfully </summary>
+    class function CloseFile(const FileName: string): Boolean;
+    /// <summary>
+    /// Closes the current editor tab. </summary>
+    class procedure CloseCurrentEditorTab;
+    /// <summary>
+    /// Opens a file in the IDE.
+    /// @param FileName the file to open
+    /// @returns True if the file was opened successfully </summary>
+    class function OpenFile(const FileName: string): Boolean;
+    /// <summary>
+    /// Opens a file or its form in the IDE. If the file is a form file,
+    /// opens the base module and shows the form editor.
+    /// @param FileName the file to open
+    /// @returns True if the file was opened successfully </summary>
+    class function OpenFileOrForm(const FileName: string): Boolean;
+    /// <summary>
+    /// Checks if a file is currently open in the IDE.
+    /// @param AFileName the fully qualified file name to check
+    /// @param UseBase if True, maps .dfm/.hpp etc. to their parent file type
+    /// @returns True if the file is open </summary>
+    class function IsFileOpen(const AFileName: string; UseBase: Boolean = False): Boolean;
+    /// <summary>
+    /// Checks if a file exists on disk or its module is loaded in the IDE.
+    /// @param AFileName the file name to check
+    /// @param UseBase if True, maps .dfm/.hpp etc. to their parent file type
+    /// @returns True if the file exists or its module is loaded </summary>
+    class function FileOrModuleExists(const AFileName: string; UseBase: Boolean = False): Boolean;
+    /// <summary>
+    /// Makes the source for the given file visible in the editor, swapping
+    /// between source and form views as necessary.
+    /// @param FileName the file whose source to show
+    /// @returns True if the source was made visible </summary>
+    class function MakeSourceVisible(const FileName: string): Boolean;
+    /// <summary>
+    /// Checks if a module is currently showing its form as source text.
+    /// @param Module the module to check
+    /// @returns True if the form source view is active </summary>
+    class function ModuleIsShowingFormSource(Module: IOTAModule): Boolean;
+    /// <summary>
+    /// Opens a file and navigates to the specified line number.
+    /// @param FileName the file to open
+    /// @param Line the line number to go to
+    /// @raises Exception if the file cannot be opened </summary>
+    class procedure GoToFileLine(const FileName: string; Line: Integer);
+    /// <summary>
+    /// Opens a file and navigates to the specified line and column, selecting
+    /// the text between StartColumn and StopColumn.
+    /// @param FileName the file to open
+    /// @param Line the line number to go to
+    /// @param StartColumn the starting column of the selection (1-based)
+    /// @param StopColumn the ending column of the selection (1-based)
+    /// @param ShowInMiddle if True, centers the line in the editor view
+    /// @raises Exception if the file cannot be opened </summary>
+    class procedure GoToFileLineColumn(const FileName: string; Line: Integer;
+      StartColumn: Integer = 0; StopColumn: Integer = 0; ShowInMiddle: Boolean = True);
+    /// <summary>
+    /// Converts a character-based column index to a byte-based column index
+    /// for UTF-8 encoded line data.
+    /// @param LineData the UTF-8 encoded line text
+    /// @param CharIndex the character index to convert
+    /// @param EndByte if True, returns the byte position after the last
+    ///                character; if False, returns the byte position of the
+    ///                first byte of the character
+    /// @returns the corresponding byte index </summary>
+    class function ConvertColumnCharsToBytes(LineData: UTF8String; CharIndex: Integer;
+      EndByte: Boolean): Integer;
+    /// <summary>
+    /// Converts a byte-based column index to a character-based column index
+    /// for UTF-8 encoded line data.
+    /// @param LineData the UTF-8 encoded line text
+    /// @param ByteIndex the byte index to convert
+    /// @returns the corresponding character index </summary>
+    class function ConvertColumnBytesToChars(LineData: UTF8String; ByteIndex: Integer): Integer;
+    /// <summary>
+    /// Transforms form/header file names (.dfm, .hpp, etc.) to the base
+    /// module file name (.pas, .cpp).
+    /// @param FileName the file name to transform
+    /// @returns the base module file name, or FileName unchanged if it is
+    ///          not a form/header file </summary>
+    class function GetBaseModuleFileName(const FileName: string): string;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1398,35 +1484,35 @@ procedure GxOtaUnfoldNearestRegion(const View: IOTAEditView); deprecated; // use
 function GxOtaDeleteSelection(const EditView: IOTAEditView = nil): Boolean; deprecated; // use Ota.DeleteSelection
 
 // Close FileName; returns True on success, False otherwise.
-function GxOtaCloseFile(const FileName: string): Boolean;
+function GxOtaCloseFile(const FileName: string): Boolean; deprecated; // use Ota.CloseFile
 // Close the current edit view tab
-procedure GxOtaCloseCurrentEditorTab;
+procedure GxOtaCloseCurrentEditorTab; deprecated; // use Ota.CloseCurrentEditorTab
 
 // Open FileName in IDE; returns True on success, False otherwise.
-function GxOtaOpenFile(const FileName: string): Boolean;
-function GxOtaOpenFileOrForm(const FileName: string): Boolean;
+function GxOtaOpenFile(const FileName: string): Boolean; deprecated; // use Ota.OpenFile
+function GxOtaOpenFileOrForm(const FileName: string): Boolean; deprecated; // use Ota.OpenFileOrForm
 
 // Returns True if FileName is an open file in the IDE;
 // returns False otherwise.
 // FileName must be a fully qualified file name, including
 // the path name.  UseBase determines whether things like .dfm/.hpp map
 // to their parent file type.  Otherwise, they will not be located.
-function GxOtaIsFileOpen(const AFileName: string; UseBase: Boolean = False): Boolean;
+function GxOtaIsFileOpen(const AFileName: string; UseBase: Boolean = False): Boolean; deprecated; // use Ota.IsFileOpen
 
 // Determine is a file exists or the file's module is currently loaded in the IDE
-function GxOtaFileOrModuleExists(const AFileName: string; UseBase: Boolean = False): Boolean;
+function GxOtaFileOrModuleExists(const AFileName: string; UseBase: Boolean = False): Boolean; deprecated; // use Ota.FileOrModuleExists
 
 // Make sure the given filename's source is visible.
 // This swaps source/form views as necessary
-function GxOtaMakeSourceVisible(const FileName: string): Boolean;
-function GxOtaModuleIsShowingFormSource(Module: IOTAModule): Boolean;
-procedure GxOtaGoToFileLine(const FileName: string; Line: Integer);
-procedure GxOtaGoToFileLineColumn(const FileName: string; Line: Integer; StartColumn: Integer = 0; StopColumn: Integer = 0; ShowInMiddle: Boolean = True);
-function GxOtaConvertColumnCharsToBytes(LineData: UTF8String; CharIndex: Integer; EndByte: Boolean): Integer;
-function GxOtaConvertColumnBytesToChars(LineData: UTF8String; ByteIndex: Integer): Integer;
+function GxOtaMakeSourceVisible(const FileName: string): Boolean; deprecated; // use Ota.MakeSourceVisible
+function GxOtaModuleIsShowingFormSource(Module: IOTAModule): Boolean; deprecated; // use Ota.ModuleIsShowingFormSource
+procedure GxOtaGoToFileLine(const FileName: string; Line: Integer); deprecated; // use Ota.GoToFileLine
+procedure GxOtaGoToFileLineColumn(const FileName: string; Line: Integer; StartColumn: Integer = 0; StopColumn: Integer = 0; ShowInMiddle: Boolean = True); deprecated; // use Ota.GoToFileLineColumn
+function GxOtaConvertColumnCharsToBytes(LineData: UTF8String; CharIndex: Integer; EndByte: Boolean): Integer; deprecated; // use Ota.ConvertColumnCharsToBytes
+function GxOtaConvertColumnBytesToChars(LineData: UTF8String; ByteIndex: Integer): Integer; deprecated; // use Ota.ConvertColumnBytesToChars
 
 // Transform dfm, hpp, etc. references to the base .pas/cpp file name
-function GxOtaGetBaseModuleFileName(const FileName: string): string;
+function GxOtaGetBaseModuleFileName(const FileName: string): string; deprecated; // use Ota.GetBaseModuleFileName
 
 // Get the environment options interface.  Succeeds or raises an exception.
 function GxOtaGetEnvironmentOptions: IOTAEnvironmentOptions; deprecated; // use Ota.GetEnvironmentOptions
@@ -2325,10 +2411,10 @@ class function Ota.GetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Bo
     if Result then
     begin
       AProjectFileName := ChangeFileExt(AProjectFileName, '.dpr');
-      if not GxOtaFileOrModuleExists(AProjectFileName) then
+      if not Ota.FileOrModuleExists(AProjectFileName) then
       begin
         PackageFileName := ChangeFileExt(AProjectFileName, '.dpk');
-        if GxOtaFileOrModuleExists(PackageFileName) then
+        if Ota.FileOrModuleExists(PackageFileName) then
           AProjectFileName := PackageFileName
         else
           Result := False;
@@ -3838,6 +3924,11 @@ begin
 end;
 
 function GxOtaCloseFile(const FileName: string): Boolean;
+begin
+  Result := Ota.CloseFile(FileName);
+end;
+
+class function Ota.CloseFile(const FileName: string): Boolean;
 var
   ActionServices: IOTAActionServices;
 begin
@@ -3848,6 +3939,11 @@ begin
 end;
 
 procedure GxOtaCloseCurrentEditorTab;
+begin
+  Ota.CloseCurrentEditorTab;
+end;
+
+class procedure Ota.CloseCurrentEditorTab;
 var
   EditActions: IOTAEditActions;
 begin
@@ -3857,6 +3953,11 @@ begin
 end;
 
 function GxOtaOpenFile(const FileName: string): Boolean;
+begin
+  Result := Ota.OpenFile(FileName);
+end;
+
+class function Ota.OpenFile(const FileName: string): Boolean;
 var
   ActionServices: IOTAActionServices;
   hWndSaved: HWND;
@@ -3872,15 +3973,25 @@ end;
 
 function GxOtaOpenFileOrForm(const FileName: string): Boolean;
 begin
+  Result := Ota.OpenFileOrForm(FileName);
+end;
+
+class function Ota.OpenFileOrForm(const FileName: string): Boolean;
+begin
   if IsForm(FileName) then begin
-    Result := GxOtaOpenFile(GxOtaGetBaseModuleFileName(FileName));
+    Result := Ota.OpenFile(Ota.GetBaseModuleFileName(FileName));
     Ota.ShowFormForModule(Ota.GetCurrentModule);
   end
   else
-    Result := GxOtaOpenFile(FileName);
+    Result := Ota.OpenFile(FileName);
 end;
 
 function GxOtaIsFileOpen(const AFileName: string; UseBase: Boolean): Boolean;
+begin
+  Result := Ota.IsFileOpen(AFileName, UseBase);
+end;
+
+class function Ota.IsFileOpen(const AFileName: string; UseBase: Boolean): Boolean;
 var
   ModuleServices: IOTAModuleServices;
   Module: IOTAModule;
@@ -3897,7 +4008,7 @@ begin
   Assert(Assigned(ModuleServices));
   FileName := AFileName;
   if UseBase then
-    FileName := GxOtaGetBaseModuleFileName(FileName);
+    FileName := Ota.GetBaseModuleFileName(FileName);
 
   Module := ModuleServices.FindModule(FileName);
   if Assigned(Module) then
@@ -3916,10 +4027,20 @@ end;
 
 function GxOtaFileOrModuleExists(const AFileName: string; UseBase: Boolean): Boolean;
 begin
-  Result := FileExists(AFileName) or GxOtaIsFileOpen(AFileName, UseBase);
+  Result := Ota.FileOrModuleExists(AFileName, UseBase);
+end;
+
+class function Ota.FileOrModuleExists(const AFileName: string; UseBase: Boolean): Boolean;
+begin
+  Result := FileExists(AFileName) or Ota.IsFileOpen(AFileName, UseBase);
 end;
 
 function GxOtaMakeSourceVisible(const FileName: string): Boolean;
+begin
+  Result := Ota.MakeSourceVisible(FileName);
+end;
+
+class function Ota.MakeSourceVisible(const FileName: string): Boolean;
 var
   EditActions: IOTAEditActions;
   Module: IOTAModule;
@@ -3929,7 +4050,7 @@ var
   i: Integer;
   BaseFileName: string;
 begin
-  BaseFileName := GxOtaGetBaseModuleFileName(FileName);
+  BaseFileName := Ota.GetBaseModuleFileName(FileName);
   Module := Ota.GetModule(BaseFileName);
   if Module = nil then
     Module := Ota.GetModule(FileName);
@@ -3940,7 +4061,7 @@ begin
   begin
     if IsForm(FileName) then
     begin
-      if not GxOtaModuleIsShowingFormSource(Module) then
+      if not Ota.ModuleIsShowingFormSource(Module) then
       begin
         SourceEditor := Ota.GetSourceEditorFromModule(Module, BaseFileName);
         if Assigned(SourceEditor) then
@@ -3957,7 +4078,7 @@ begin
     end
     else // We are focusing a regular text file, not a form
     begin
-      if GxOtaModuleIsShowingFormSource(Module) then
+      if Ota.ModuleIsShowingFormSource(Module) then
       begin
         SourceEditor := Ota.GetSourceEditorFromModule(Module);
         if Assigned(SourceEditor) then
@@ -3973,8 +4094,8 @@ begin
   // D5/BDS 2006 sometimes delay opening the file until messages are processed
   Application.ProcessMessages;
 
-  if not (GxOtaIsFileOpen(BaseFileName) or GxOtaIsFileOpen(FileName)) then
-    Result := GxOtaOpenFile(FileName)
+  if not (Ota.IsFileOpen(BaseFileName) or Ota.IsFileOpen(FileName)) then
+    Result := Ota.OpenFile(FileName)
   else
     Result := True;
 
@@ -4010,6 +4131,11 @@ begin
 end;
 
 function GxOtaModuleIsShowingFormSource(Module: IOTAModule): Boolean;
+begin
+  Result := Ota.ModuleIsShowingFormSource(Module);
+end;
+
+class function Ota.ModuleIsShowingFormSource(Module: IOTAModule): Boolean;
 var
   Editor: IOTAEditor;
   i: Integer;
@@ -4029,11 +4155,16 @@ begin
 end;
 
 procedure GxOtaGoToFileLine(const FileName: string; Line: Integer);
+begin
+  Ota.GoToFileLine(FileName, Line);
+end;
+
+class procedure Ota.GoToFileLine(const FileName: string; Line: Integer);
 var
   EditRead: TEditReader;
 begin
-  if not GxOtaIsFileOpen(FileName) then
-    if not GxOtaOpenFile(FileName) then
+  if not Ota.IsFileOpen(FileName) then
+    if not Ota.OpenFile(FileName) then
       raise Exception.Create('Error opening ' + FileName);
 
   if Line < 0 then
@@ -4047,7 +4178,13 @@ begin
   end;
 end;
 
-procedure GxOtaGoToFileLineColumn(const FileName: string; Line: Integer; StartColumn: Integer = 0; StopColumn: Integer = 0; ShowInMiddle: Boolean = True);
+procedure GxOtaGoToFileLineColumn(const FileName: string; Line: Integer; StartColumn: Integer; StopColumn: Integer; ShowInMiddle: Boolean);
+begin
+  Ota.GoToFileLineColumn(FileName, Line, StartColumn, StopColumn, ShowInMiddle);
+end;
+
+class procedure Ota.GoToFileLineColumn(const FileName: string; Line: Integer;
+  StartColumn: Integer; StopColumn: Integer; ShowInMiddle: Boolean);
 var
   EditView: IOTAEditView;
   Module: IOTAModule;
@@ -4061,7 +4198,7 @@ resourcestring
   SCouldNotOpenFile = 'Could not open file %s';
 begin
   // Force the source editor to show the right file (cpp, pas, dfm, xfm, etc.)
-  if not GxOtaMakeSourceVisible(FileName) then
+  if not Ota.MakeSourceVisible(FileName) then
     raise Exception.CreateFmt(SCouldNotOpenFile, [FileName]);
 
   Module := Ota.GetModule(FileName);
@@ -4099,8 +4236,8 @@ begin
   if RunningDelphi8OrGreater and not RunningRSXE7 then
   begin
     LineData := Ota.GetEditorLine(EditView, Line);
-    StartColumn := GxOtaConvertColumnCharsToBytes(LineData, StartColumn, False);
-    StopColumn := GxOtaConvertColumnCharsToBytes(LineData, StopColumn, True);
+    StartColumn := Ota.ConvertColumnCharsToBytes(LineData, StartColumn, False);
+    StopColumn := Ota.ConvertColumnCharsToBytes(LineData, StopColumn, True);
   end;
 
   // Position the cursor to the line and column of the match
@@ -4123,6 +4260,12 @@ begin
 end;
 
 function GxOtaConvertColumnCharsToBytes(LineData: UTF8String; CharIndex: Integer; EndByte: Boolean): Integer;
+begin
+  Result := Ota.ConvertColumnCharsToBytes(LineData, CharIndex, EndByte);
+end;
+
+class function Ota.ConvertColumnCharsToBytes(LineData: UTF8String; CharIndex: Integer;
+  EndByte: Boolean): Integer;
 var
   UString: TGxUnicodeString;
   FinalUChar: TGXUnicodeString;
@@ -4151,6 +4294,11 @@ begin
 end;
 
 function GxOtaConvertColumnBytesToChars(LineData: UTF8String; ByteIndex: Integer): Integer;
+begin
+  Result := Ota.ConvertColumnBytesToChars(LineData, ByteIndex);
+end;
+
+class function Ota.ConvertColumnBytesToChars(LineData: UTF8String; ByteIndex: Integer): Integer;
 var
   UString: TGxUnicodeString;
   UTF8Str: UTF8String;
@@ -4166,6 +4314,11 @@ begin
 end;
 
 function GxOtaGetBaseModuleFileName(const FileName: string): string;
+begin
+  Result := Ota.GetBaseModuleFileName(FileName);
+end;
+
+class function Ota.GetBaseModuleFileName(const FileName: string): string;
 var
   AltName: string;
 begin
@@ -4175,11 +4328,11 @@ begin
     if Ota.HaveCPPSupport then
     begin
       AltName := ChangeFileExt(FileName, '.cpp');
-      if GxOtaFileOrModuleExists(AltName) then
+      if Ota.FileOrModuleExists(AltName) then
         Result := AltName;
     end;
     AltName := ChangeFileExt(FileName, '.pas');
-    if GxOtaFileOrModuleExists(AltName) then
+    if Ota.FileOrModuleExists(AltName) then
       Result := AltName;
   end;
 end;
@@ -4775,7 +4928,7 @@ begin
   Result := False;
   FoundFile := Ota.FindPathToFile(FileName);
   if FileExists(FoundFile) then
-    Result := GxOtaOpenFile(FoundFile);
+    Result := Ota.OpenFile(FoundFile);
 end;
 
 procedure GxOtaGetUnitAliases(Aliases: TStrings);
@@ -6304,7 +6457,7 @@ class function Ota.GetFormEditorForFileName(const FileName: string): IOTAFormEdi
 var
   Module: IOTAModule;
 begin
-  Module := Ota.GetModule(GxOtaGetBaseModuleFileName(FileName));
+  Module := Ota.GetModule(Ota.GetBaseModuleFileName(FileName));
   Result := Ota.GetFormEditorFromModule(Module);
 end;
 
@@ -7387,15 +7540,15 @@ begin
   Assert(Assigned(Data));
   Data.Clear;
   Module := Ota.GetModule(FileName);
-  BaseFileName := GxOtaGetBaseModuleFileName(FileName);
+  BaseFileName := Ota.GetBaseModuleFileName(FileName);
   BaseModule := Ota.GetModule(BaseFileName);
 
   if IsForm(FileName) then
   begin
     // Is the form currently open as text?
-    if GxOtaModuleIsShowingFormSource(Module) then
+    if Ota.ModuleIsShowingFormSource(Module) then
       GxOtaLoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data)
-    else if GxOtaIsFileOpen(BaseFileName) then
+    else if Ota.IsFileOpen(BaseFileName) then
     begin
       FormEditor := Ota.GetFormEditorFromModule(BaseModule);
       GxOtaLoadFormEditorToUnicodeStrings(FormEditor, Data);
@@ -7495,7 +7648,7 @@ begin
     raise Exception.Create('Blank filenames are not allowed');
   WasBinary := False;
 
-  if not IsStandAlone and GxOtaIsFileOpen(FileName, True) then
+  if not IsStandAlone and Ota.IsFileOpen(FileName, True) then
     GxOtaLoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
   else
     LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary)

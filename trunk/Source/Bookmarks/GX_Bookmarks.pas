@@ -451,7 +451,7 @@ var BM           : TBookmark;
 begin
  if not(TListBox_GetSelectedObject(lbBookmarks,Pointer(BM))) then exit;
 
- if not(GxOtaMakeSourceVisible(BM.Module)) then raise Exception.CreateFmt('Could not open file %s',[BM.Module]);
+ if not(Ota.MakeSourceVisible(BM.Module)) then raise Exception.CreateFmt('Could not open file %s',[BM.Module]);
 
  Module:=Ota.GetModule(BM.Module);
  if not(Assigned(Module)) then exit;

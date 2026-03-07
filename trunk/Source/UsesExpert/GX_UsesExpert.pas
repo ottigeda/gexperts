@@ -2200,7 +2200,7 @@ begin
     Obj := List.Objects[col, List.Row];
     if Assigned(Obj) then begin
       Item := Obj as TUnitExport;
-      GxOtaGoToFileLine(Item.FileName, Item.LineNo + 1);
+      Ota.GoToFileLine(Item.FileName, Item.LineNo + 1);
       ModalResult := mrCancel;
       Exit; //==>
     end

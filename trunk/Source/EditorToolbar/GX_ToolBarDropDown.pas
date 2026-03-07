@@ -253,7 +253,7 @@ begin
   UnitInfo := TObject(FUnitList[SendingMenu.Tag]) as TUnitInfo;
 
   {$IFOPT D+}SendDebug('Opening file: ' + UnitInfo.FileName);{$ENDIF}
-  GxOtaOpenFile(UnitInfo.FileName);
+  Ota.OpenFile(UnitInfo.FileName);
 
   // Since this edit reader is destroyed almost
   // immediately, do not call FreeFileData.
@@ -471,7 +471,7 @@ var
 begin
   Assert(Sender is TMenuItem);
 
-  GxOtaMakeSourceVisible(FCurrentSourceFn);
+  Ota.MakeSourceVisible(FCurrentSourceFn);
 
   if not Ota.TryGetTopMostEditView(View) then
     Exit; //==>

@@ -1002,7 +1002,7 @@ begin
   if SameText(OldCompName, NewCompName) then
     Exit;
 
-  Module := Ota.GetModule(GxOtaGetBaseModuleFileName(FFormEditor.FileName));
+  Module := Ota.GetModule(Ota.GetBaseModuleFileName(FFormEditor.FileName));
   if not Assigned(Module) then
     Exit;
 

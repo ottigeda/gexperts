@@ -999,7 +999,7 @@ var
   Parser: TmPasParser;
   LocalEditReader: TEditReader;
 begin
-  if not FileExists(FileName) and (not GxOtaIsFileOpen(FileName)) then
+  if not FileExists(FileName) and (not Ota.IsFileOpen(FileName)) then
     Exit;
   Clear;
 

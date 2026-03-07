@@ -511,7 +511,7 @@ begin
       GXShellExecute(gblGrepExpert.ExternalEditor, Params, True);
     end;
   end else
-    GxOtaGoToFileLineColumn(MatchFileName, MatchLine.LineNo, MatchLine.Matches[0].SPos,
+    Ota.GoToFileLineColumn(MatchFileName, MatchLine.LineNo, MatchLine.Matches[0].SPos,
       MatchLine.Matches[0].EPos, gblGrepExpert.GrepMiddle);
 end;
 

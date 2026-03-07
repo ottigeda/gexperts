@@ -377,7 +377,7 @@ procedure TfmToDo.EnumerateProjectFiles(Project: IOTAProject);
       try
         if ToDoExpert.FScanType <> tstOpenFiles then
           LoadFile(FileName)
-        else if GxOtaIsFileOpen(FileName) then
+        else if Ota.IsFileOpen(FileName) then
           LoadFile(FileName);
       except
         on E: Exception do
@@ -623,7 +623,7 @@ begin
       if IsCpp(FileName) or IsC(FileName) then
       begin
         HeaderFile := ChangeFileExt(FileName, '.h');
-        if GxOtaFileOrModuleExists(HeaderFile) then
+        if Ota.FileOrModuleExists(HeaderFile) then
           LoadFile(HeaderFile);
       end;
     end else begin
@@ -834,8 +834,8 @@ begin
 
   IsCPPModule := IsCppSourceModule(SelectedItem.FileName);
 
-  if not GxOtaIsFileOpen(SelectedItem.FileName) then
-    GxOtaOpenFile(SelectedItem.FileName);
+  if not Ota.IsFileOpen(SelectedItem.FileName) then
+    Ota.OpenFile(SelectedItem.FileName);
 
   TCursor_TempHourglass;
   InternalEditReader := nil;

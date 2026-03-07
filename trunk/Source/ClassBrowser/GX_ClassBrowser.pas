@@ -2169,7 +2169,7 @@ begin
   Inc(Line);
   SourceFile := TBrowseClassInfoCollection(tvBrowse.Selected.Data).FileName;
 
-  GxOtaGoToFileLine(SourceFile, Line);
+  Ota.GoToFileLine(SourceFile, Line);
 
   if FAutomaticallyHideBrowser then
     Self.Hide;
@@ -2182,7 +2182,7 @@ begin
   if not TryGetClassInfo(ClassInfos) then
     Exit; //==>
 
-  GxOtaGoToFileLine(ClassInfos.FileName, ClassInfos.RefreshLineNo + 1);
+  Ota.GoToFileLine(ClassInfos.FileName, ClassInfos.RefreshLineNo + 1);
   if FAutomaticallyHideBrowser then
     Self.Hide;
 end;

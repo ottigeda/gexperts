@@ -550,12 +550,12 @@ begin
   if IsForm(FileName) then
   begin
     TempFileName := ChangeFileExt(FileName, '.pas');
-    if GxOtaIsFileOpen(TempFileName) then
+    if Ota.IsFileOpen(TempFileName) then
       FileName := TempFileName
     else
     begin
       TempFileName := ChangeFileExt(FileName, '.cpp');
-      if GxOtaIsFileOpen(TempFileName) then
+      if Ota.IsFileOpen(TempFileName) then
         FileName := TempFileName;
     end;
   end;
@@ -571,7 +571,7 @@ begin
   try
     SetFormIcon(Dlg);
     if Dlg.ShowModal <> mrCancel then
-      GxOtaMakeSourceVisible(FileName);
+      Ota.MakeSourceVisible(FileName);
   finally
     FreeAndNil(Dlg);
   end;

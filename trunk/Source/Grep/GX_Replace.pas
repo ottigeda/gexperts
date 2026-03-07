@@ -95,7 +95,7 @@ var
     begin
       if IsForm(MatchFile) then
         raise ESkipFileReplaceException.Create(SNoOpenForms);
-      Module := Ota.GetModule(GxOtaGetBaseModuleFileName(MatchFile));
+      Module := Ota.GetModule(Ota.GetBaseModuleFileName(MatchFile));
       if not Assigned(Module) then
         raise Exception.Create(SUnableToOpen + MatchFile);
       SourceEditor := Ota.GetSourceEditorFromModule(Module, MatchFile);
@@ -207,7 +207,7 @@ begin
       RegEx.Compile;
     end;
 
-    InMemory := GxOtaIsFileOpen(MatchFile, True);
+    InMemory := Ota.IsFileOpen(MatchFile, True);
     try
       GetFileLines;
     except on E: ESkipFileReplaceException do

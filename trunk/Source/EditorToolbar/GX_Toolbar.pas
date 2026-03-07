@@ -455,7 +455,7 @@ begin
       if CanChange then
       begin
         FTabControl.OnChange(FTabControl);
-        GxOtaCloseCurrentEditorTab;
+        Ota.CloseCurrentEditorTab;
       end else
         FTabControl.TabIndex := OldIndex;
     end;

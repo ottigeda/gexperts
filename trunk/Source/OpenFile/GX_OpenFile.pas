@@ -1126,7 +1126,7 @@ end;
 procedure TfmOpenFile.DoOpenFile(const AFileName: string);
 begin
   Self.Hide;
-  GxOtaOpenFileOrForm(AFileName);
+  Ota.OpenFileOrForm(AFileName);
   ModalResult := mrOK;
 end;
 
