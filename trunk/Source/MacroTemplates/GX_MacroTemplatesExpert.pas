@@ -554,7 +554,7 @@ begin
   ReplaceSelection := StrContains('%SELECTION%', VText, False);
   if ReplaceSelection then
   begin
-    LeadingText := GxOtaGetLeadingWhiteSpaceInSelection;
+    LeadingText := Ota.GetLeadingWhiteSpaceInSelection;
     EOLOnEndOfTemp := HasTrailingEOL(VText);
     EOLOnEndOfSel := HasTrailingEOL(Ota.GetCurrentSelection);
   end;

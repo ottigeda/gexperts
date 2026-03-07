@@ -220,9 +220,9 @@ begin
 
     if Element = atWhiteSpace then
     begin
-      if GxOtaIsWhiteSpaceInComment(EditView, CursorPos) then
+      if Ota.IsWhiteSpaceInComment(EditView, CursorPos) then
         Element := atComment
-      else if GxOtaIsWhiteSpaceInString(EditView, CursorPos) then
+      else if Ota.IsWhiteSpaceInString(EditView, CursorPos) then
         Element := atString;
     end;
 

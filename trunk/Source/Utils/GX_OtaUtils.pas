@@ -1063,6 +1063,56 @@ type
     /// @param WasBinary set to True if the file was loaded from disk and
     ///                  was binary </summary>
     class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload;
+
+    /// <summary>
+    /// Tests whether whitespace at the given position is inside an element of the
+    /// specified type (e.g. atComment or atString). Walks backwards from the
+    /// cursor to find the last non-whitespace attribute.
+    /// @param InElement the element type to test for (e.g. atComment, atString)
+    /// @param EV the edit view to query
+    /// @param EditorPosition the position to check
+    /// @returns True if the whitespace is inside the specified element </summary>
+    class function IsWhiteSpaceInElement(const InElement: Integer;
+      EV: IOTAEditView; EditorPosition: TOTAEditPos): Boolean;
+    /// <summary>
+    /// Tests whether whitespace at the given position is inside a comment.
+    /// @param EditView the edit view to query
+    /// @param EditorPosition the position to check
+    /// @returns True if the whitespace is inside a comment </summary>
+    class function IsWhiteSpaceInComment(const EditView: IOTAEditView;
+      const EditorPosition: TOTAEditPos): Boolean;
+    /// <summary>
+    /// Tests whether whitespace at the given position is inside a string literal.
+    /// @param EditView the edit view to query
+    /// @param EditorPosition the position to check
+    /// @returns True if the whitespace is inside a string </summary>
+    class function IsWhiteSpaceInString(const EditView: IOTAEditView;
+      const EditorPosition: TOTAEditPos): Boolean;
+    /// <summary>
+    /// Sets the cursor position in the current source editor.
+    /// @param Position the character position (1-based) to navigate to </summary>
+    class procedure SetCurrentSourcePosition(Position: Integer);
+    /// <summary>
+    /// Returns the configured tab stops as a string for the current editor file.
+    /// Note: The tab stops are returned in reverse order (last to first).
+    /// @returns the tab stops string </summary>
+    class function GetTabStops: string;
+    /// <summary>
+    /// Returns the tab width for the current editor.
+    /// Note: Only works correctly for configurations with a single value in the
+    /// "Tab Stops" option.
+    /// @returns the tab width in spaces </summary>
+    class function GetTabWidth: Integer;
+    /// <summary>
+    /// Expands tab characters in all lines of a string list using the current
+    /// editor tab width.
+    /// @param ALines the string list whose tabs to expand </summary>
+    class procedure ExpandTabsInList(ALines: TStrings);
+    /// <summary>
+    /// Returns the tab-expanded whitespace at the beginning of the current
+    /// selection.
+    /// @returns the leading whitespace string </summary>
+    class function GetLeadingWhiteSpaceInSelection: string;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1332,9 +1382,9 @@ procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicode
 // the cursor is inside another element.  Currently, this code is used for
 // atComment and atString, see below.
 function GxOtaIsWhiteSpaceInElement(const InElement: Integer;
-  EV: IOTAEditView; EditorPosition: TOTAEditPos): Boolean;
-function GxOtaIsWhiteSpaceInComment(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean;
-function GxOtaIsWhiteSpaceInString(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean;
+  EV: IOTAEditView; EditorPosition: TOTAEditPos): Boolean; deprecated; // use Ota.IsWhiteSpaceInElement
+function GxOtaIsWhiteSpaceInComment(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean; deprecated; // use Ota.IsWhiteSpaceInComment
+function GxOtaIsWhiteSpaceInString(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean; deprecated; // use Ota.IsWhiteSpaceInString
 
 type
   TUnitInfo = class(TObject)
@@ -1779,22 +1829,22 @@ function IsValidExpertDll(const FileName: string): Boolean;
 function IsStandAlone: Boolean;
 
 // Consolidate with GxOtaGotoPosition?
-procedure GxOtaSetCurrentSourcePosition(Position: Integer);
+procedure GxOtaSetCurrentSourcePosition(Position: Integer); deprecated; // use Ota.SetCurrentSourcePosition
 
 function GxOtaGetKeyboardServices: IOTAKeyboardServices; deprecated; // use Ota.GetKeyboardServices
 
 // Get the configures tab stops as a string for the current editor file
-function GxOtaGetTabStops: string;
+function GxOtaGetTabStops: string; deprecated; // use Ota.GetTabStops
 
 // Returns tab size (single value)
 // Note: works only for configurations with single value in "Tab Stops" option
-function GxOtaGetTabWidth: Integer;
+function GxOtaGetTabWidth: Integer; deprecated; // use Ota.GetTabWidth
 
 // Expand the tabs in the lines into spaces using the current editor tab witdh
-procedure GxOtaExpandTabsInList(ALines: TStrings);
+procedure GxOtaExpandTabsInList(ALines: TStrings); deprecated; // use Ota.ExpandTabsInList
 
 // Return the tab-expanded whitespace at the beginning of the current selection
-function GxOtaGetLeadingWhiteSpaceInSelection: string;
+function GxOtaGetLeadingWhiteSpaceInSelection: string; deprecated; // use Ota.GetLeadingWhiteSpaceInSelection
 
 // Show a dialog enumerating all of the current project's modules and editors
 procedure GxOtaShowProjectModuleInformation;
@@ -7719,6 +7769,58 @@ end;
 // atComment and atString, see below.
 function GxOtaIsWhiteSpaceInElement(const InElement: Integer;
   EV: IOTAEditView; EditorPosition: TOTAEditPos): Boolean;
+begin
+  Result := Ota.IsWhiteSpaceInElement(InElement, EV, EditorPosition);
+end;
+
+function GxOtaIsWhiteSpaceInComment(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean;
+begin
+  Result := Ota.IsWhiteSpaceInComment(EditView, EditorPosition);
+end;
+
+function GxOtaIsWhiteSpaceInString(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean;
+begin
+  Result := Ota.IsWhiteSpaceInString(EditView, EditorPosition);
+end;
+
+procedure GxOtaSetCurrentSourcePosition(Position: Integer);
+begin
+  Ota.SetCurrentSourcePosition(Position);
+end;
+
+function GxOtaGetKeyboardServices: IOTAKeyboardServices;
+begin
+  Result := Ota.GetKeyboardServices;
+end;
+
+class function Ota.GetKeyboardServices: IOTAKeyboardServices;
+begin
+  if not Supports(BorlandIDEServices, IOTAKeyboardServices, Result) then
+    raise Exception.Create('IDE keyboard services are not available');
+end;
+
+function GxOtaGetTabStops: string;
+begin
+  Result := Ota.GetTabStops;
+end;
+
+function GxOtaGetTabWidth: Integer;
+begin
+  Result := Ota.GetTabWidth;
+end;
+
+procedure GxOtaExpandTabsInList(ALines: TStrings);
+begin
+  Ota.ExpandTabsInList(ALines);
+end;
+
+function GxOtaGetLeadingWhiteSpaceInSelection: string;
+begin
+  Result := Ota.GetLeadingWhiteSpaceInSelection;
+end;
+
+class function Ota.IsWhiteSpaceInElement(const InElement: Integer;
+  EV: IOTAEditView; EditorPosition: TOTAEditPos): Boolean;
 var
   Element: Integer;
   LineFlag: Integer;
@@ -7741,17 +7843,19 @@ begin
   Result := (Element = InElement);
 end;
 
-function GxOtaIsWhiteSpaceInComment(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean;
+class function Ota.IsWhiteSpaceInComment(const EditView: IOTAEditView;
+  const EditorPosition: TOTAEditPos): Boolean;
 begin
-  Result := GxOtaIsWhiteSpaceInElement(atComment, EditView, EditorPosition);
+  Result := Ota.IsWhiteSpaceInElement(atComment, EditView, EditorPosition);
 end;
 
-function GxOtaIsWhiteSpaceInString(const EditView: IOTAEditView; const EditorPosition: TOTAEditPos): Boolean;
+class function Ota.IsWhiteSpaceInString(const EditView: IOTAEditView;
+  const EditorPosition: TOTAEditPos): Boolean;
 begin
-  Result := GxOtaIsWhiteSpaceInElement(atString, EditView, EditorPosition);
+  Result := Ota.IsWhiteSpaceInElement(atString, EditView, EditorPosition);
 end;
 
-procedure GxOtaSetCurrentSourcePosition(Position: Integer);
+class procedure Ota.SetCurrentSourcePosition(Position: Integer);
 var
   EditView: IOTAEditView;
   CharPos: TOTACharPos;
@@ -7781,19 +7885,8 @@ begin
   end;
 end;
 
-function GxOtaGetKeyboardServices: IOTAKeyboardServices;
-begin
-  Result := Ota.GetKeyboardServices;
-end;
-
-class function Ota.GetKeyboardServices: IOTAKeyboardServices;
-begin
-  if not Supports(BorlandIDEServices, IOTAKeyboardServices, Result) then
-    raise Exception.Create('IDE keyboard services are not available');
-end;
-
 // Note: This returns the tab stops in reverse order (last to first)
-function GxOtaGetTabStops: string;
+class function Ota.GetTabStops: string;
 var
   EditBuffer: IOTAEditBuffer;
 begin
@@ -7802,7 +7895,7 @@ begin
     Result := Trim(EditBuffer.BufferOptions.TabStops);
 end;
 
-function GxOtaGetTabWidth: Integer;
+class function Ota.GetTabWidth: Integer;
 const
   DefTabSize = 4;
 var
@@ -7810,7 +7903,7 @@ var
   SpacePos: Integer;
 begin
   if not IsStandAlone then
-    TabStops := GxOtaGetTabStops;
+    TabStops := Ota.GetTabStops;
   SpacePos := LastCharPos(TabStops, ' ');
   if SpacePos > 0 then
     Result := StrToIntDef(Copy(TabStops, SpacePos + 1, 3), DefTabSize) - 1
@@ -7825,17 +7918,17 @@ begin
     Result := 1;
 end;
 
-procedure GxOtaExpandTabsInList(ALines: TStrings);
+class procedure Ota.ExpandTabsInList(ALines: TStrings);
 var
   i: Integer;
   TabSize: Integer;
 begin
-  TabSize := GxOtaGetTabWidth;
+  TabSize := Ota.GetTabWidth;
   for i := 0 to ALines.Count - 1 do
     ALines[i] := ExpandTabsInLine(ALines[i], TabSize);
 end;
 
-function GxOtaGetLeadingWhiteSpaceInSelection: string;
+class function Ota.GetLeadingWhiteSpaceInSelection: string;
 var
   SelText: string;
   Lines: TStringList;
@@ -7847,7 +7940,7 @@ begin
   try
     Lines.Text := SelText;
 
-    GxOtaExpandTabsInList(Lines);
+    Ota.ExpandTabsInList(Lines);
     FindMinIndent(Lines, MinIndex, MinSpaceCount);
 
     if MinIndex >= 0 then

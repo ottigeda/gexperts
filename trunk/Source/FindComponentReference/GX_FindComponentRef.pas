@@ -134,7 +134,7 @@ begin
         end
         else
           raise Exception.CreateFmt(rsIdentiferNotFound, [CompName]);
-        GxOtaSetCurrentSourcePosition(FoundPos);
+        Ota.SetCurrentSourcePosition(FoundPos);
       end
       else
         raise Exception.CreateFmt(rsNoAssociatedUnit, [FrmEditor.FileName]);

@@ -180,7 +180,7 @@ begin
   RowLength := 0;
   MaxRowLength := 0;
 
-  TabSize := GxOtaGetTabWidth;
+  TabSize := Ota.GetTabWidth;
 
   // Decide at what column to align by
   for i := 0 to Lines.Count - 1 do

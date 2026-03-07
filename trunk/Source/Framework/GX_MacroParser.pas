@@ -665,7 +665,7 @@ begin
     try
       Lines.Text := AText;
 
-      GxOtaExpandTabsInList(Lines);
+      Ota.ExpandTabsInList(Lines);
       FindMinIndent(Lines, MinIndex, MinSpaceCount);
 
       if MinIndex < 0 then
