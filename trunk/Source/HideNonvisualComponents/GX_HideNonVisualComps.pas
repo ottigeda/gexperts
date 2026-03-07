@@ -32,7 +32,7 @@ var
   DesignForm: TCustomForm;
 begin
   inherited;
-  DesignForm := GxOtaGetCurrentDesignForm;
+  DesignForm := Ota.GetCurrentDesignForm;
   if not Assigned(DesignForm) then
     raise Exception.Create('No VCL form designer selected');
   if (DesignForm.ClassName = 'TDataModuleForm') then
@@ -102,7 +102,7 @@ begin
   FormHandle := GetWindow(WinControl.Handle, GW_CHILD);
   CompHandle := GetWindow(FormHandle, GW_HWNDLAST);
   VisibleState := False;
-  GxOtaClearSelectionOnCurrentForm;
+  Ota.ClearSelectionOnCurrentForm;
 
   while (CompHandle <> 0) do
   begin

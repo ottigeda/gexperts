@@ -798,6 +798,59 @@ type
     /// Returns the edit actions interface for the current module.
     /// @returns the edit actions, or nil </summary>
     class function GetEditActions: IOTAEditActions;
+
+    /// <summary>
+    /// Selects the named component on the current form and shows the form editor.
+    /// @param ComponentName the name of the component to select </summary>
+    class procedure SelectComponentOnCurrentForm(const ComponentName: string);
+    /// <summary>
+    /// Clears the component selection on the current form by selecting the root component. </summary>
+    class procedure ClearSelectionOnCurrentForm;
+    /// <summary>
+    /// Fills a TComponentList with the currently selected components on the given form.
+    /// @param Form the form editor (uses current form if nil)
+    /// @param Components the list to fill with selected components
+    /// @param ComponentClass optional filter to only include components of this class </summary>
+    class procedure GetSelectedComponents(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil);
+    /// <summary>
+    /// Fills a TComponentList with all child controls of the form, recursively.
+    /// @param Form the form editor (uses current form if nil)
+    /// @param Components the list to fill with child controls
+    /// @param ComponentClass optional filter to only include controls of this class </summary>
+    class procedure GetComponentList(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil);
+    /// <summary>
+    /// Returns a reference to the actual TCustomForm instance being designed.
+    /// @returns the design form, or nil </summary>
+    class function GetCurrentDesignForm: TCustomForm;
+    /// <summary>
+    /// Refreshes the object inspector's view into the current designer.
+    /// @returns True if the designer was refreshed successfully </summary>
+    class function RefreshCurrentDesigner: Boolean;
+    /// <summary>
+    /// Checks if the only selected component on the form editor is the root
+    /// (the form or data module itself).
+    /// @param FormEditor the form editor to check
+    /// @returns True if exactly one component is selected and it is the root </summary>
+    class function SelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
+    /// <summary>
+    /// Returns the name of the currently selected component.
+    /// @returns the component name, or empty string if none or more than one
+    ///          is selected </summary>
+    class function SelectedComponentName: string;
+    /// <summary>
+    /// Returns the BiDiMode property for a VCL form.
+    /// @param Form the form editor to query
+    /// @returns the form's BiDiMode, or bdLeftToRight if unavailable </summary>
+    class function GetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
+    /// <summary>
+    /// Fills a list with TCompInfo objects for all components on the current form.
+    /// @param List the TList to fill with TCompInfo objects </summary>
+    class procedure FillComponentInfoList(const List: TList);
+    /// <summary>
+    /// Fills a list with TUnitInfo objects for all modules in the given project.
+    /// @param List the TList to fill with TUnitInfo objects
+    /// @param _Project the project to query </summary>
+    class procedure FillUnitInfoListForProject(List: TList; _Project: IOTAProject);
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1092,25 +1145,25 @@ type
     property CompType: WideString read FCompType write FCompType;
   end;
 
-procedure GxOtaFillComponentInfoList(const List: TList);
+procedure GxOtaFillComponentInfoList(const List: TList); deprecated; // use Ota.FillComponentInfoList
 
 ///<summary>
 /// Fills List with TUnitInfo objects for all modules in the given project. </summary>
-procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
+procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject); deprecated; // use Ota.FillUnitInfoListForProject
 
 //
 //
 //
 
-procedure GxOtaSelectComponentOnCurrentForm(const ComponentName: string);
-procedure GxOtaClearSelectionOnCurrentForm;
-procedure GxOtaGetSelectedComponents(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil);
-procedure GxOtaGetComponentList(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil);
+procedure GxOtaSelectComponentOnCurrentForm(const ComponentName: string); deprecated; // use Ota.SelectComponentOnCurrentForm
+procedure GxOtaClearSelectionOnCurrentForm; deprecated; // use Ota.ClearSelectionOnCurrentForm
+procedure GxOtaGetSelectedComponents(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil); deprecated; // use Ota.GetSelectedComponents
+procedure GxOtaGetComponentList(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil); deprecated; // use Ota.GetComponentList
 
 // Get a reference to the actual form instance being designed
-function GxOtaGetCurrentDesignForm: TCustomForm;
+function GxOtaGetCurrentDesignForm: TCustomForm; deprecated; // use Ota.GetCurrentDesignForm
 // Refresh the object inspector's view into a designer
-function GxOtaRefreshCurrentDesigner: Boolean;
+function GxOtaRefreshCurrentDesigner: Boolean; deprecated; // use Ota.RefreshCurrentDesigner
 
 // Write a simple (bold) title message to the IDE Messages window
 procedure GxOtaWriteTitleMessage(const Title: string);
@@ -1494,15 +1547,15 @@ function GxOtaGetEditActions: IOTAEditActions; deprecated; // use Ota.GetEditAct
 // is hosted.
 // Returns False if there is more than one component selected
 // or if the currently selected component is not the root.
-function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
+function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean; deprecated; // use Ota.SelectedComponentIsRoot
 
 ///<summary>
 /// Retrieves the name of the current selected component on FormEditor.
 /// @returns an emptry string if no or more than 1 component is selected. </summary>
-function GxOtaSelectedComponentName: string;
+function GxOtaSelectedComponentName: string; deprecated; // use Ota.SelectedComponentName
 
 //  Get the BiDiMode property for a VCL form
-function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
+function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode; deprecated; // use Ota.GetFormBiDiMode
 
 // Returns True if FileName points to a valid expert DLL
 // (valid wizard / expert entry point). False if not.
@@ -1621,61 +1674,13 @@ const
   EditReaderBufferSize = 1024 * 24;
 
 procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
-var
-  i: Integer;
-  ModuleInfo: IOTAModuleInfo;
-  UnitInfo: TUnitInfo;
 begin
-  Assert(Assigned(List));
-
-  TList_ClearAndFreeAllItems(List);
-  if not Assigned(_Project) then
-    Exit; //==>
-
-  for i := 0 to _Project.GetModuleCount - 1 do
-  begin
-    ModuleInfo := _Project.GetModule(i);
-    Assert(Assigned(ModuleInfo));
-
-    if ModuleInfo.FileName <> '' then
-    begin
-      UnitInfo := TUnitInfo.Create;
-      List.Add(UnitInfo);
-
-      UnitInfo.FileName := ModuleInfo.FileName;
-      UnitInfo.FormName := ModuleInfo.FormName;
-      UnitInfo.SourceName := ModuleInfo.Name;
-    end;
-  end;
+  Ota.FillUnitInfoListForProject(List, _Project);
 end;
 
 procedure GxOtaFillComponentInfoList(const List: TList);
-var
-  FormEditor: IOTAFormEditor;
-  RootComponent: IOTAComponent;
-  OwnedComponent: IOTAComponent;
-  CompInfo: TCompInfo;
-  i: Integer;
 begin
-  Assert(Assigned(List));
-
-  if Ota.TryGetCurrentFormEditor(FormEditor) then
-  begin
-    RootComponent := FormEditor.GetRootComponent;
-    Assert(Assigned(RootComponent), 'FormEditor has no root component');
-
-    for i := 0 to RootComponent.GetComponentCount-1 do
-    begin
-      OwnedComponent := RootComponent.GetComponent(i);
-      if Assigned(OwnedComponent) then
-      begin
-        CompInfo := TCompInfo.Create;
-        CompInfo.CompName := Ota.GetComponentName(OwnedComponent);
-        CompInfo.CompType := OwnedComponent.GetComponentType;
-        List.Add(CompInfo);
-      end;
-    end;
-  end;
+  Ota.FillComponentInfoList(List);
 end;
 
 function GxOtaGetFormEditorForFileName(const FileName: string): IOTAFormEditor;
@@ -1724,146 +1729,33 @@ begin
 end;
 
 procedure GxOtaSelectComponentOnCurrentForm(const ComponentName: string);
-var
-  FormEditor: IOTAFormEditor;
-  FoundComponent: IOTAComponent;
 begin
-  if Length(ComponentName) = 0 then
-    Exit;
-
-  FormEditor := Ota.GetCurrentFormEditor;
-  Assert(Assigned(FormEditor));
-
-  FoundComponent := FormEditor.FindComponent(ComponentName);
-  if not Assigned(FoundComponent) then
-    Exit;
-
-  FoundComponent.Select(False); // Select, but do not add to an already existing selection
-  FormEditor.Show;
+  Ota.SelectComponentOnCurrentForm(ComponentName);
 end;
 
 procedure GxOtaClearSelectionOnCurrentForm;
-var
-  FormEditor: IOTAFormEditor;
-  PersistentForm: TPersistent;
-  Designer: IDesigner;
 begin
-  if Ota.TryGetCurrentFormEditor(FormEditor) then
-  begin
-    if Assigned(FormEditor.GetRootComponent) then
-    begin
-      PersistentForm := Ota.GetNativePersistent(FormEditor.GetRootComponent);
-      Designer := (FormEditor as INTAFormEditor).FormDesigner;
-      if Assigned(Designer) then
-        if Assigned(PersistentForm) then
-          Designer.SelectComponent(PersistentForm);
-    end;
-  end;
+  Ota.ClearSelectionOnCurrentForm;
 end;
 
 procedure GxOtaGetSelectedComponents(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass);
-var
-  i: Integer;
-  Component: IOTAComponent;
-  NativeComponent: TComponent;
 begin
-  Assert(Assigned(Components));
-  Components.Clear;
-  if Form = nil then
-    Form := Ota.GetCurrentFormEditor;
-  if Assigned(Form) then
-  begin
-    for i := 0 to Form.GetSelCount - 1 do
-    begin
-      Component := Form.GetSelComponent(i);
-      NativeComponent := Ota.GetNativeComponent(Component);
-      if Assigned(NativeComponent) then
-      begin
-        if (not Assigned(ComponentClass)) or (Assigned(ComponentClass) and (NativeComponent is ComponentClass)) then
-          Components.Add(NativeComponent);
-      end;
-    end;
-  end;
+  Ota.GetSelectedComponents(Form, Components, ComponentClass);
 end;
 
 procedure GxOtaGetComponentList(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass = nil);
-
-  procedure GetControlsForParent(ParentControl: TWinControl);
-  var
-    j: Integer;
-    ChildControl: TControl;
-  begin
-    for j := 0 to ParentControl.ControlCount - 1 do
-    begin
-      ChildControl := ParentControl.Controls[j];
-      if (not Assigned(ComponentClass)) or (Assigned(ComponentClass) and (ChildControl is ComponentClass)) then
-        Components.Add(ChildControl);
-      if ChildControl is TWinControl then
-        GetControlsForParent(ChildControl as TWinControl);
-    end;
-  end;
-
-var
-  Root: TComponent;
-  RootControl: TWinControl;
 begin
-  Assert(Assigned(Components));
-  Components.Clear;
-  if Form = nil then
-    Form := Ota.GetCurrentFormEditor;
-  if Assigned(Form) then
-  begin
-    Root := Ota.GetNativeComponent(Form.GetRootComponent);
-    if Assigned(Root) and (Root is TWinControl) then
-    begin
-      RootControl := Root as TWinControl;
-      GetControlsForParent(RootControl);
-    end;
-  end;
+  Ota.GetComponentList(Form, Components, ComponentClass);
 end;
 
 function GxOtaGetCurrentDesignForm: TCustomForm;
-var
-  FormEditor: IOTAFormEditor;
-  FormDesigner: IDesigner;
-  Root: TComponent;
 begin
-  Result := nil;
-
-  if not Ota.TryGetCurrentFormEditor(FormEditor) then
-    Exit;
-
-  FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
-  if not Assigned(FormDesigner) then
-    Exit;
-
-  Root := FormDesigner.Root;
-  if Root is TCustomForm then
-    Result := TCustomForm(Root)
-  else if Assigned(Root) then
-  begin
-    Root := Root.Owner;
-    if Root is TCustomForm then
-      Result := TCustomForm(Root)
-  end;
+  Result := Ota.GetCurrentDesignForm;
 end;
 
 function GxOtaRefreshCurrentDesigner: Boolean;
-var
-  FormEditor: IOTAFormEditor;
-  FormDesigner: IDesigner;
 begin
-  Result := False;
-
-  if not Ota.TryGetCurrentFormEditor(FormEditor) then
-    Exit;
-
-  FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
-  if Assigned(FormDesigner) then
-  begin
-    FormDesigner.Modified;
-    Result := True;
-  end;
+  Result := Ota.RefreshCurrentDesigner;
 end;
 
 procedure GxOtaWriteTitleMessage(const Title: string);
@@ -4643,7 +4535,7 @@ begin
   if Assigned(Project) then begin
     UnitList := TList.Create;
     try
-      GxOtaFillUnitInfoListForProject(UnitList, Project);
+      Ota.FillUnitInfoListForProject(UnitList, Project);
       for i := 0 to UnitList.Count - 1 do begin
         UnitInfo := TUnitInfo(UnitList[i]);
         AddAPath(GetPath(UnitInfo.FileName));
@@ -6294,7 +6186,7 @@ begin
   if Ota.TryGetCurrentFormEditor(FormEditor) then
   begin
     Result := (FormEditor.GetSelCount > 0) and
-      not GxOtaSelectedComponentIsRoot(FormEditor);
+      not Ota.SelectedComponentIsRoot(FormEditor);
   end;
 end;
 
@@ -6378,7 +6270,150 @@ begin
   Result := Ota.GetEditActionsFromModule(Ota.GetCurrentModule);
 end;
 
-function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
+class procedure Ota.SelectComponentOnCurrentForm(const ComponentName: string);
+var
+  FormEditor: IOTAFormEditor;
+  FoundComponent: IOTAComponent;
+begin
+  if Length(ComponentName) = 0 then
+    Exit;
+
+  FormEditor := Ota.GetCurrentFormEditor;
+  Assert(Assigned(FormEditor));
+
+  FoundComponent := FormEditor.FindComponent(ComponentName);
+  if not Assigned(FoundComponent) then
+    Exit;
+
+  FoundComponent.Select(False); // Select, but do not add to an already existing selection
+  FormEditor.Show;
+end;
+
+class procedure Ota.ClearSelectionOnCurrentForm;
+var
+  FormEditor: IOTAFormEditor;
+  PersistentForm: TPersistent;
+  Designer: IDesigner;
+begin
+  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  begin
+    if Assigned(FormEditor.GetRootComponent) then
+    begin
+      PersistentForm := Ota.GetNativePersistent(FormEditor.GetRootComponent);
+      Designer := (FormEditor as INTAFormEditor).FormDesigner;
+      if Assigned(Designer) then
+        if Assigned(PersistentForm) then
+          Designer.SelectComponent(PersistentForm);
+    end;
+  end;
+end;
+
+class procedure Ota.GetSelectedComponents(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass);
+var
+  i: Integer;
+  Component: IOTAComponent;
+  NativeComponent: TComponent;
+begin
+  Assert(Assigned(Components));
+  Components.Clear;
+  if Form = nil then
+    Form := Ota.GetCurrentFormEditor;
+  if Assigned(Form) then
+  begin
+    for i := 0 to Form.GetSelCount - 1 do
+    begin
+      Component := Form.GetSelComponent(i);
+      NativeComponent := Ota.GetNativeComponent(Component);
+      if Assigned(NativeComponent) then
+      begin
+        if (not Assigned(ComponentClass)) or (Assigned(ComponentClass) and (NativeComponent is ComponentClass)) then
+          Components.Add(NativeComponent);
+      end;
+    end;
+  end;
+end;
+
+class procedure Ota.GetComponentList(Form: IOTAFormEditor; Components: TComponentList; ComponentClass: TComponentClass);
+
+  procedure GetControlsForParent(ParentControl: TWinControl);
+  var
+    j: Integer;
+    ChildControl: TControl;
+  begin
+    for j := 0 to ParentControl.ControlCount - 1 do
+    begin
+      ChildControl := ParentControl.Controls[j];
+      if (not Assigned(ComponentClass)) or (Assigned(ComponentClass) and (ChildControl is ComponentClass)) then
+        Components.Add(ChildControl);
+      if ChildControl is TWinControl then
+        GetControlsForParent(ChildControl as TWinControl);
+    end;
+  end;
+
+var
+  Root: TComponent;
+  RootControl: TWinControl;
+begin
+  Assert(Assigned(Components));
+  Components.Clear;
+  if Form = nil then
+    Form := Ota.GetCurrentFormEditor;
+  if Assigned(Form) then
+  begin
+    Root := Ota.GetNativeComponent(Form.GetRootComponent);
+    if Assigned(Root) and (Root is TWinControl) then
+    begin
+      RootControl := Root as TWinControl;
+      GetControlsForParent(RootControl);
+    end;
+  end;
+end;
+
+class function Ota.GetCurrentDesignForm: TCustomForm;
+var
+  FormEditor: IOTAFormEditor;
+  FormDesigner: IDesigner;
+  Root: TComponent;
+begin
+  Result := nil;
+
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
+    Exit;
+
+  FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
+  if not Assigned(FormDesigner) then
+    Exit;
+
+  Root := FormDesigner.Root;
+  if Root is TCustomForm then
+    Result := TCustomForm(Root)
+  else if Assigned(Root) then
+  begin
+    Root := Root.Owner;
+    if Root is TCustomForm then
+      Result := TCustomForm(Root)
+  end;
+end;
+
+class function Ota.RefreshCurrentDesigner: Boolean;
+var
+  FormEditor: IOTAFormEditor;
+  FormDesigner: IDesigner;
+begin
+  Result := False;
+
+  if not Ota.TryGetCurrentFormEditor(FormEditor) then
+    Exit;
+
+  FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
+  if Assigned(FormDesigner) then
+  begin
+    FormDesigner.Modified;
+    Result := True;
+  end;
+end;
+
+class function Ota.SelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
 var
   SelCount: Integer;
   CurrentComponent: IOTAComponent;
@@ -6404,7 +6439,7 @@ begin
   end
 end;
 
-function GxOtaSelectedComponentName: string;
+class function Ota.SelectedComponentName: string;
 var
   FormEditor: IOTAFormEditor;
   CurrentComponent: IOTAComponent;
@@ -6419,7 +6454,7 @@ begin
   end;
 end;
 
-function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
+class function Ota.GetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
 var
   FormComponent: IOTAComponent;
   NativeForm: TComponent;
@@ -6435,6 +6470,79 @@ begin
         Result := (NativeForm as TCustomForm).BiDiMode;
     end;
   end;
+end;
+
+class procedure Ota.FillComponentInfoList(const List: TList);
+var
+  FormEditor: IOTAFormEditor;
+  RootComponent: IOTAComponent;
+  OwnedComponent: IOTAComponent;
+  CompInfo: TCompInfo;
+  i: Integer;
+begin
+  Assert(Assigned(List));
+
+  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  begin
+    RootComponent := FormEditor.GetRootComponent;
+    Assert(Assigned(RootComponent), 'FormEditor has no root component');
+
+    for i := 0 to RootComponent.GetComponentCount-1 do
+    begin
+      OwnedComponent := RootComponent.GetComponent(i);
+      if Assigned(OwnedComponent) then
+      begin
+        CompInfo := TCompInfo.Create;
+        CompInfo.CompName := Ota.GetComponentName(OwnedComponent);
+        CompInfo.CompType := OwnedComponent.GetComponentType;
+        List.Add(CompInfo);
+      end;
+    end;
+  end;
+end;
+
+class procedure Ota.FillUnitInfoListForProject(List: TList; _Project: IOTAProject);
+var
+  i: Integer;
+  ModuleInfo: IOTAModuleInfo;
+  UnitInfo: TUnitInfo;
+begin
+  Assert(Assigned(List));
+
+  TList_ClearAndFreeAllItems(List);
+  if not Assigned(_Project) then
+    Exit; //==>
+
+  for i := 0 to _Project.GetModuleCount - 1 do
+  begin
+    ModuleInfo := _Project.GetModule(i);
+    Assert(Assigned(ModuleInfo));
+
+    if ModuleInfo.FileName <> '' then
+    begin
+      UnitInfo := TUnitInfo.Create;
+      List.Add(UnitInfo);
+
+      UnitInfo.FileName := ModuleInfo.FileName;
+      UnitInfo.FormName := ModuleInfo.FormName;
+      UnitInfo.SourceName := ModuleInfo.Name;
+    end;
+  end;
+end;
+
+function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
+begin
+  Result := Ota.SelectedComponentIsRoot(FormEditor);
+end;
+
+function GxOtaSelectedComponentName: string;
+begin
+  Result := Ota.SelectedComponentName;
+end;
+
+function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
+begin
+  Result := Ota.GetFormBiDiMode(Form);
 end;
 
 {$UNDEF LoadAndCheckEntryPoint}

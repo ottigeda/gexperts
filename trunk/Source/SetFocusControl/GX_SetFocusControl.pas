@@ -154,11 +154,11 @@ var
     Labels := TComponentList.Create(False);
     Controls := TComponentList.Create(False);
     try
-      GxOtaGetComponentList(Form, Labels, TCustomLabel);
-      if (Form.GetSelCount = 0) or GxOtaSelectedComponentIsRoot(Form) then
-        GxOtaGetComponentList(Form, Controls, TWinControl)
+      Ota.GetComponentList(Form, Labels, TCustomLabel);
+      if (Form.GetSelCount = 0) or Ota.SelectedComponentIsRoot(Form) then
+        Ota.GetComponentList(Form, Controls, TWinControl)
       else
-        GxOtaGetSelectedComponents(Form, Controls, TWinControl);
+        Ota.GetSelectedComponents(Form, Controls, TWinControl);
       Force := GetKeyState(VK_SHIFT) < 0;
       for i := 0 to Controls.Count - 1 do
       begin

@@ -30,6 +30,8 @@ type
     class function GetFormEditorFromModule(const Module: IOTAModule): IOTAFormEditor;
     // always returns nil
     class function GetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
+    // always returns an empty string
+    class function SelectedComponentName: string;
   end;
 
 ///<summary>
@@ -370,6 +372,11 @@ end;
 class function Ota.GetSourceEditorFromModule(Module: IOTAModule; const FileName: string): IOTASourceEditor;
 begin
   Result := nil;
+end;
+
+class function Ota.SelectedComponentName: string;
+begin
+  Result := '';
 end;
 
 { TThemeChangedNotifier }

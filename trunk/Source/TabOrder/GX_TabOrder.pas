@@ -485,7 +485,7 @@ begin
     end
     else
     begin
-      TabOrderForm.FBiDiMode := GxOtaGetFormBiDiMode(FormEditor);
+      TabOrderForm.FBiDiMode := Ota.GetFormBiDiMode(FormEditor);
       TabOrderForm.FillTreeView(AComponent);
       case FAutoSort of
         tasYthenX:

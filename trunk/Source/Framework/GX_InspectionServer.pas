@@ -1365,7 +1365,7 @@ begin
     Result := 'ERROR Usage: DESIGNSCREENSHOT <filepath>'#13#10;
     Exit;
   end;
-  DesignForm := GxOtaGetCurrentDesignForm;
+  DesignForm := Ota.GetCurrentDesignForm;
   if DesignForm = nil then begin
     Result := 'ERROR No form currently in design mode'#13#10;
     Exit;

@@ -563,7 +563,7 @@ procedure TfmGrepSearch.LoadFormSettings;
       if not IsStandAlone
         and (GxOtaGetCurrentEditorAsSourceEditor = nil)
         and gblGrepExpert.GrepUseCurrentIdent then
-        Selection := GxOtaSelectedComponentName
+        Selection := Ota.SelectedComponentName
       else
         Selection := RetrieveEditorBlockSelection;
     end;

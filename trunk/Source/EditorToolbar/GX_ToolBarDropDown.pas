@@ -271,7 +271,7 @@ end;
 procedure TBasePopupListing.PopulateUnitList;
 begin
   TList_ClearAndFreeAllItems(FUnitList);
-  GxOtaFillUnitInfoListForProject(FUnitList, Ota.GetCurrentProject);
+  Ota.FillUnitInfoListForProject(FUnitList, Ota.GetCurrentProject);
 end;
 
 procedure TBasePopupListing.ShowPopupBelowControl(AControl: TControl);
@@ -541,7 +541,7 @@ var
   ObjectInspector: TCustomForm;
 begin
   // Compensate for AutoHotKeys.  '&' is not valid in Name anyway
-  GxOtaSelectComponentOnCurrentForm(StringReplace((Sender as TMenuItem).Caption, '&', '', [rfReplaceAll]));
+  Ota.SelectComponentOnCurrentForm(StringReplace((Sender as TMenuItem).Caption, '&', '', [rfReplaceAll]));
 
   AppBuilderForm := GetIdeMainForm;
   if AppBuilderForm <> nil then
@@ -620,7 +620,7 @@ var
 begin
   List := TList.Create;
   try
-    GxOtaFillComponentInfoList(List);
+    Ota.FillComponentInfoList(List);
     List.Sort(CompareObjects);
 
     for i := 0 to List.Count - 1 do

@@ -272,7 +272,7 @@ begin
       FController.SignalEnd;
     end;
       // Refresh the object inspector, since some properties have changed
-    GxOtaRefreshCurrentDesigner;
+    Ota.RefreshCurrentDesigner;
 
     if TCompRepControllerReal(FController).ShowLogWin then
       ShowLogWin(SearchComponent, ReplaceComponent, TCompRepControllerReal(FController).LogEvents);
@@ -476,7 +476,7 @@ begin
     Exit;
   end;
 
-  if GxOtaSelectedComponentIsRoot(FormEditor) then
+  if Ota.SelectedComponentIsRoot(FormEditor) then
   begin
     // The "selected component" is the form itself - hence there are
     // no components on that form that are selected.
