@@ -78,6 +78,10 @@ type
     procedure TestLocalVarInExistingVarSection;
     procedure TestLocalVarNewVarSection;
     procedure TestFieldInClass;
+    procedure TestFieldNotAfterMethods;
+    procedure TestFieldInSectionWithoutFields;
+    procedure TestFieldNotConfusedByFunctionReturnType;
+    procedure TestNewSectionCreated;
     procedure TestNoInsertionPointAtUnitLevel;
     procedure TestReservedWordError;
     procedure TestAlreadyDeclared;
@@ -758,6 +762,195 @@ begin
     end;
   end;
   CheckTrue(HasField, 'Should offer field insertion');
+end;
+
+procedure TTestFindInsertionPoints.TestFieldNotAfterMethods;
+var
+  Source: string;
+  Info: TDeclareInfo;
+  I: Integer;
+  FieldDesc: string;
+begin
+  // Bug: function return type "GetName: string" was falsely detected as a field,
+  // causing the field insertion point to land after method declarations
+  Source :=
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '  private'#13#10 +
+    '    FName: string;'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '    procedure SetName(const Value: string);'#13#10 +
+    '  public'#13#10 +
+    '    property Name: string read GetName write SetName;'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'function TMyClass.GetName: string;'#13#10 +
+    'begin'#13#10 +
+    '  X := FName;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'procedure TMyClass.SetName(const Value: string);'#13#10 +
+    'begin'#13#10 +
+    '  FName := Value;'#13#10 +
+    'end;';
+  I := Pos('X := FName', Source);
+  Info := DoAnalyze(Source, I);
+  // Find the private field insertion point
+  FieldDesc := '';
+  for I := 0 to High(Info.InsertionPoints) do begin
+    if (Info.InsertionPoints[I].Kind = dkField)
+       and (Pos('private', Info.InsertionPoints[I].Description) > 0) then begin
+      FieldDesc := Info.InsertionPoints[I].Description;
+      // The insertion should be after FName, not after SetName
+      // CharPos should point to the line after "FName: string;"
+      // Verify by inserting and checking the result
+      CheckTrue(Info.InsertionPoints[I].CharPos <= Pos('function GetName', Source),
+        'Field insertion point must be before method declarations');
+      Break;
+    end;
+  end;
+  CheckTrue(FieldDesc <> '', 'Should have a private field insertion point');
+end;
+
+procedure TTestFindInsertionPoints.TestFieldInSectionWithoutFields;
+var
+  Source: string;
+  Info: TDeclareInfo;
+  I: Integer;
+  HasPrivateField: Boolean;
+begin
+  // A private section with only methods should still offer a field insertion point
+  Source :=
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '  private'#13#10 +
+    '    procedure DoWork;'#13#10 +
+    '  public'#13#10 +
+    '    procedure Execute;'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'procedure TMyClass.Execute;'#13#10 +
+    'begin'#13#10 +
+    '  X := 42;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'procedure TMyClass.DoWork;'#13#10 +
+    'begin'#13#10 +
+    'end;';
+  I := Pos('X := 42', Source);
+  Info := DoAnalyze(Source, I);
+  HasPrivateField := False;
+  for I := 0 to High(Info.InsertionPoints) do begin
+    if (Info.InsertionPoints[I].Kind = dkField)
+       and (Pos('private', Info.InsertionPoints[I].Description) > 0) then begin
+      HasPrivateField := True;
+      // Insertion should be before the procedure, at start of section
+      CheckTrue(Info.InsertionPoints[I].CharPos <= Pos('procedure DoWork', Source),
+        'Field insertion in empty section must be before methods');
+      Break;
+    end;
+  end;
+  CheckTrue(HasPrivateField, 'Should offer private field insertion even without existing fields');
+end;
+
+procedure TTestFindInsertionPoints.TestFieldNotConfusedByFunctionReturnType;
+var
+  Source: string;
+  Info: TDeclareInfo;
+  I: Integer;
+  FieldPt: TInsertionPoint;
+  Found: Boolean;
+  InsertedSource: string;
+begin
+  // function GetCount: Integer; has the pattern "Ident: Type;" which looks like a field
+  // Also test that method parameters (A: Integer) are not confused with fields
+  Source :=
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '  private'#13#10 +
+    '    function GetCount: Integer;'#13#10 +
+    '    procedure SetValue(A: Integer; B: string);'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'function TMyClass.GetCount: Integer;'#13#10 +
+    'begin'#13#10 +
+    '  X := 0;'#13#10 +
+    'end;'#13#10 +
+    #13#10 +
+    'procedure TMyClass.SetValue(A: Integer; B: string);'#13#10 +
+    'begin'#13#10 +
+    'end;';
+  I := Pos('X := 0', Source);
+  Info := DoAnalyze(Source, I);
+  Found := False;
+  for I := 0 to High(Info.InsertionPoints) do begin
+    if (Info.InsertionPoints[I].Kind = dkField)
+       and (Pos('private', Info.InsertionPoints[I].Description) > 0) then begin
+      Found := True;
+      FieldPt := Info.InsertionPoints[I];
+      // Insert a field and verify it goes before the methods
+      InsertedSource := InsertDeclaration(Source, FieldPt,
+        BuildDeclarationText('FData', 'Integer', dkField, FieldPt.Indent, '', ''));
+      CheckTrue(Pos('FData: Integer;', InsertedSource) < Pos('function GetCount', InsertedSource),
+        'Inserted field must appear before function declaration');
+      Break;
+    end;
+  end;
+  CheckTrue(Found, 'Should have a private field insertion point');
+end;
+
+procedure TTestFindInsertionPoints.TestNewSectionCreated;
+var
+  Source: string;
+  Info: TDeclareInfo;
+  I: Integer;
+  FieldPt: TInsertionPoint;
+  Found: Boolean;
+  InsertedSource: string;
+begin
+  // Class has only private — strict private should be offered as new section
+  Source :=
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '  private'#13#10 +
+    '    FValue: Integer;'#13#10 +
+    '  public'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    #13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := FValue;'#13#10 +
+    'end;';
+  I := Pos('X := FValue', Source);
+  Info := DoAnalyze(Source, I);
+
+  // Should have a "strict private ... (new)" insertion point
+  Found := False;
+  for I := 0 to High(Info.InsertionPoints) do begin
+    if (Info.InsertionPoints[I].Kind = dkField)
+       and (Pos('strict private', Info.InsertionPoints[I].Description) > 0)
+       and (Pos('(new)', Info.InsertionPoints[I].Description) > 0) then begin
+      Found := True;
+      FieldPt := Info.InsertionPoints[I];
+      CheckTrue(FieldPt.SectionHeader <> '', 'New section should have SectionHeader');
+      // Insert and verify the section header is created
+      InsertedSource := InsertDeclaration(Source, FieldPt,
+        BuildDeclarationText('FSecret', 'Integer', dkField, FieldPt.Indent, '', ''));
+      CheckTrue(Pos('strict private', InsertedSource) > 0,
+        'Inserted source should contain strict private header');
+      CheckTrue(Pos('FSecret: Integer;', InsertedSource) > 0,
+        'Inserted source should contain field declaration');
+      // The section header should come before the field
+      CheckTrue(Pos('strict private', InsertedSource) < Pos('FSecret: Integer;', InsertedSource),
+        'Section header should come before field');
+      // The new section should be before 'end;'
+      CheckTrue(Pos('FSecret: Integer;', InsertedSource) < Pos('end;', InsertedSource),
+        'New field should be before end');
+      Break;
+    end;
+  end;
+  CheckTrue(Found, 'Should offer strict private as new section');
 end;
 
 procedure TTestFindInsertionPoints.TestNoInsertionPointAtUnitLevel;

@@ -623,8 +623,9 @@ end;
 
 procedure TfmDeclareVariable.UpdateInsertAtCombo;
 var
-  I: Integer;
+  I, DefaultIdx: Integer;
   Kind: TDeclKind;
+  Desc: string;
 begin
   cmbInsertAt.Items.Clear;
   Kind := GetSelectedKind;
@@ -636,8 +637,20 @@ begin
       cmbInsertAt.Items.AddObject(FInfo.InsertionPoints[I].Description, TObject(I));
   end;
 
+  // Default to private section for fields and properties
+  DefaultIdx := 0;
+  if Kind in [dkField, dkProperty] then begin
+    for I := 0 to cmbInsertAt.Items.Count - 1 do begin
+      Desc := cmbInsertAt.Items[I];
+      if (Pos('private', Desc) = 1) or (Pos('strict private', Desc) = 1) then begin
+        DefaultIdx := I;
+        Break;
+      end;
+    end;
+  end;
+
   if cmbInsertAt.Items.Count > 0 then
-    cmbInsertAt.ItemIndex := 0;
+    cmbInsertAt.ItemIndex := DefaultIdx;
 end;
 
 procedure TfmDeclareVariable.UpdatePropertyFields;

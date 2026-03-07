@@ -32,6 +32,7 @@ type
     CharPos: Integer;           // 1-based position in source where to insert
     Indent: string;             // indentation prefix for the declaration
     NeedsVarKeyword: Boolean;   // True if 'var' keyword must be added first
+    SectionHeader: string;      // e.g. '  private' — inserted as new line before declaration
   end;
   TInsertionPointArray = array of TInsertionPoint;
 
@@ -544,6 +545,13 @@ type
   TVisibilityKind = (vkImplicit, vkPrivate, vkStrictPrivate,
     vkProtected, vkStrictProtected, vkPublic, vkPublished);
 
+  TVisSectionRec = record
+    Exists: Boolean;
+    LastFieldEnd: Integer;    // token index of last field's semicolon, or -1
+    KeywordIdx: Integer;      // token index of the visibility keyword
+    VisIndent: string;        // indent of the visibility keyword
+  end;
+
 function VisibilityName(V: TVisibilityKind): string;
 begin
   case V of
@@ -580,14 +588,19 @@ var
   BeginPos: Integer;
   Indent: string;
   Cls: TClassScope;
-  CurrentVis: TVisibilityKind;
-  VisLastFieldEnd: Integer;
+  CurrentVis, V: TVisibilityKind;
+  NestDepth: Integer;
   ParenLevel: Integer;
   EncProc: TProcScope;
+  Sections: array[TVisibilityKind] of TVisSectionRec;
+  HasAnySections: Boolean;
+  EndCharPos: Integer;
+  VisIndent: string;
 begin
   Capacity := 8;
   SetLength(Result, Capacity);
   Count := 0;
+  Pt.SectionHeader := '';
 
   EnclosingProcs := FindEnclosingProcs(Procs, CursorTokenIdx);
 
@@ -677,136 +690,152 @@ begin
     // Check if cursor is in a method of this class
     for K := 0 to High(EnclosingProcs) do begin
       if SameText(EnclosingProcs[K].ClassName, Cls.Name) then begin
-        // Found the class — scan visibility sections
+        // Scan class to collect visibility section info
         CurrentVis := vkImplicit;
-        VisLastFieldEnd := -1;
+        NestDepth := 0;
+        for V := Low(TVisibilityKind) to High(TVisibilityKind) do begin
+          Sections[V].Exists := False;
+          Sections[V].LastFieldEnd := -1;
+          Sections[V].KeywordIdx := -1;
+          Sections[V].VisIndent := '';
+        end;
 
         J := Cls.DeclStart;
         while J <= Cls.DeclEnd do begin
-          // Track visibility keywords
-          if Tokens[J].Kind = tkPrivate then begin
-            // Check for strict private
+          if Tokens[J].Kind in [tkRoundOpen, tkSquareOpen] then
+            Inc(NestDepth)
+          else if Tokens[J].Kind in [tkRoundClose, tkSquareClose] then
+            Dec(NestDepth);
+
+          // Detect visibility keywords
+          if Tokens[J].Kind in [tkPrivate, tkProtected, tkPublic, tkPublished] then begin
+            // Save current section's last field end before switching
+            Sections[CurrentVis].LastFieldEnd :=
+              Sections[CurrentVis].LastFieldEnd; // already tracked below
+
             PI := PrevNonJunk(Tokens, J);
             if (PI >= Cls.DeclStart) and (Tokens[PI].Kind = tkStrict) then begin
-              // Emit previous section's insertion point
-              if (VisLastFieldEnd > 0) then begin
-                Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-                Pt.Kind := dkField;
-                Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-                Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-                Pt.NeedsVarKeyword := False;
-                AddInsertionPoint(Result, Count, Capacity, Pt);
-              end;
-              CurrentVis := vkStrictPrivate;
-              VisLastFieldEnd := -1;
+              if Tokens[J].Kind = tkPrivate then
+                CurrentVis := vkStrictPrivate
+              else
+                CurrentVis := vkStrictProtected;
+              Sections[CurrentVis].VisIndent := GetIndentAtPos(Source, Tokens[PI].Pos + 1);
             end else begin
-              if (VisLastFieldEnd > 0) then begin
-                Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-                Pt.Kind := dkField;
-                Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-                Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-                Pt.NeedsVarKeyword := False;
-                AddInsertionPoint(Result, Count, Capacity, Pt);
+              case Tokens[J].Kind of
+                tkPrivate: CurrentVis := vkPrivate;
+                tkProtected: CurrentVis := vkProtected;
+                tkPublic: CurrentVis := vkPublic;
+                tkPublished: CurrentVis := vkPublished;
               end;
-              CurrentVis := vkPrivate;
-              VisLastFieldEnd := -1;
+              Sections[CurrentVis].VisIndent := GetIndentAtPos(Source, Tokens[J].Pos + 1);
             end;
-          end else if Tokens[J].Kind = tkProtected then begin
-            PI := PrevNonJunk(Tokens, J);
-            if (PI >= Cls.DeclStart) and (Tokens[PI].Kind = tkStrict) then begin
-              if (VisLastFieldEnd > 0) then begin
-                Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-                Pt.Kind := dkField;
-                Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-                Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-                Pt.NeedsVarKeyword := False;
-                AddInsertionPoint(Result, Count, Capacity, Pt);
-              end;
-              CurrentVis := vkStrictProtected;
-              VisLastFieldEnd := -1;
-            end else begin
-              if (VisLastFieldEnd > 0) then begin
-                Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-                Pt.Kind := dkField;
-                Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-                Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-                Pt.NeedsVarKeyword := False;
-                AddInsertionPoint(Result, Count, Capacity, Pt);
-              end;
-              CurrentVis := vkProtected;
-              VisLastFieldEnd := -1;
-            end;
-          end else if Tokens[J].Kind = tkPublic then begin
-            if (VisLastFieldEnd > 0) then begin
-              Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-              Pt.Kind := dkField;
-              Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-              Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-              Pt.NeedsVarKeyword := False;
-              AddInsertionPoint(Result, Count, Capacity, Pt);
-            end;
-            CurrentVis := vkPublic;
-            VisLastFieldEnd := -1;
-          end else if Tokens[J].Kind = tkPublished then begin
-            if (VisLastFieldEnd > 0) then begin
-              Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-              Pt.Kind := dkField;
-              Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-              Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-              Pt.NeedsVarKeyword := False;
-              AddInsertionPoint(Result, Count, Capacity, Pt);
-            end;
-            CurrentVis := vkPublished;
-            VisLastFieldEnd := -1;
+            Sections[CurrentVis].Exists := True;
+            Sections[CurrentVis].KeywordIdx := J;
           end;
 
           // Track field declarations (Ident: Type;)
-          if (Tokens[J].Kind in IdentDirect) then begin
-            NI := NextNonJunk(Tokens, J);
-            if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind in [tkColon, tkComma]) then begin
-              // This is a field declaration — find its semicolon
-              SemiIdx := NI;
-              while (SemiIdx <= Cls.DeclEnd) and (Tokens[SemiIdx].Kind <> tkSemiColon) do
-                Inc(SemiIdx);
-              if SemiIdx <= Cls.DeclEnd then
-                VisLastFieldEnd := SemiIdx;
+          // Only at top level (not inside method parameter lists or property indexers)
+          // and only if the identifier is not a method/property name
+          if (NestDepth = 0) and (Tokens[J].Kind in IdentDirect) then begin
+            PI := PrevNonJunk(Tokens, J);
+            if (PI < Cls.DeclStart) or not (Tokens[PI].Kind in
+                [tkProcedure, tkFunction, tkConstructor, tkDestructor, tkProperty]) then begin
+              NI := NextNonJunk(Tokens, J);
+              if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind in [tkColon, tkComma]) then begin
+                SemiIdx := NI;
+                while (SemiIdx <= Cls.DeclEnd) and (Tokens[SemiIdx].Kind <> tkSemiColon) do
+                  Inc(SemiIdx);
+                if SemiIdx <= Cls.DeclEnd then
+                  Sections[CurrentVis].LastFieldEnd := SemiIdx;
+              end;
             end;
           end;
 
           Inc(J);
         end;
 
-        // Emit the last visibility section
-        if (VisLastFieldEnd > 0) then begin
-          Pt.Description := VisibilityName(CurrentVis) + ' of ' + Cls.Name;
-          Pt.Kind := dkField;
-          Pt.CharPos := FindEndOfLine(Source, Tokens[VisLastFieldEnd].Pos + 1 + Tokens[VisLastFieldEnd].Len);
-          Pt.Indent := GetIndentAtPos(Source, Tokens[VisLastFieldEnd].Pos + 1);
-          Pt.NeedsVarKeyword := False;
-          AddInsertionPoint(Result, Count, Capacity, Pt);
-        end;
-
-        // Also offer insertion right after the class keyword line as a fallback
-        NI := NextNonJunk(Tokens, Cls.DeclStart);
-        // Skip optional (TParent) or (TParent, IInterface)
-        if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkRoundOpen) then begin
-          ParenLevel := 1;
-          Inc(NI);
-          while (NI <= Cls.DeclEnd) and (ParenLevel > 0) do begin
-            if Tokens[NI].Kind = tkRoundOpen then Inc(ParenLevel)
-            else if Tokens[NI].Kind = tkRoundClose then Dec(ParenLevel);
-            Inc(NI);
+        // Determine indent for visibility keywords (from any existing section)
+        VisIndent := '';
+        HasAnySections := False;
+        for V := vkPrivate to vkPublished do begin
+          if Sections[V].Exists then begin
+            HasAnySections := True;
+            if VisIndent = '' then
+              VisIndent := Sections[V].VisIndent;
           end;
         end;
-        // NI is now the first token after class header
-        if NI <= Cls.DeclEnd then begin
-          Pt.Description := 'top of ' + Cls.Name;
-          Pt.Kind := dkField;
-          // Insert at start of the line containing NI
-          Pt.CharPos := FindLineStart(Source, Tokens[NI].Pos + 1);
-          Pt.Indent := GetIndentAtPos(Source, Tokens[NI].Pos + 1);
-          Pt.NeedsVarKeyword := False;
-          AddInsertionPoint(Result, Count, Capacity, Pt);
+        if VisIndent = '' then
+          VisIndent := GetIndentAtPos(Source, Tokens[Cls.DeclEnd].Pos + 1);
+        EndCharPos := FindLineStart(Source, Tokens[Cls.DeclEnd].Pos + 1);
+
+        // Emit insertion points in fixed order: private, strict private,
+        // protected, strict protected, public, published
+        if HasAnySections then begin
+          for V := vkPrivate to vkPublished do begin
+            Pt.Kind := dkField;
+            Pt.NeedsVarKeyword := False;
+            if Sections[V].Exists then begin
+              // Existing section
+              Pt.SectionHeader := '';
+              if Sections[V].LastFieldEnd > 0 then begin
+                // Insert after last field in this section
+                Pt.Description := VisibilityName(V) + ' of ' + Cls.Name;
+                Pt.CharPos := FindEndOfLine(Source,
+                  Tokens[Sections[V].LastFieldEnd].Pos + 1 +
+                  Tokens[Sections[V].LastFieldEnd].Len);
+                Pt.Indent := GetIndentAtPos(Source,
+                  Tokens[Sections[V].LastFieldEnd].Pos + 1);
+              end else begin
+                // Section has no fields — insert right after visibility keyword
+                NI := NextNonJunk(Tokens, Sections[V].KeywordIdx);
+                if NI > Cls.DeclEnd then
+                  Continue;
+                Pt.Description := VisibilityName(V) + ' of ' + Cls.Name;
+                Pt.CharPos := FindLineStart(Source, Tokens[NI].Pos + 1);
+                Pt.Indent := GetIndentAtPos(Source, Tokens[NI].Pos + 1);
+              end;
+              AddInsertionPoint(Result, Count, Capacity, Pt);
+            end else begin
+              // New section — insert before 'end' with section header
+              Pt.Description := VisibilityName(V) + ' of ' + Cls.Name + ' (new)';
+              Pt.CharPos := EndCharPos;
+              Pt.Indent := VisIndent + '  ';
+              Pt.SectionHeader := VisIndent + VisibilityName(V);
+              AddInsertionPoint(Result, Count, Capacity, Pt);
+            end;
+          end;
+          Pt.SectionHeader := '';
+        end else begin
+          // Fallback for classes without any visibility keywords
+          NI := NextNonJunk(Tokens, Cls.DeclStart);
+          // Skip optional (TParent) or (TParent, IInterface)
+          if (NI <= Cls.DeclEnd) and (Tokens[NI].Kind = tkRoundOpen) then begin
+            ParenLevel := 1;
+            Inc(NI);
+            while (NI <= Cls.DeclEnd) and (ParenLevel > 0) do begin
+              if Tokens[NI].Kind = tkRoundOpen then Inc(ParenLevel)
+              else if Tokens[NI].Kind = tkRoundClose then Dec(ParenLevel);
+              Inc(NI);
+            end;
+          end;
+          if NI <= Cls.DeclEnd then begin
+            if Sections[vkImplicit].LastFieldEnd > 0 then begin
+              Pt.Description := Cls.Name;
+              Pt.Kind := dkField;
+              Pt.CharPos := FindEndOfLine(Source,
+                Tokens[Sections[vkImplicit].LastFieldEnd].Pos + 1 +
+                Tokens[Sections[vkImplicit].LastFieldEnd].Len);
+              Pt.Indent := GetIndentAtPos(Source,
+                Tokens[Sections[vkImplicit].LastFieldEnd].Pos + 1);
+            end else begin
+              Pt.Description := Cls.Name;
+              Pt.Kind := dkField;
+              Pt.CharPos := FindLineStart(Source, Tokens[NI].Pos + 1);
+              Pt.Indent := GetIndentAtPos(Source, Tokens[NI].Pos + 1);
+            end;
+            Pt.NeedsVarKeyword := False;
+            AddInsertionPoint(Result, Count, Capacity, Pt);
+          end;
         end;
 
         Break; // Only handle the first matching class
@@ -841,8 +870,12 @@ function InsertDeclaration(const Source: string;
   const InsertionPt: TInsertionPoint;
   const DeclText: string): string;
 var
-  VarLine, IndentedDecl: string;
+  VarLine, IndentedDecl, Prefix: string;
 begin
+  Prefix := '';
+  if InsertionPt.SectionHeader <> '' then
+    Prefix := InsertionPt.SectionHeader + #13#10;
+
   if InsertionPt.NeedsVarKeyword then begin
     VarLine := InsertionPt.Indent + 'var' + #13#10;
     // Add 2 extra spaces to the declaration text relative to var keyword
@@ -850,11 +883,11 @@ begin
       Copy(DeclText, Length(InsertionPt.Indent) + 1,
            Length(DeclText) - Length(InsertionPt.Indent));
     Result := Copy(Source, 1, InsertionPt.CharPos - 1)
-      + VarLine + IndentedDecl
+      + Prefix + VarLine + IndentedDecl
       + Copy(Source, InsertionPt.CharPos, Length(Source) - InsertionPt.CharPos + 1);
   end else begin
     Result := Copy(Source, 1, InsertionPt.CharPos - 1)
-      + DeclText
+      + Prefix + DeclText
       + Copy(Source, InsertionPt.CharPos, Length(Source) - InsertionPt.CharPos + 1);
   end;
 end;
