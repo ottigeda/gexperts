@@ -42,6 +42,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Declare Variable: Type inference for overloaded intrinsics (Abs, Sqr, Pred, Succ) based on argument type analysis, with alternative type suggestions shown in a dropdown
 - Declare Variable: Type field changed to combobox with dropdown for selecting alternative types when multiple are possible (e.g. Integer/Cardinal/Int64/UInt64/Extended for Abs)
 - Declare Variable: External overloaded functions now collect all distinct return types as alternatives
+- Declare Variable: Added accelerator hotkeys (Alt+T, Alt+I, Alt+R, Alt+W) for Type, Insert at, Read specifier, and Write specifier fields
 
 ## Bug Fixes
 
