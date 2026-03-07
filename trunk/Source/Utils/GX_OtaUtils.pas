@@ -851,6 +851,22 @@ type
     /// @param List the TList to fill with TUnitInfo objects
     /// @param _Project the project to query </summary>
     class procedure FillUnitInfoListForProject(List: TList; _Project: IOTAProject);
+    /// <summary>
+    /// Writes a simple (bold) title message to the IDE Messages window.
+    /// @param Title the title text to display </summary>
+    class procedure WriteTitleMessage(const Title: string);
+    /// <summary>
+    /// Writes a tool message to the IDE Messages window.
+    /// @param FileName the file name associated with the message
+    /// @param MessageStr the message text
+    /// @param PrefixStr the prefix string
+    /// @param LineNumber the line number
+    /// @param ColumnNumber the column number </summary>
+    class procedure WriteToolMessage(const FileName, MessageStr, PrefixStr: string;
+      LineNumber, ColumnNumber: Integer);
+    /// <summary>
+    /// Clears all tool and title messages in the IDE Messages window. </summary>
+    class procedure ClearToolMessages;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1166,12 +1182,12 @@ function GxOtaGetCurrentDesignForm: TCustomForm; deprecated; // use Ota.GetCurre
 function GxOtaRefreshCurrentDesigner: Boolean; deprecated; // use Ota.RefreshCurrentDesigner
 
 // Write a simple (bold) title message to the IDE Messages window
-procedure GxOtaWriteTitleMessage(const Title: string);
+procedure GxOtaWriteTitleMessage(const Title: string); deprecated; // use Ota.WriteTitleMessage
 // Write a tool message to the IDE Messages window
 procedure GxOtaWriteToolMessage(const FileName, MessageStr, PrefixStr: string;
-  LineNumber, ColumnNumber: Integer);
+  LineNumber, ColumnNumber: Integer); deprecated; // use Ota.WriteToolMessage
 // Clears all tool and title messages in the IDE Messages window
-procedure GxOtaClearToolMessages;
+procedure GxOtaClearToolMessages; deprecated; // use Ota.ClearToolMessages
 
 // Ses if the IDE is curently debugging an application
 function GxOtaCurrentlyDebugging: Boolean; deprecated; // use Ota.CurrentlyDebugging
@@ -1759,6 +1775,22 @@ begin
 end;
 
 procedure GxOtaWriteTitleMessage(const Title: string);
+begin
+  Ota.WriteTitleMessage(Title);
+end;
+
+procedure GxOtaWriteToolMessage(const FileName, MessageStr, PrefixStr: string;
+  LineNumber, ColumnNumber: Integer);
+begin
+  Ota.WriteToolMessage(FileName, MessageStr, PrefixStr, LineNumber, ColumnNumber);
+end;
+
+procedure GxOtaClearToolMessages;
+begin
+  Ota.ClearToolMessages;
+end;
+
+class procedure Ota.WriteTitleMessage(const Title: string);
 var
   IMessageServices: IOTAMessageServices;
 begin
@@ -1768,7 +1800,7 @@ begin
   IMessageServices.AddTitleMessage(Title);
 end;
 
-procedure GxOtaWriteToolMessage(const FileName, MessageStr, PrefixStr: string;
+class procedure Ota.WriteToolMessage(const FileName, MessageStr, PrefixStr: string;
   LineNumber, ColumnNumber: Integer);
 var
   IMessageServices: IOTAMessageServices;
@@ -1780,7 +1812,7 @@ begin
     LineNumber, ColumnNumber);
 end;
 
-procedure GxOtaClearToolMessages;
+class procedure Ota.ClearToolMessages;
 var
   IMessageServices: IOTAMessageServices;
 begin

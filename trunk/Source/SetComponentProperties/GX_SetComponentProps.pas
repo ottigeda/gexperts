@@ -287,15 +287,15 @@ begin
   begin
     if FOutputMessages.Count > 0 then
     begin
-      GxOtaWriteTitleMessage('Properties set before compilation by GExperts Set Component Properties:');
+      Ota.WriteTitleMessage('Properties set before compilation by GExperts Set Component Properties:');
       if TSetComponentPropsSettings.GetInstance.Simulate then
-        GxOtaWriteTitleMessage('Simulation Mode: No property changes are being made');
+        Ota.WriteTitleMessage('Simulation Mode: No property changes are being made');
     end;
     while FOutputMessages.Count > 0 do
     begin
       sFileName := Copy(FOutputMessages[0], 1, Pos('|', FOutputMessages[0]) - 1);
       sMessage := Copy(FOutputMessages[0], Pos('|', FOutputMessages[0]) + 1);
-      GxOtaWriteToolMessage(sFileName, sMessage, '', 0, 0);
+      Ota.WriteToolMessage(sFileName, sMessage, '', 0, 0);
       FOutputMessages.Delete(0);
     end;
   end;

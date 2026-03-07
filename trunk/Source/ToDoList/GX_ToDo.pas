@@ -590,7 +590,7 @@ begin
 
       Assert(Assigned(ToDoExpert));
       if ToDoExpert.FAddMessage then
-        GxOtaWriteToolMessage(Info.FileName, Info.Display, ToDoExpert.FTokenList[i], Info.LineNo, 1);
+        Ota.WriteToolMessage(Info.FileName, Info.Display, ToDoExpert.FTokenList[i], Info.LineNo, 1);
 
       Break; // Comment line parsed, stop searching for more To Do items in that line
     end;
