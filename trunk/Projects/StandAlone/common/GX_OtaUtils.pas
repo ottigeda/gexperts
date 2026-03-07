@@ -32,6 +32,8 @@ type
     class function GetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
     // always returns an empty string
     class function SelectedComponentName: string;
+    class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload;
+    class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload;
   end;
 
 ///<summary>
@@ -179,7 +181,7 @@ begin
   Result := nil;
 end;
 
-procedure GXOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList;
+class procedure Ota.LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList;
   var WasBinary: Boolean);
 begin
   Assert(Assigned(Data));
@@ -190,11 +192,22 @@ begin
   LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary)
 end;
 
-procedure GXOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload;
+class procedure Ota.LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList);
 var
   WasBinary: Boolean;
 begin
-  GXOtaLoadFileToUnicodeStrings(FileName, Data, WasBinary);
+  Ota.LoadFileToUnicodeStrings(FileName, Data, WasBinary);
+end;
+
+procedure GXOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList;
+  var WasBinary: Boolean);
+begin
+  Ota.LoadFileToUnicodeStrings(FileName, Data, WasBinary);
+end;
+
+procedure GXOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList);
+begin
+  Ota.LoadFileToUnicodeStrings(FileName, Data);
 end;
 
 function GxOtaGetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditWriter;

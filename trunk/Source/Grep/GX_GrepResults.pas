@@ -1201,7 +1201,7 @@ begin
         FileLines := TGXUnicodeStringList.Create;
         try
           try
-            GxOtaLoadFileToUnicodeStrings(FileName, FileLines);
+            Ota.LoadFileToUnicodeStrings(FileName, FileLines);
           except
             on E: EGXFileNotFound do
             begin

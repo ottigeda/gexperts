@@ -964,7 +964,7 @@ procedure TfmClassBrowser.LoadCode;
 
     Lines := TGXUnicodeStringList.Create;
     try
-      GxOtaLoadFileToUnicodeStrings(F, Lines);
+      Ota.LoadFileToUnicodeStrings(F, Lines);
       FCodeText.Text := Lines.Text;
     finally
       FreeAndNil(Lines);

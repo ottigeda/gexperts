@@ -518,7 +518,7 @@ begin
     FData := TGXUnicodeStringList.Create
   else
     FData.Clear;
-  GxOtaLoadFileToUnicodeStrings(FFileName, FData);
+  Ota.LoadFileToUnicodeStrings(FFileName, FData);
 end;
 
 end.

@@ -101,10 +101,10 @@ var
       SourceEditor := Ota.GetSourceEditorFromModule(Module, MatchFile);
       if not Assigned(SourceEditor) then
         raise Exception.Create(SUnableToOpen + MatchFile);
-      GxOtaLoadFileToUnicodeStrings(SourceEditor.FileName, TempFile, WasBinary);
+      Ota.LoadFileToUnicodeStrings(SourceEditor.FileName, TempFile, WasBinary);
     end
     else
-      GxOtaLoadFileToUnicodeStrings(MatchFile, TempFile, WasBinary);
+      Ota.LoadFileToUnicodeStrings(MatchFile, TempFile, WasBinary);
   end;
 
   procedure DoReplacement;

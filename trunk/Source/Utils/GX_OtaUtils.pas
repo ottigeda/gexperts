@@ -1030,6 +1030,39 @@ type
     /// @returns the base module file name, or FileName unchanged if it is
     ///          not a form/header file </summary>
     class function GetBaseModuleFileName(const FileName: string): string;
+    /// <summary>
+    /// Loads a file that is currently open in the IDE into a unicode string list,
+    /// handling both source editors and form editors.
+    /// @param FileName the file to load
+    /// @param Data the string list to load the file contents into
+    /// @param WasBinary set to True if the file was loaded from disk and
+    ///                  was binary </summary>
+    class procedure LoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
+    /// <summary>
+    /// Loads the contents of a source editor into a unicode string list.
+    /// @param SourceEditor the source editor to read from
+    /// @param Data the string list to load the contents into </summary>
+    class procedure LoadSourceEditorToUnicodeStrings(SourceEditor: IOTASourceEditor; Data: TGXUnicodeStringList);
+    /// <summary>
+    /// Loads the contents of a form editor into a unicode string list by
+    /// streaming the root component as text.
+    /// @param FormEditor the form editor to read from
+    /// @param Data the string list to load the contents into </summary>
+    class procedure LoadFormEditorToUnicodeStrings(FormEditor: IOTAFormEditor; Data: TGXUnicodeStringList);
+    /// <summary>
+    /// Reads a file's contents into a unicode string list. Supports open/closed
+    /// files, UTF-8 in the editor, and UTF-8/16/32 on disk, and form files.
+    /// @param FileName the file to load
+    /// @param Data the string list to load the file contents into </summary>
+    class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload;
+    /// <summary>
+    /// Reads a file's contents into a unicode string list. Supports open/closed
+    /// files, UTF-8 in the editor, and UTF-8/16/32 on disk, and form files.
+    /// @param FileName the file to load
+    /// @param Data the string list to load the file contents into
+    /// @param WasBinary set to True if the file was loaded from disk and
+    ///                  was binary </summary>
+    class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1283,15 +1316,15 @@ procedure GxOtaReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer
   const Text: string); deprecated; // use Ota.ReplaceSelection
 
 // Load a file/form opened into the IDE to a unciode string list
-procedure GxOtaLoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
-procedure GxOtaLoadSourceEditorToUnicodeStrings(SourceEditor: IOTASourceEditor; Data: TGXUnicodeStringList);
-procedure GxOtaLoadFormEditorToUnicodeStrings(FormEditor: IOTAFormEditor; Data: TGXUnicodeStringList);
+procedure GxOtaLoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); deprecated; // use Ota.LoadIDEFileToUnicodeStrings
+procedure GxOtaLoadSourceEditorToUnicodeStrings(SourceEditor: IOTASourceEditor; Data: TGXUnicodeStringList); deprecated; // use Ota.LoadSourceEditorToUnicodeStrings
+procedure GxOtaLoadFormEditorToUnicodeStrings(FormEditor: IOTAFormEditor; Data: TGXUnicodeStringList); deprecated; // use Ota.LoadFormEditorToUnicodeStrings
 
 
 // Read the requested file's contents into a unicode string list.  This supports
 // open/closed files, UTF-8 in the edior, and UTF-8/16/32 on disk, and form files.
-procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload;
-procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload;
+procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload; deprecated; // use Ota.LoadFileToUnicodeStrings
+procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload; deprecated; // use Ota.LoadFileToUnicodeStrings
 
 // Test whether the last attribute before the current one is part of another
 // one passed in InElement - or something else.  This is only called if
@@ -6944,7 +6977,7 @@ begin
     if UseSelection and Assigned(IEditView) and Assigned(IEditView.Block) and (IEditView.Block.Size > 0) then
       Lines.Text := Ota.GetCurrentSelection(False)
     else
-      GxOtaLoadSourceEditorToUnicodeStrings(ISourceEditor, Lines);
+      Ota.LoadSourceEditorToUnicodeStrings(ISourceEditor, Lines);
     Result := True;
   end;
 end;
@@ -7529,7 +7562,7 @@ begin
   Ota.ReplaceSelection(Editor, ViewNum, Text);
 end;
 
-procedure GxOtaLoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
+class procedure Ota.LoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
 var
   BaseFileName: string;
   Module: IOTAModule;
@@ -7547,11 +7580,11 @@ begin
   begin
     // Is the form currently open as text?
     if Ota.ModuleIsShowingFormSource(Module) then
-      GxOtaLoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data)
+      Ota.LoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data)
     else if Ota.IsFileOpen(BaseFileName) then
     begin
       FormEditor := Ota.GetFormEditorFromModule(BaseModule);
-      GxOtaLoadFormEditorToUnicodeStrings(FormEditor, Data);
+      Ota.LoadFormEditorToUnicodeStrings(FormEditor, Data);
     end
     else if FileExists(FileName) then
       LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary);
@@ -7563,20 +7596,25 @@ begin
     // We might be trying to load a .pas with the .dfm open as text
     if Assigned(SourceEditor) then begin
       // TODO: Test bdsgroup, bdsproj, dproj
-      GxOtaLoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data);
+      Ota.LoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data);
     end
     else if FileExists(FileName) then // This might be an older version, but we have no choice
       LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary);
   end;
 end;
 
-procedure GxOtaLoadSourceEditorToUnicodeStrings(SourceEditor: IOTASourceEditor; Data: TGXUnicodeStringList);
+procedure GxOtaLoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
+begin
+  Ota.LoadIDEFileToUnicodeStrings(FileName, Data, WasBinary);
+end;
+
+class procedure Ota.LoadSourceEditorToUnicodeStrings(SourceEditor: IOTASourceEditor; Data: TGXUnicodeStringList);
 var
   MemStream: TMemoryStream;
 begin
   Data.Clear;
   if not Assigned(SourceEditor) then
-    raise Exception.Create('No source editor in GxOtaLoadSourceEditorToUnicodeStrings');
+    raise Exception.Create('No source editor in Ota.LoadSourceEditorToUnicodeStrings');
   //TODO: Check stream format for forms as text (Ansi with escaped unicode, or UTF-8) in Delphi 2007/2009
   MemStream := TMemoryStream.Create;
   try
@@ -7601,7 +7639,12 @@ begin
   end;
 end;
 
-procedure GxOtaLoadFormEditorToUnicodeStrings(FormEditor: IOTAFormEditor; Data: TGXUnicodeStringList);
+procedure GxOtaLoadSourceEditorToUnicodeStrings(SourceEditor: IOTASourceEditor; Data: TGXUnicodeStringList);
+begin
+  Ota.LoadSourceEditorToUnicodeStrings(SourceEditor, Data);
+end;
+
+class procedure Ota.LoadFormEditorToUnicodeStrings(FormEditor: IOTAFormEditor; Data: TGXUnicodeStringList);
 var
   RootComponent: IOTAComponent;
   Component: TComponent;
@@ -7633,14 +7676,19 @@ begin
   end;
 end;
 
-procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload;
+procedure GxOtaLoadFormEditorToUnicodeStrings(FormEditor: IOTAFormEditor; Data: TGXUnicodeStringList);
+begin
+  Ota.LoadFormEditorToUnicodeStrings(FormEditor, Data);
+end;
+
+class procedure Ota.LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList);
 var
   Dummy: Boolean;
 begin
-  GxOtaLoadFileToUnicodeStrings(FileName, Data, Dummy);
+  Ota.LoadFileToUnicodeStrings(FileName, Data, Dummy);
 end;
 
-procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload;
+class procedure Ota.LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
 begin
   Assert(Assigned(Data));
   Data.Clear;
@@ -7649,9 +7697,19 @@ begin
   WasBinary := False;
 
   if not IsStandAlone and Ota.IsFileOpen(FileName, True) then
-    GxOtaLoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
+    Ota.LoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
   else
     LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary)
+end;
+
+procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList);
+begin
+  Ota.LoadFileToUnicodeStrings(FileName, Data);
+end;
+
+procedure GxOtaLoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
+begin
+  Ota.LoadFileToUnicodeStrings(FileName, Data, WasBinary);
 end;
 
 // Test whether the last attribute before the current one is part of another

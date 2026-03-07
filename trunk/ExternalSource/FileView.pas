@@ -119,7 +119,7 @@ procedure TFileViewer.LoadFromFile(const FileName: string);
     FImage.Visible := False;
     Strings := TGXUnicodeStringList.Create;
     try
-      GxOtaLoadFileToUnicodeStrings(FileName, Strings);
+      Ota.LoadFileToUnicodeStrings(FileName, Strings);
       FEditor.Lines.Text := Strings.Text;
     finally
       FreeAndNil(Strings);
