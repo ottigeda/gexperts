@@ -1113,6 +1113,18 @@ type
     /// selection.
     /// @returns the leading whitespace string </summary>
     class function GetLeadingWhiteSpaceInSelection: string;
+    /// <summary>
+    /// Shows a dialog enumerating all of the current project's modules and
+    /// editors, or all open modules if no project is active. </summary>
+    class procedure ShowProjectModuleInformation;
+    /// <summary>
+    /// Shows a dialog enumerating all of the IDE's actions with details
+    /// such as name, caption, shortcut, category, and class. </summary>
+    class procedure ShowIDEActions;
+    /// <summary>
+    /// Shows a dialog displaying detailed information about the topmost
+    /// edit view, including buffer, block, position, and options. </summary>
+    class procedure ShowEditViewDetails;
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1847,11 +1859,11 @@ procedure GxOtaExpandTabsInList(ALines: TStrings); deprecated; // use Ota.Expand
 function GxOtaGetLeadingWhiteSpaceInSelection: string; deprecated; // use Ota.GetLeadingWhiteSpaceInSelection
 
 // Show a dialog enumerating all of the current project's modules and editors
-procedure GxOtaShowProjectModuleInformation;
+procedure GxOtaShowProjectModuleInformation; deprecated; // use Ota.ShowProjectModuleInformation
 
 // Show a dialog enumerating all of the IDE's actions with details
-procedure GxOtaShowIDEActions;
-procedure GxOtaShowEditViewDetails;
+procedure GxOtaShowIDEActions; deprecated; // use Ota.ShowIDEActions
+procedure GxOtaShowEditViewDetails; deprecated; // use Ota.ShowEditViewDetails
 
 function HackBadIDEUTF8StringToString(const S: string): string;
 // Convert an editor string (UTF-8) possibly improperly stored in an
@@ -7952,7 +7964,7 @@ begin
   end;
 end;
 
-procedure GxOtaShowProjectModuleInformation;
+class procedure Ota.ShowProjectModuleInformation;
 
   function GetEditorInterfaces(Editor: IOTAEditor): string;
 
@@ -8048,7 +8060,7 @@ begin
   end;
 end;
 
-procedure GxOtaShowIDEActions;
+class procedure Ota.ShowIDEActions;
 var
   Actions: TCustomActionList;
   Action: TContainedAction;
@@ -8080,7 +8092,7 @@ begin
   MessageBox(0, PChar(Msg), 'IDE Actions', MB_ICONINFORMATION or MB_OK)
 end;
 
-procedure GxOtaShowEditViewDetails;
+class procedure Ota.ShowEditViewDetails;
 var
   View: IOTAEditView;
   Buffer: IOTAEditBuffer;
@@ -8100,7 +8112,7 @@ var
   begin
     Msg.Add(Format(Str, Args));
   end;
-  
+
 begin
   View := Ota.GetTopMostEditView;
   if not Assigned(View) then
@@ -8215,6 +8227,21 @@ begin
   finally
     MessageBox(Application.Handle, PChar(Msg.Text), 'Edit View Details', 0);
   end;
+end;
+
+procedure GxOtaShowProjectModuleInformation;
+begin
+  Ota.ShowProjectModuleInformation;
+end;
+
+procedure GxOtaShowIDEActions;
+begin
+  Ota.ShowIDEActions;
+end;
+
+procedure GxOtaShowEditViewDetails;
+begin
+  Ota.ShowEditViewDetails;
 end;
 
 function HackBadIDEUTF8StringToString(const S: string): string;

@@ -853,12 +853,12 @@ end;
 
 procedure TfmConfiguration.btnEnumerateModulesClick(Sender: TObject);
 begin
-  GxOtaShowProjectModuleInformation;
+  Ota.ShowProjectModuleInformation;
 end;
 
 procedure TfmConfiguration.btnEumerateActionsClick(Sender: TObject);
 begin
-  GxOtaShowIDEActions;
+  Ota.ShowIDEActions;
 end;
 
 procedure TfmConfiguration.btnExportClick(Sender: TObject);
@@ -923,7 +923,7 @@ end;
 
 procedure TfmConfiguration.btnEditViewClick(Sender: TObject);
 begin
-  GxOtaShowEditViewDetails;
+  Ota.ShowEditViewDetails;
 end;
 
 procedure TfmConfiguration.btnCustomFontClick(Sender: TObject);
