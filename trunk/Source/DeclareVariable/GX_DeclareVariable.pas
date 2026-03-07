@@ -820,20 +820,12 @@ end;
 function BuildDeclarationText(const IdentName, TypeName: string;
   Kind: TDeclKind; const Indent: string;
   const PropertyRead, PropertyWrite: string): string;
-var
-  FieldName: string;
 begin
   case Kind of
     dkLocalVar:
       Result := Indent + IdentName + ': ' + TypeName + ';' + #13#10;
-    dkField: begin
-      if (Length(IdentName) > 1) and (UpCase(IdentName[1]) = 'F')
-         and (IdentName[2] >= 'A') and (IdentName[2] <= 'Z') then
-        FieldName := IdentName
-      else
-        FieldName := 'F' + IdentName;
-      Result := Indent + FieldName + ': ' + TypeName + ';' + #13#10;
-    end;
+    dkField:
+      Result := Indent + IdentName + ': ' + TypeName + ';' + #13#10;
     dkProperty: begin
       Result := Indent + 'property ' + IdentName + ': ' + TypeName;
       if PropertyRead <> '' then

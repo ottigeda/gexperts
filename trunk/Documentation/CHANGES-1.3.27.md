@@ -39,8 +39,13 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Declare Variable: Type inference from literals, booleans, nil, constructors, existing variable types, function return types, and parameter types of locally declared functions/methods
 - Declare Variable: Type inference from compiler intrinsic functions (Length, High, Low, Ord, Chr, Copy, Pos, Assigned, etc.)
 - Declare Variable: Type inference from external units via Uses Clause Manager — resolves function return types, parameter types, enum value types, and typed constant types from units in the current uses clause
+- Declare Variable: Type inference for overloaded intrinsics (Abs, Sqr, Pred, Succ) based on argument type analysis, with alternative type suggestions shown in a dropdown
+- Declare Variable: Type field changed to combobox with dropdown for selecting alternative types when multiple are possible (e.g. Integer/Cardinal/Int64/UInt64/Extended for Abs)
+- Declare Variable: External overloaded functions now collect all distinct return types as alternatives
 
 ## Bug Fixes
+
+- Declare Variable: Field declarations no longer add an F prefix — the identifier is used as-is
 
 - Declare Variable: Fixed existing-variable warning label overlapping controls below when the message wraps to multiple lines
 - Rename Identifier: Fixed renaming method parameters not propagating between class declaration and implementation (feature #182)

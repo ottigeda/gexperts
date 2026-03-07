@@ -814,13 +814,12 @@ end;
 
 procedure TTestBuildDeclarationText.TestField;
 begin
-  CheckEquals('    FCount: Integer;'#13#10,
+  CheckEquals('    Count: Integer;'#13#10,
     BuildDeclarationText('Count', 'Integer', dkField, '    ', '', ''));
 end;
 
 procedure TTestBuildDeclarationText.TestFieldWithFPrefix;
 begin
-  // If ident already starts with F, don't add another F
   CheckEquals('    FCount: Integer;'#13#10,
     BuildDeclarationText('FCount', 'Integer', dkField, '    ', '', ''));
 end;
@@ -971,9 +970,9 @@ begin
   ModifiedSource := InsertDeclaration(Source, InsertPt, DeclText);
 
   // Verify the field was inserted in the private section
-  CheckTrue(Pos('FX: Integer;', ModifiedSource) > 0,
-    'Should have inserted FX field');
-  CheckTrue(Pos('FX: Integer;', ModifiedSource) < Pos('public', ModifiedSource),
+  CheckTrue(Pos('X: Integer;', ModifiedSource) > Pos('FValue: Integer;', ModifiedSource),
+    'Should have inserted X field after FValue');
+  CheckTrue(Pos('    X: Integer;', ModifiedSource) < Pos('public', ModifiedSource),
     'Field should be before public section');
 end;
 
