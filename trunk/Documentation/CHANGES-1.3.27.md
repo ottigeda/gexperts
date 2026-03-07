@@ -46,6 +46,9 @@ Changes since version 1.3.26 (released 2026-02-07)
 ## Bug Fixes
 
 - Declare Variable: Field declarations no longer add an F prefix — the identifier is used as-is
+- Declare Variable: Fixed field insertion landing after method declarations — function return types and method parameters were falsely detected as fields
+- Declare Variable: All visibility sections (private, strict private, protected, strict protected, public, published) are now offered for field/property insertion in fixed order, with the option to create new sections
+- Declare Variable: Default insertion point for fields and properties is now the private section
 
 - Declare Variable: Fixed existing-variable warning label overlapping controls below when the message wraps to multiple lines
 - Rename Identifier: Fixed renaming method parameters not propagating between class declaration and implementation (feature #182)
