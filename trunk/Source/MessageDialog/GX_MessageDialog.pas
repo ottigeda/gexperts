@@ -1071,7 +1071,7 @@ begin
   frm := TfmMessageDialog.Create(nil, FSettings);
   try
     SetFormIcon(frm);
-    DefaultMsg := Trim(GxOtaGetCurrentSelection(False));
+    DefaultMsg := Trim(Ota.GetCurrentSelection(False));
     if DefaultMsg <> '' then
       frm.mmoMessage.Text := DefaultMsg;
     if frm.ShowModal = mrOk then

@@ -213,7 +213,7 @@ begin
     end;
 
     Logger.Info('TCodeFormatterExpert.Execute:Format selection ?');
-    FormatSelection := GxOtaGetSelection(
+    FormatSelection := Ota.GetSelection(
       Ota.GetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength);
     if FormatSelection then
       FormatSelection := (SelLength > 0) and (BlockStart.Line < BlockEnd.Line);
@@ -238,8 +238,8 @@ begin
       if FormatSelection then begin
         Logger.Info('TCodeFormatterExpert.Execute:Replace selection only');
         FullTextStr := FullText.GetFormattedBlock;
-        GxOtaSelectBlock(SourceEditor, BlockStart, BlockEnd);
-        GxOtaReplaceSelection(SourceEditor, 0, FullTextStr);
+        Ota.SelectBlock(SourceEditor, BlockStart, BlockEnd);
+        Ota.ReplaceSelection(SourceEditor, 0, FullTextStr);
       end else begin
         Logger.Info('TCodeFormatterExpert.Execute:Replace full text');
         Ota.ReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);

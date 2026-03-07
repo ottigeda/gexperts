@@ -497,7 +497,7 @@ begin
   // but disables parameter insight, for example
   OriginalPos := EditorPositionInformation.EditView.CursorPos;
   if KibitzOta then // We need to back the cursor up one character, so it gets the code completion for the previous identifier
-    GxOtaMoveEditCursorColumn(EditorPositionInformation.EditView, -1);
+    Ota.MoveEditCursorColumn(EditorPositionInformation.EditView, -1);
 
   try
   }

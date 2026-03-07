@@ -307,13 +307,13 @@ begin
     Ota.InsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
     // Delete template code (done after the insert to avoid problems)
     if CodeLen > 0 then
-      GxOtaDeleteByteFromPos(ATemplateOffset, CodeLen);
+      Ota.DeleteByteFromPos(ATemplateOffset, CodeLen);
   end
   else
   begin
     InsertOff := AInsertOffset;
     if CodeLen > 0 then
-      GxOtaDeleteByteFromPos(ATemplateOffset, CodeLen);
+      Ota.DeleteByteFromPos(ATemplateOffset, CodeLen);
     Ota.InsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
   end;
 end;
@@ -556,7 +556,7 @@ begin
   begin
     LeadingText := GxOtaGetLeadingWhiteSpaceInSelection;
     EOLOnEndOfTemp := HasTrailingEOL(VText);
-    EOLOnEndOfSel := HasTrailingEOL(GxOtaGetCurrentSelection);
+    EOLOnEndOfSel := HasTrailingEOL(Ota.GetCurrentSelection);
   end;
 
   DoParseSource := Ota.GetCurrentSyntaxHighlighter = gxpPAS;
@@ -564,10 +564,10 @@ begin
   //SetNewCursorPos(PosAfter);
     VText := ReplaceStrings(VText, DoParseSource);
 
-  if ReplaceSelection and GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLen) then
+  if ReplaceSelection and Ota.GetSelection(nil, BlockStart, BlockEnd, SelStart, SelLen) then
   begin
-    if (GxOtaCompareEditPos(BlockStart, ACurrentPos)<0) or
-       (GxOtaCompareEditPos(BlockEnd, ACurrentPos)<0)
+    if (Ota.CompareEditPos(BlockStart, ACurrentPos)<0) or
+       (Ota.CompareEditPos(BlockEnd, ACurrentPos)<0)
     then
     begin
       if (InsertOffset >= SelStart) and (InsertOffset < SelStart + SelLen) then
@@ -580,7 +580,7 @@ begin
     end;
 
     // Clear old selection
-    GxOtaDeleteSelection;
+    Ota.DeleteSelection;
   end;
 
   if OffsetPos <> 0 then
@@ -647,7 +647,7 @@ var
   SelLength: Integer;
 begin
   // Retrieve the template name from the editor window
-  if GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength)
+  if Ota.GetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength)
     and (SelLength > 0) and (SelLength <= 5) then begin
     IdentOffset := SelStart;
     IdentPos := BlockStart;
@@ -692,7 +692,7 @@ begin
 
   // todo: Figure out how to make this work without messing up offsets with multi-line selections
   //if not StrContains('%SELECTION%', TemplateText) then
-  //  GxOtaDeleteSelection;
+  //  Ota.DeleteSelection;
 
   TemplateObject := FMacroFile.MacroItems[TemplateIdx];
   TemplateText := TemplateObject.Text;
@@ -716,7 +716,7 @@ begin
     //InsertPos.Col := InsertPos.Col + 1;
   end;
 
-  if GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength)
+  if Ota.GetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength)
      and (SelLength > 0) and (SelLength <= 5) then begin
     InsertOffset := SelStart;
     InsertPos := BlockStart;
@@ -1026,7 +1026,7 @@ begin
   if TemplateOffset < 0 then
     Exit;
 
-  GxOtaDeleteByteFromPos(TemplateOffset, TextLen);
+  Ota.DeleteByteFromPos(TemplateOffset, TextLen);
   ExpandTemplate(AName);
 
   Accepted := True;

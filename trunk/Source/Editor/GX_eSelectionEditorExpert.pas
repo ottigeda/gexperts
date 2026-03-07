@@ -32,7 +32,7 @@ uses
 // GxOtaReplaceSelection has a problem with appending an
 // unwanted CRLF for multiline selections to the line end
 // The clean solution is just to call
-//    GxOtaReplaceSelection(Editor, 0, CodeList.Text);
+//    Ota.ReplaceSelection(Editor, 0, CodeList.Text);
 // and have the problem solved elsewhere, but this is hard...
 // We don't remove the CRLF if the block ends in the first column,
 // because then we delete a necessary CRLF.
@@ -82,7 +82,7 @@ begin
   try
     if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
       Exit;
-    CodeList.Text := GxOtaGetCurrentSelection;
+    CodeList.Text := Ota.GetCurrentSelection;
 
     if CodeList.Count = 0 then
     begin
@@ -92,7 +92,7 @@ begin
       else // nsmError:
         raise Exception.Create(NoSelectionError);
       end;
-      CodeList.Text := GxOtaGetCurrentSelection;
+      CodeList.Text := Ota.GetCurrentSelection;
     end;
 
     if CodeList.Count = 0 then
@@ -102,18 +102,18 @@ begin
     begin
       {$IFOPT D+}SendDebug('Calling GxOtaReplaceSelection');{$ENDIF}
       if CodeList.Count = 1 then
-        GxOtaReplaceSelection(SourceEditor, 0, TrimRight(CodeList.Text))
+        Ota.ReplaceSelection(SourceEditor, 0, TrimRight(CodeList.Text))
       else
       begin
         LineEndType := BlockSelectionToLineEndType(SourceEditor, CodeList.Text);
         if LineEndType = 2 then
-          GxOtaReplaceSelection(SourceEditor, 0, Copy(CodeList.Text, 1,
+          Ota.ReplaceSelection(SourceEditor, 0, Copy(CodeList.Text, 1,
             Length(CodeList.Text) - 2))
         else if LineEndType = 1 then
-          GxOtaReplaceSelection(SourceEditor, 0, Copy(CodeList.Text, 1,
+          Ota.ReplaceSelection(SourceEditor, 0, Copy(CodeList.Text, 1,
             Length(CodeList.Text) - 1))
         else
-          GxOtaReplaceSelection(SourceEditor, 0, CodeList.Text);
+          Ota.ReplaceSelection(SourceEditor, 0, CodeList.Text);
       end;
       IncCallCount;
     end;

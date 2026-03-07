@@ -527,7 +527,7 @@ procedure TfmGrepSearch.LoadFormSettings;
   var
     i: Integer;
   begin
-    Result := GxOtaGetCurrentSelection;
+    Result := Ota.GetCurrentSelection;
     if Trim(Result) = '' then begin
       // we don't search for white space only
       Result := '';

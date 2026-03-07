@@ -1199,7 +1199,7 @@ procedure TfmUsesManager.InitializeForm;
     Temp: string;
     i: Integer;
   begin
-    Temp := GxOtaGetCurrentSelection;
+    Temp := Ota.GetCurrentSelection;
     // Only use the currently selected text if the length is between 1 and 80
     if (Length(Trim(Temp)) >= 1) and (Length(Trim(Temp)) <= 80) then
     begin

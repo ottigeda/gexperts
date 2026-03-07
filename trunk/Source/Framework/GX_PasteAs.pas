@@ -116,7 +116,7 @@ begin
     begin
       if not AOnlyUpdateLines then
       begin
-        ALineStartBase := Trim(GxOtaGetCurrentSelection(False));
+        ALineStartBase := Trim(Ota.GetCurrentSelection(False));
         if (ALineStartBase <> '') and (ALineStartBase[Length(ALineStartBase)] <> '.') then
           AAddDot := '.';
         ALineStartBase := ALineStartBase + AAddDot;

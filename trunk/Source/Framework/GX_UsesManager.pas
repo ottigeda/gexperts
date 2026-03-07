@@ -254,7 +254,7 @@ begin
     um.Free;
   end;
   // Delete old uses clause and insert new text
-  GxOtaDeleteTextFromPos(BegPos, DeleteCount, SourceEditor);
+  Ota.DeleteTextFromPos(BegPos, DeleteCount, SourceEditor);
   Ota.InsertTextIntoEditorAtCharPos(_NewUsesText, BegPos, SourceEditor);
 end;
 
@@ -605,7 +605,7 @@ begin
   while IsWhiteSpace(FFileContent[EndPos + 1]) do
     Inc(EndPos);
 
-  GxOtaDeleteTextFromPos(BegPos, EndPos - BegPos);
+  Ota.DeleteTextFromPos(BegPos, EndPos - BegPos);
 end;
 
 // Remove the whole implementation uses clause
@@ -618,7 +618,7 @@ begin
 
   BegIndex := FUsesClause[puImplementation].BegOfUses;
   Count := FUsesClause[puImplementation].EndOfUses - BegIndex;
-  GxOtaDeleteTextFromPos(BegIndex, Count);
+  Ota.DeleteTextFromPos(BegIndex, Count);
 end;
 
 procedure TUsesManager.RemoveFromImplUses(const AUnitName: string);
@@ -641,7 +641,7 @@ begin
 
   BegIndex := FUsesClause[puInterface].BegOfUses;
   Count := FUsesClause[puInterface].EndOfUses - BegIndex;
-  GxOtaDeleteTextFromPos(BegIndex, Count);
+  Ota.DeleteTextFromPos(BegIndex, Count);
 end;
 
 procedure TUsesManager.InternalReplaceInUses(UsesList: TUsesList; const AOldUnitName, ANewUnitName: string);
@@ -660,7 +660,7 @@ begin
 
   EndPos := ReplaceUnit.EndPos;
   BegPos := ReplaceUnit.BeginPos;
-  GxOtaDeleteTextFromPos(BegPos, EndPos - BegPos, SourceEditor);
+  Ota.DeleteTextFromPos(BegPos, EndPos - BegPos, SourceEditor);
   Ota.InsertTextIntoEditorAtCharPos(ANewUnitName, BegPos, SourceEditor);
 end;
 

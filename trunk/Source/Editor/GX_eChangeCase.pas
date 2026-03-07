@@ -127,7 +127,7 @@ end;
 // GxOtaReplaceSelection has a problem with appending an
 // unwanted CRLF for multiline selections to the line end
 // The clean solution is just to call
-//    GxOtaReplaceSelection(Editor, 0, CodeList.Text);
+//    Ota.ReplaceSelection(Editor, 0, CodeList.Text);
 // and have the problem solved elsewhere, but this is hard...
 // We don't remove the CRLF if the block ends in the first column,
 // because then we delete a necessary CRLF.
@@ -166,15 +166,15 @@ begin
     Exit;
   if FCodeList.Count = 1 then begin
     {$IFOPT D+}SendDebugFmt('Replacing selected editor text with "%s"', [FCodeList.Text]);{$ENDIF}
-    GxOtaReplaceSelection(SourceEditor, 0, TrimRight(FCodeList.Text));
+    Ota.ReplaceSelection(SourceEditor, 0, TrimRight(FCodeList.Text));
   end else begin
     LineEndType := BlockSelectionToLineEndType(SourceEditor, FCodeList.Text);
     if LineEndType = 2 then
-      GxOtaReplaceSelection(SourceEditor, 0, Copy(FCodeList.Text, 1, Length(FCodeList.Text) - 2))
+      Ota.ReplaceSelection(SourceEditor, 0, Copy(FCodeList.Text, 1, Length(FCodeList.Text) - 2))
     else if LineEndType = 1 then
-      GxOtaReplaceSelection(SourceEditor, 0, Copy(FCodeList.Text, 1, Length(FCodeList.Text) - 1))
+      Ota.ReplaceSelection(SourceEditor, 0, Copy(FCodeList.Text, 1, Length(FCodeList.Text) - 1))
     else
-      GxOtaReplaceSelection(SourceEditor, 0, FCodeList.Text);
+      Ota.ReplaceSelection(SourceEditor, 0, FCodeList.Text);
   end;
 end;
 
@@ -234,10 +234,10 @@ begin
     Exit;
   if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit;
-  FCodeList.Text := GxOtaGetCurrentSelection;
+  FCodeList.Text := Ota.GetCurrentSelection;
   if FCodeList.Count = 0 then begin
     Ota.SelectCurrentIdent(SourceEditor, False);
-    FCodeList.Text := GxOtaGetCurrentSelection;
+    FCodeList.Text := Ota.GetCurrentSelection;
   end;
   if FCodeList.Count = 0 then
     Exit;

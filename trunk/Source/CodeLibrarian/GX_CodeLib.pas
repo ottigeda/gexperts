@@ -592,7 +592,7 @@ begin
   if IsForm(FileName) then
     raise Exception.Create(SNotForFormFiles);
 
-  FCodeText.SelText := GxOtaGetCurrentSelection;
+  FCodeText.SelText := Ota.GetCurrentSelection;
   FCodeText.ReadOnly := False;
   actEditReadOnly.Checked := False;
 end;

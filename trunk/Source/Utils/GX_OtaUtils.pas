@@ -867,6 +867,83 @@ type
     /// <summary>
     /// Clears all tool and title messages in the IDE Messages window. </summary>
     class procedure ClearToolMessages;
+
+    /// <summary>
+    /// Returns the selected text in the top edit view, if any.
+    /// @param IncludeTrailingCRLF if True, trailing CRLF is included for
+    ///                            non-inclusive block selections
+    /// @returns the selected text as a unicode string </summary>
+    class function GetCurrentSelection(IncludeTrailingCRLF: Boolean = True): TGXUnicodeString;
+    /// <summary>
+    /// Moves the edit cursor by a relative column offset.
+    /// @param EditView the edit view whose cursor to move
+    /// @param RelativePos the number of columns to move (positive = right,
+    ///                    negative = left)
+    /// @returns True if the cursor was moved, False if the resulting column
+    ///          would be less than 1 </summary>
+    class function MoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
+    /// <summary>
+    /// Compares two edit positions.
+    /// @param AEditPos1 the first edit position
+    /// @param AEditPos2 the second edit position
+    /// @returns -1 if AEditPos1 is before AEditPos2, 0 if equal,
+    ///          1 if AEditPos1 is after AEditPos2 </summary>
+    class function CompareEditPos(AEditPos1, AEditPos2: TOTAEditPos): Integer;
+    /// <summary>
+    /// Selects a range of text in the source editor using character positions.
+    /// @param Editor the source editor
+    /// @param Start the starting character position
+    /// @param After the ending character position </summary>
+    class procedure SelectBlock(const Editor: IOTASourceEditor; const Start, After: TOTACharPos); overload;
+    /// <summary>
+    /// Selects a range of text in the source editor using edit positions.
+    /// @param Editor the source editor
+    /// @param Start the starting edit position
+    /// @param After the ending edit position </summary>
+    class procedure SelectBlock(const Editor: IOTASourceEditor; Start, After: TOTAEditPos); overload;
+    /// <summary>
+    /// Gets the currently selected block in an edit view.
+    /// @param EditView the edit view to query (uses topmost if nil)
+    /// @param BlockStart receives the start position of the selection
+    /// @param BlockEnd receives the end position of the selection
+    /// @param SelStart receives the byte offset of the selection start
+    /// @param SelLength receives the byte length of the selection
+    /// @returns True if a selection exists </summary>
+    class function GetSelection(const EditView: IOTAEditView;
+      var BlockStart, BlockEnd: TOTAEditPos; var SelStart, SelLength: Integer): Boolean;
+    /// <summary>
+    /// Unfolds all collapsed regions in the given edit view. </summary>
+    class procedure UnfoldAllRegions(const View: IOTAEditView);
+    /// <summary>
+    /// Unfolds the nearest collapsed region at the cursor in the given
+    /// edit view. </summary>
+    class procedure UnfoldNearestRegion(const View: IOTAEditView);
+    /// <summary>
+    /// Deletes the selected text in the given edit view.
+    /// @param EditView the edit view (uses topmost if nil)
+    /// @returns True if text was deleted </summary>
+    class function DeleteSelection(const EditView: IOTAEditView = nil): Boolean;
+    /// <summary>
+    /// Deletes a number of bytes starting from a byte index in a source editor.
+    /// @param StartIndex the byte position to start deleting from
+    /// @param Count the number of bytes to delete
+    /// @param SourceEditor the source editor (uses current if nil) </summary>
+    class procedure DeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTASourceEditor = nil);
+    /// <summary>
+    /// Deletes a number of characters starting from a character position in a
+    /// source editor. On Delphi 8+, converts character positions to UTF-8 byte
+    /// positions.
+    /// @param StartPos the character position to start deleting from
+    /// @param Count the number of characters to delete
+    /// @param SourceEditor the source editor (uses current if nil) </summary>
+    class procedure DeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor = nil);
+    /// <summary>
+    /// Replaces the current selection in an edit view with the given text.
+    /// @param Editor the source editor
+    /// @param ViewNum the index of the edit view to use
+    /// @param Text the replacement text </summary>
+    class procedure ReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer;
+      const Text: string);
   end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -1109,15 +1186,15 @@ function GxOtaGetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer; de
 
 // Delete "Count" bytes starting from "StartIndex" in some source editor.
 // Uses the current source editor if none is specified.
-procedure GxOtaDeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTASourceEditor = nil);
+procedure GxOtaDeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTASourceEditor = nil); deprecated; // use Ota.DeleteByteFromPos
 
 // Delete Count characters starting from StartPos in some source editor
 // Uses the current source editor if none is specified
-procedure GxOtaDeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor = nil);
+procedure GxOtaDeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor = nil); deprecated; // use Ota.DeleteTextFromPos
 
 // Replace an edit view's current selection with a string
 procedure GxOtaReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer;
-  const Text: string);
+  const Text: string); deprecated; // use Ota.ReplaceSelection
 
 // Load a file/form opened into the IDE to a unciode string list
 procedure GxOtaLoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
@@ -1297,28 +1374,28 @@ function GxOtaGetVersionInfoKeysString: string; deprecated; // use Ota.GetVersio
 function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean; deprecated; // use Ota.SetVersionInfoKeysStrings
 
 // Get the selected text in the top edit view, if any
-function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): TGXUnicodeString;
+function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): TGXUnicodeString; deprecated; // use Ota.GetCurrentSelection
 
-function GxOtaMoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
+function GxOtaMoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean; deprecated; // use Ota.MoveEditCursorColumn
 
 // Returns -1, 0, 1 depending on the position relationship between two edit positions
-function GxOtaCompareEditPos(AEditPos1, AEditPos2: TOTAEditPos): Integer;
+function GxOtaCompareEditPos(AEditPos1, AEditPos2: TOTAEditPos): Integer; deprecated; // use Ota.CompareEditPos
 
 // Select a range of text in the source editor
-procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; const Start, After: TOTACharPos); overload;
-procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; Start, After: TOTAEditPos); overload;
+procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; const Start, After: TOTACharPos); overload; deprecated; // use Ota.SelectBlock
+procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; Start, After: TOTAEditPos); overload; deprecated; // use Ota.SelectBlock
 ///<summary>
 /// Gets the currently selected block
 /// @param SelStart and SelLength are byte offsets (not character offsets) </summary>
 function GxOtaGetSelection(const EditView: IOTAEditView;
-  var BlockStart, BlockEnd: TOTAEditPos; var SelStart, SelLength: Integer): Boolean;
+  var BlockStart, BlockEnd: TOTAEditPos; var SelStart, SelLength: Integer): Boolean; deprecated; // use Ota.GetSelection
 
 // Un-fold all regions or the nearest region in a file
-procedure GxOtaUnfoldAllRegions(const View: IOTAEditView);
-procedure GxOtaUnfoldNearestRegion(const View: IOTAEditView);
+procedure GxOtaUnfoldAllRegions(const View: IOTAEditView); deprecated; // use Ota.UnfoldAllRegions
+procedure GxOtaUnfoldNearestRegion(const View: IOTAEditView); deprecated; // use Ota.UnfoldNearestRegion
 
 // Delete the selected text in the editor
-function GxOtaDeleteSelection(const EditView: IOTAEditView = nil): Boolean;
+function GxOtaDeleteSelection(const EditView: IOTAEditView = nil): Boolean; deprecated; // use Ota.DeleteSelection
 
 // Close FileName; returns True on success, False otherwise.
 function GxOtaCloseFile(const FileName: string): Boolean;
@@ -3008,7 +3085,7 @@ begin
 {$ENDIF}
 end;
 
-function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean): TGXUnicodeString;
+class function Ota.GetCurrentSelection(IncludeTrailingCRLF: Boolean): TGXUnicodeString;
 var
   EditView: IOTAEditView;
   EditBlock: IOTAEditBlock;
@@ -3028,7 +3105,12 @@ begin
   end;
 end;
 
-function GxOtaMoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
+function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean): TGXUnicodeString;
+begin
+  Result := Ota.GetCurrentSelection(IncludeTrailingCRLF);
+end;
+
+class function Ota.MoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
 var
   CursorPos: TOTAEditPos;
 begin
@@ -3041,6 +3123,11 @@ begin
     EditView.CursorPos := CursorPos;
     Result := True;
   end;
+end;
+
+function GxOtaMoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
+begin
+  Result := Ota.MoveEditCursorColumn(EditView, RelativePos);
 end;
 
 function GxOtaGetActiveEditorTextBytes(Stream: TStream; UseSelection: Boolean): Boolean;
@@ -3576,7 +3663,7 @@ begin
   Writer := nil;
 end;
 
-function GxOtaCompareEditPos(AEditPos1, AEditPos2: TOTAEditPos): Integer;
+class function Ota.CompareEditPos(AEditPos1, AEditPos2: TOTAEditPos): Integer;
 begin
   if (AEditPos1.Line > AEditPos2.Line) or
     ((AEditPos1.Line = AEditPos2.Line) and (AEditPos1.Col > AEditPos2.Col))
@@ -3588,7 +3675,12 @@ begin
     Result := -1;
 end;
 
-procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; const Start, After: TOTACharPos);
+function GxOtaCompareEditPos(AEditPos1, AEditPos2: TOTAEditPos): Integer;
+begin
+  Result := Ota.CompareEditPos(AEditPos1, AEditPos2);
+end;
+
+class procedure Ota.SelectBlock(const Editor: IOTASourceEditor; const Start, After: TOTACharPos);
 begin
   Assert(Assigned(Editor));
   Editor.BlockVisible := False;
@@ -3601,12 +3693,17 @@ begin
   end;
 end;
 
-procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; Start, After: TOTAEditPos); overload;
+procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; const Start, After: TOTACharPos);
+begin
+  Ota.SelectBlock(Editor, Start, After);
+end;
+
+class procedure Ota.SelectBlock(const Editor: IOTASourceEditor; Start, After: TOTAEditPos);
 var
   EditView: IOTAEditView;
 begin
   Assert(Assigned(Editor));
-  EditView := GxOtaGetTopmostEditView(Editor);
+  EditView := Ota.GetTopMostEditView(Editor);
   Assert(Assigned(EditView));
 
   EditView.CursorPos := Start;
@@ -3627,7 +3724,12 @@ begin
   EditView.Paint;
 end;
 
-function GxOtaGetSelection(const EditView: IOTAEditView;
+procedure GxOtaSelectBlock(const Editor: IOTASourceEditor; Start, After: TOTAEditPos);
+begin
+  Ota.SelectBlock(Editor, Start, After);
+end;
+
+class function Ota.GetSelection(const EditView: IOTAEditView;
   var BlockStart, BlockEnd: TOTAEditPos; var SelStart, SelLength: Integer): Boolean;
 var
   UseView: IOTAEditView;
@@ -3638,7 +3740,7 @@ begin
   if Assigned(EditView) then
     UseView := EditView
   else
-    UseView := GxOtaGetTopmostEditView;
+    UseView := Ota.GetTopMostEditView;
   if Assigned(UseView) then
   begin
     Block := UseView.Block;
@@ -3649,7 +3751,7 @@ begin
       BlockEnd.Col := Block.EndingColumn;
       BlockEnd.Line := Block.EndingRow;
 
-      if GxOtaCompareEditPos(BlockStart, BlockEnd) < 0 then
+      if Ota.CompareEditPos(BlockStart, BlockEnd) < 0 then
         UseView.ConvertPos(True, BlockStart, CharPos)
       else
         UseView.ConvertPos(True, BlockEnd, CharPos);
@@ -3662,7 +3764,13 @@ begin
   end;
 end;
 
-procedure GxOtaUnfoldAllRegions(const View: IOTAEditView);
+function GxOtaGetSelection(const EditView: IOTAEditView;
+  var BlockStart, BlockEnd: TOTAEditPos; var SelStart, SelLength: Integer): Boolean;
+begin
+  Result := Ota.GetSelection(EditView, BlockStart, BlockEnd, SelStart, SelLength);
+end;
+
+class procedure Ota.UnfoldAllRegions(const View: IOTAEditView);
 {$IFDEF GX_VER160_up}
 var
   ElideActions: IOTAElideActions;
@@ -3678,7 +3786,12 @@ begin //FI:W519
 end;
 {$ENDIF}
 
-procedure GxOtaUnfoldNearestRegion(const View: IOTAEditView);
+procedure GxOtaUnfoldAllRegions(const View: IOTAEditView);
+begin
+  Ota.UnfoldAllRegions(View);
+end;
+
+class procedure Ota.UnfoldNearestRegion(const View: IOTAEditView);
 {$IFDEF GX_VER160_up}
 var
   ElideActions: IOTAElideActions;
@@ -3694,7 +3807,12 @@ begin //FI:W519
 end;
 {$ENDIF}
 
-function GxOtaDeleteSelection(const EditView: IOTAEditView): Boolean;
+procedure GxOtaUnfoldNearestRegion(const View: IOTAEditView);
+begin
+  Ota.UnfoldNearestRegion(View);
+end;
+
+class function Ota.DeleteSelection(const EditView: IOTAEditView): Boolean;
 var
   UseView: IOTAEditView;
   Block: IOTAEditBlock;
@@ -3702,7 +3820,7 @@ begin
   Result := False;
   UseView := EditView;
   if not Assigned(UseView) then
-    UseView := GxOtaGetTopmostEditView;
+    UseView := Ota.GetTopMostEditView;
   if Assigned(UseView) then
   begin
     Block := UseView.Block;
@@ -3712,6 +3830,11 @@ begin
       Result := True;
     end;
   end;
+end;
+
+function GxOtaDeleteSelection(const EditView: IOTAEditView): Boolean;
+begin
+  Result := Ota.DeleteSelection(EditView);
 end;
 
 function GxOtaCloseFile(const FileName: string): Boolean;
@@ -6666,7 +6789,7 @@ begin
     IEditView := Ota.GetTopMostEditView(ISourceEditor);
 
     if UseSelection and Assigned(IEditView) and Assigned(IEditView.Block) and (IEditView.Block.Size > 0) then
-      Lines.Text := GxOtaGetCurrentSelection(False)
+      Lines.Text := Ota.GetCurrentSelection(False)
     else
       GxOtaLoadSourceEditorToUnicodeStrings(ISourceEditor, Lines);
     Result := True;
@@ -6799,7 +6922,7 @@ begin
   begin
     EEnd.Line := EStart.Line;
     EEnd.Col := EStart.Col + Length(Ident);
-    GxOtaSelectBlock(SourceEditor, EStart, EEnd);
+    Ota.SelectBlock(SourceEditor, EStart, EEnd);
   end;
 end;
 
@@ -7090,7 +7213,7 @@ begin
   Result := EditView.CharPosToPos(CharPos);
 end;
 
-procedure GxOtaDeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTASourceEditor = nil);
+class procedure Ota.DeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTASourceEditor);
 var
   EditWriter: IOTAEditWriter;
 begin
@@ -7099,7 +7222,12 @@ begin
   EditWriter.DeleteTo(StartIndex + Count);
 end;
 
-procedure GxOtaDeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor = nil);
+procedure GxOtaDeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTASourceEditor);
+begin
+  Ota.DeleteByteFromPos(StartIndex, Count, SourceEditor);
+end;
+
+class procedure Ota.DeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor);
 var
   EditWriter: IOTAEditWriter;
 {$IFDEF GX_DELPHI8_UP}
@@ -7121,9 +7249,14 @@ begin
   EditWriter.DeleteTo(StartPos + Count);
 end;
 
+procedure GxOtaDeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor);
+begin
+  Ota.DeleteTextFromPos(StartPos, Count, SourceEditor);
+end;
+
 {$DEFINE GX_WorkAroundFirstCharInLineSelectionBug}
 // Adapted from Ray Lischner's ReplaceSelection, but ported to use ToolsAPI.pas
-procedure GxOtaReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer; const Text: string);
+class procedure Ota.ReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer; const Text: string);
 resourcestring
   SBlockNotCompatible = 'Unsupported block selection type for a replace operation';
 var
@@ -7236,6 +7369,11 @@ begin
     else
       raise Exception.Create(SBlockNotCompatible);
   end;
+end;
+
+procedure GxOtaReplaceSelection(const Editor: IOTASourceEditor; ViewNum: Integer; const Text: string);
+begin
+  Ota.ReplaceSelection(Editor, ViewNum, Text);
 end;
 
 procedure GxOtaLoadIDEFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
@@ -7492,7 +7630,7 @@ var
   Lines: TStringList;
   MinIndex, MinSpaceCount: Integer;
 begin
-  SelText := GxOtaGetCurrentSelection(False);
+  SelText := Ota.GetCurrentSelection(False);
 
   Lines := TStringList.Create;
   try

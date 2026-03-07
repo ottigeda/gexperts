@@ -727,9 +727,9 @@ begin
   EditView.CursorPos := EditPos;
 
   if (EChar.Line > SChar.Line) or ((EChar.Line = SChar.Line) and (EChar.CharIndex > SChar.CharIndex)) then
-    GxOtaSelectBlock(Editor, SChar, EChar)
+    Ota.SelectBlock(Editor, SChar, EChar)
   else
-    GxOtaSelectBlock(Editor, EChar, SChar);
+    Ota.SelectBlock(Editor, EChar, SChar);
 end;
 
 function TLocateDelimiterExpert.GetDefaultShortCut: TShortCut;

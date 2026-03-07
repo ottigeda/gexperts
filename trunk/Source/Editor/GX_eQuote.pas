@@ -198,7 +198,7 @@ begin
   if EditView = nil then
     Exit;
 
-  if not GxOtaGetSelection(EditView, BlockStart, BlockEnd, SelStart, SelLength) then
+  if not Ota.GetSelection(EditView, BlockStart, BlockEnd, SelStart, SelLength) then
     Exit;
 
   QuoteLines(Lines, EndOfLine, BlockStart.Col);
@@ -319,7 +319,7 @@ begin
   if EditView = nil then
     Exit;
 
-  if not GxOtaGetSelection(EditView, BlockStart, BlockEnd, SelStart, SelLength) then
+  if not Ota.GetSelection(EditView, BlockStart, BlockEnd, SelStart, SelLength) then
     Exit;
 
   UnquoteLines(Lines, BlockStart.Col);

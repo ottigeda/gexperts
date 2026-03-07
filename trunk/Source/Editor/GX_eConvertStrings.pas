@@ -378,7 +378,7 @@ begin
   try
     m_Input.Lines.Assign(_sl);
 
-    Prefix := Trim(GxOtaGetCurrentSelection(False));
+    Prefix := Trim(Ota.GetCurrentSelection(False));
     if Prefix = '' then begin
       Prefix := Trim(Ota.GetCurrentLine);
       Ota.SelectCurrentLine(Ota.GetCurrentSourceEditor);
@@ -734,7 +734,7 @@ var
 begin
   sl := TStringList.Create;
   try
-    sl.Text := GxOtaGetCurrentSelection(False);
+    sl.Text := Ota.GetCurrentSelection(False);
     if sl.Count = 0 then
       sl.Text := Clipboard.AsText;
     TfmEConvertStrings.Execute(GetBitmap, sl);

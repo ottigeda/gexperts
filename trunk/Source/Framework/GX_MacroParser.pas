@@ -775,7 +775,7 @@ begin
   end
   else if (StVar = '%SELECTION%') or (StVar = '%COPYSELECTION%') then
   begin
-    Result := GxOtaGetCurrentSelection(False);
+    Result := Ota.GetCurrentSelection(False);
 
     if StVar = '%SELECTION%' then
       Result := ReformatMultiLineBlock(Result, AIndentText);
