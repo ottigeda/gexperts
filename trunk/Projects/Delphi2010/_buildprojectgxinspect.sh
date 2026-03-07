@@ -7,6 +7,12 @@ if [ "$1" = "--quiet" ]; then
   if [ $RC -ne 0 ]; then
     echo "BUILD FAILED — last 30 lines:"
     tail -30 "$LOGFILE"
+  else
+    WARNINGS=$(grep -i "warning" "$LOGFILE" | grep -iv "Warning(s)")
+    if [ -n "$WARNINGS" ]; then
+      echo "BUILD SUCCEEDED with warnings:"
+      echo "$WARNINGS"
+    fi
   fi
   exit $RC
 else
