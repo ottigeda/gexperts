@@ -551,7 +551,7 @@ begin
 {$IFNDEF GX_STANDALONE}
   FCustomFont := TFont.Create;
 {$ENDIF}
-  FIdeRootRegistryKey := GXOtaGetIdeBaseRegistryKey;
+  FIdeRootRegistryKey := Ota.GetIdeBaseRegistryKey;
   FVclPath := AddSlash(GetIdeRootDirectory) +
               AddSlash('Source') +
               {$IFNDEF GX_VER230_up} {$IFDEF GX_VER170_up} AddSlash('Win32') + {$ENDIF} {$ENDIF}
