@@ -34,6 +34,30 @@ type
     class function SelectedComponentName: string;
     class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList); overload;
     class procedure LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean); overload;
+    class procedure GetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
+    class function GetIdeBaseRegistryKey: string;
+    class function GetModule(const _Filename: string): IOTAModule;
+    class function GetBaseModuleFileName(const FileName: string): string;
+    class function IsFileOpen(const AFileName: string; UseBase: Boolean = False): Boolean;
+    class function FileOrModuleExists(const AFileName: string; UseBase: Boolean = False): Boolean;
+    class function GetProjectGroup: IOTAProjectGroup;
+    class function GetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
+    class function GetCurrentMapFileName(out MapFile: string): Boolean;
+    class procedure GetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
+    class function GetCurrentSourceFile: string;
+    class function GetCurrentProject: IOTAProject;
+    class function CurrentProjectIsNativeCpp: Boolean;
+    class function CurrentProjectIsCSharp: Boolean;
+    class procedure GoToFileLineColumn(const FileName: string; Line: Integer;
+      StartColumn: Integer = 0; StopColumn: Integer = 0; ShowInMiddle: Boolean = True);
+    class function GetCurrentSelection(IncludeTrailingCRLF: Boolean = True): string;
+    class function GetCurrentEditorAsSourceEditor: IOTASourceEditor;
+    class function GetCurrentProjectName: string;
+    class function GetProjectGroupFileName: string;
+    class function GetFileNameOfCurrentModule: string;
+    class function HaveCPPSupport: Boolean;
+    class function HaveCSharpSupport: Boolean;
+    class function GetIDEProductIdentifier: string;
   end;
 
 ///<summary>
@@ -390,6 +414,122 @@ end;
 class function Ota.SelectedComponentName: string;
 begin
   Result := '';
+end;
+
+class procedure Ota.GetEditorFont(const AFont: TFont; ASizeAdjust: Integer);
+begin
+  // do nothing in standalone
+end;
+
+class function Ota.GetIdeBaseRegistryKey: string;
+begin
+  Result := GXOtaGetIdeBaseRegistryKey;
+end;
+
+class function Ota.GetModule(const _Filename: string): IOTAModule;
+begin
+  Result := GxOtaGetModule(_Filename);
+end;
+
+class function Ota.GetBaseModuleFileName(const FileName: string): string;
+begin
+  Result := GxOtaGetBaseModuleFileName(FileName);
+end;
+
+class function Ota.IsFileOpen(const AFileName: string; UseBase: Boolean): Boolean;
+begin
+  Result := GxOtaIsFileOpen(AFileName, UseBase);
+end;
+
+class function Ota.FileOrModuleExists(const AFileName: string; UseBase: Boolean): Boolean;
+begin
+  Result := GxOtaFileOrModuleExists(AFileName, UseBase);
+end;
+
+class function Ota.GetProjectGroup: IOTAProjectGroup;
+begin
+  Result := GxOtaGetProjectGroup;
+end;
+
+class function Ota.GetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean): string;
+begin
+  Result := GxOtaGetProjectFileName(Project, NormalizeBdsProj);
+end;
+
+class function Ota.GetCurrentMapFileName(out MapFile: string): Boolean;
+begin
+  Result := GxOtaGetCurrentMapFileName(MapFile);
+end;
+
+class procedure Ota.GetAllPossiblePaths(Paths: TStrings; Project: IOTAProject; AdditionalPaths: TStrings);
+begin
+  GxOtaGetAllPossiblePaths(Paths, Project, AdditionalPaths);
+end;
+
+class function Ota.GetCurrentSourceFile: string;
+begin
+  Result := GxOtaGetCurrentSourceFile;
+end;
+
+class function Ota.GetCurrentProject: IOTAProject;
+begin
+  Result := GxOtaGetCurrentProject;
+end;
+
+class function Ota.CurrentProjectIsNativeCpp: Boolean;
+begin
+  Result := GxOtaCurrentProjectIsNativeCpp;
+end;
+
+class function Ota.CurrentProjectIsCSharp: Boolean;
+begin
+  Result := GxOtaCurrentProjectIsCSharp;
+end;
+
+class procedure Ota.GoToFileLineColumn(const FileName: string; Line: Integer;
+  StartColumn: Integer; StopColumn: Integer; ShowInMiddle: Boolean);
+begin
+  GxOtaGoToFileLineColumn(FileName, Line, StartColumn, StopColumn, ShowInMiddle);
+end;
+
+class function Ota.GetCurrentSelection(IncludeTrailingCRLF: Boolean): string;
+begin
+  Result := GxOtaGetCurrentSelection(IncludeTrailingCRLF);
+end;
+
+class function Ota.GetCurrentEditorAsSourceEditor: IOTASourceEditor;
+begin
+  Result := GxOtaGetCurrentEditorAsSourceEditor;
+end;
+
+class function Ota.GetCurrentProjectName: string;
+begin
+  Result := GxOtaGetCurrentProjectName;
+end;
+
+class function Ota.GetProjectGroupFileName: string;
+begin
+  Result := GxOtaGetProjectGroupFileName;
+end;
+
+class function Ota.GetFileNameOfCurrentModule: string;
+begin
+  Result := GxOtaGetFileNameOfCurrentModule;
+end;
+
+class function Ota.HaveCPPSupport: Boolean;
+begin
+  Result := GxOtaHaveCPPSupport;
+end;
+
+class function Ota.HaveCSharpSupport: Boolean;
+begin
+  Result := GxOtaHaveCSharpSupport;
+end;
+
+class function Ota.GetIDEProductIdentifier: string;
+begin
+  Result := GxOtaGetIDEProductIdentifier;
 end;
 
 { TThemeChangedNotifier }

@@ -152,8 +152,10 @@ begin
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
+{$IFNDEF GX_STANDALONE}
   if ConfigInfo.IsThemingEnabled then
     Ota.InitTheming(Self);
+{$ENDIF}
 end;
 
 destructor TfmBaseForm.Destroy;
