@@ -2124,7 +2124,7 @@ end;
 
 class function Ota.GetActiveDesignerType: string;
 begin
-  Result := Ota.GetIDEServices.GetActiveDesignerType;
+  Result := GetIDEServices.GetActiveDesignerType;
 end;
 
 function GxOtaActiveDesignerIsVCL: Boolean;
@@ -2134,7 +2134,7 @@ end;
 
 class function Ota.ActiveDesignerIsVCL: Boolean;
 begin
-  Result := (Ota.GetActiveDesignerType = dVCL);
+  Result := (GetActiveDesignerType = dVCL);
 end;
 
 function GxOtaActiveDesignerIsCLX: Boolean;
@@ -2144,7 +2144,7 @@ end;
 
 class function Ota.ActiveDesignerIsCLX: Boolean;
 begin
-  Result := (Ota.GetActiveDesignerType = dCLX);
+  Result := (GetActiveDesignerType = dCLX);
 end;
 
 function GxOtaActiveDesignerIsNFM: Boolean;
@@ -2154,7 +2154,7 @@ end;
 
 class function Ota.ActiveDesignerIsNFM: Boolean;
 begin
-  Result := (Ota.GetActiveDesignerType = dNFM);
+  Result := (GetActiveDesignerType = dNFM);
 end;
 
 function GxOtaActiveDesignerIsFMX: Boolean;
@@ -2165,7 +2165,7 @@ end;
 class function Ota.ActiveDesignerIsFMX: Boolean;
 begin
   {$IFDEF GX_VER230_up}
-  Result := (Ota.GetActiveDesignerType = dFMX);
+  Result := (GetActiveDesignerType = dFMX);
   {$ELSE}
   Result := False;
   {$ENDIF}
@@ -2199,7 +2199,7 @@ end;
 
 class function Ota.GetCurrentProjectPersonality: string;
 begin
-  Result := Ota.GetProjectPersonality(Ota.GetCurrentProject);
+  Result := GetProjectPersonality(GetCurrentProject);
 end;
 
 function GxOtaProjectIsDotNet(Project: IOTAProject): Boolean;
@@ -2209,7 +2209,7 @@ end;
 
 class function Ota.ProjectIsDotNet(Project: IOTAProject): Boolean;
 begin
-  Result := StringInArray(Ota.GetProjectPersonality(Project), [sDelphiDotNetPersonality, sCSharpPersonality, sVBPersonality]);
+  Result := StringInArray(GetProjectPersonality(Project), [sDelphiDotNetPersonality, sCSharpPersonality, sVBPersonality]);
 end;
 
 function GxOtaProjectIsDelphiDotNet(Project: IOTAProject): Boolean;
@@ -2219,7 +2219,7 @@ end;
 
 class function Ota.ProjectIsDelphiDotNet(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(Ota.GetProjectPersonality(Project), sDelphiDotNetPersonality);
+  Result := SameText(GetProjectPersonality(Project), sDelphiDotNetPersonality);
 end;
 
 function GxOtaProjectIsNativeCpp(Project: IOTAProject): Boolean;
@@ -2229,7 +2229,7 @@ end;
 
 class function Ota.ProjectIsNativeCpp(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(Ota.GetProjectPersonality(Project), sCBuilderPersonality);
+  Result := SameText(GetProjectPersonality(Project), sCBuilderPersonality);
 end;
 
 function GxOtaProjectIsNativeDelphi(Project: IOTAProject): Boolean;
@@ -2239,7 +2239,7 @@ end;
 
 class function Ota.ProjectIsNativeDelphi(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(Ota.GetProjectPersonality(Project), sDelphiPersonality);
+  Result := SameText(GetProjectPersonality(Project), sDelphiPersonality);
 end;
 
 function GxOtaProjectIsEitherDelphi(Project: IOTAProject): Boolean;
@@ -2249,7 +2249,7 @@ end;
 
 class function Ota.ProjectIsEitherDelphi(Project: IOTAProject): Boolean;
 begin
-  Result := StringInArray(Ota.GetProjectPersonality(Project), [sDelphiPersonality, sDelphiDotNetPersonality]);
+  Result := StringInArray(GetProjectPersonality(Project), [sDelphiPersonality, sDelphiDotNetPersonality]);
 end;
 
 function GxOtaProjectIsCSharp(Project: IOTAProject): Boolean;
@@ -2259,7 +2259,7 @@ end;
 
 class function Ota.ProjectIsCSharp(Project: IOTAProject): Boolean;
 begin
-  Result := SameText(Ota.GetProjectPersonality(Project), sCSharpPersonality);
+  Result := SameText(GetProjectPersonality(Project), sCSharpPersonality);
 end;
 
 function GxOtaCurrentProjectIsDotNet: Boolean;
@@ -2269,7 +2269,7 @@ end;
 
 class function Ota.CurrentProjectIsDotNet: Boolean;
 begin
-  Result := Ota.ProjectIsDotNet(Ota.GetCurrentProject);
+  Result := ProjectIsDotNet(GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsDelphiDotNet: Boolean;
@@ -2279,7 +2279,7 @@ end;
 
 class function Ota.CurrentProjectIsDelphiDotNet: Boolean;
 begin
-  Result := Ota.ProjectIsDelphiDotNet(Ota.GetCurrentProject);
+  Result := ProjectIsDelphiDotNet(GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsNativeCpp: Boolean;
@@ -2289,7 +2289,7 @@ end;
 
 class function Ota.CurrentProjectIsNativeCpp: Boolean;
 begin
-  Result := Ota.ProjectIsNativeCpp(Ota.GetCurrentProject);
+  Result := ProjectIsNativeCpp(GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsNativeDelphi: Boolean;
@@ -2299,7 +2299,7 @@ end;
 
 class function Ota.CurrentProjectIsNativeDelphi: Boolean;
 begin
-  Result := Ota.ProjectIsNativeDelphi(Ota.GetCurrentProject);
+  Result := ProjectIsNativeDelphi(GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsEitherDelphi: Boolean;
@@ -2309,7 +2309,7 @@ end;
 
 class function Ota.CurrentProjectIsEitherDelphi: Boolean;
 begin
-  Result := Ota.ProjectIsEitherDelphi(Ota.GetCurrentProject);
+  Result := ProjectIsEitherDelphi(GetCurrentProject);
 end;
 
 function GxOtaCurrentProjectIsCSharp: Boolean;
@@ -2319,7 +2319,7 @@ end;
 
 class function Ota.CurrentProjectIsCSharp: Boolean;
 begin
-  Result := Ota.ProjectIsCSharp(Ota.GetCurrentProject);
+  Result := ProjectIsCSharp(GetCurrentProject);
 end;
 
 {$IFDEF GX_VER160_up}
@@ -2371,7 +2371,7 @@ end;
 
 class function Ota.HaveCPPSupport: Boolean;
 begin
-  Result := Ota.IdeSupportsPersonality(sCBuilderPersonality);
+  Result := IdeSupportsPersonality(sCBuilderPersonality);
 end;
 
 function GxOtaHaveDelphiSupport: Boolean;
@@ -2381,8 +2381,8 @@ end;
 
 class function Ota.HaveDelphiSupport: Boolean;
 begin
-  Result := Ota.IdeSupportsPersonality(sDelphiPersonality) or
-    Ota.IdeSupportsPersonality(sDelphiDotNetPersonality)
+  Result := IdeSupportsPersonality(sDelphiPersonality) or
+    IdeSupportsPersonality(sDelphiDotNetPersonality)
 end;
 
 function GxOtaHaveCSharpSupport: Boolean;
@@ -2392,7 +2392,7 @@ end;
 
 class function Ota.HaveCSharpSupport: Boolean;
 begin
-  Result := Ota.IdeSupportsPersonality(sCSharpPersonality);
+  Result := IdeSupportsPersonality(sCSharpPersonality);
 end;
 
 function GxOtaGetHexPrefix: string;
@@ -2402,7 +2402,7 @@ end;
 
 class function Ota.GetHexPrefix: string;
 begin
-  if StringInArray(Ota.GetCurrentProjectPersonality, [sCBuilderPersonality, sCSharpPersonality]) then
+  if StringInArray(GetCurrentProjectPersonality, [sCBuilderPersonality, sCSharpPersonality]) then
     Result := '0x'
   else
     Result := '$';
@@ -2418,7 +2418,7 @@ var
   Editor: IOTAEditor;
 begin
   Result := False;
-  Editor := Ota.GetCurrentEditor;
+  Editor := GetCurrentEditor;
   if Assigned(Editor) then
     Result := Supports(Editor, IOTAFormEditor);
 end;
@@ -2445,7 +2445,7 @@ var
   EditForm: TCustomForm;
 begin
   Result := nil;
-  EditView := Ota.GetTopMostEditView;
+  EditView := GetTopMostEditView;
   if Assigned(EditView) then
   begin
     EditWindow := EditView.GetEditWindow;
@@ -2467,7 +2467,7 @@ class function Ota.FocusCurrentIDEEditControl: Boolean;
 var
   EditControl: TWinControl;
 begin
-  EditControl := Ota.GetCurrentIDEEditControl;
+  EditControl := GetCurrentIDEEditControl;
   Result := TryFocusControl(EditControl)
 end;
 
@@ -2502,14 +2502,14 @@ class function Ota.GetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Bo
   var
     PackageFileName: string;
   begin
-    Result := Ota.ProjectIsEitherDelphi(Project);
+    Result := ProjectIsEitherDelphi(Project);
     if Result then
     begin
       AProjectFileName := ChangeFileExt(AProjectFileName, '.dpr');
-      if not Ota.FileOrModuleExists(AProjectFileName) then
+      if not FileOrModuleExists(AProjectFileName) then
       begin
         PackageFileName := ChangeFileExt(AProjectFileName, '.dpk');
-        if Ota.FileOrModuleExists(PackageFileName) then
+        if FileOrModuleExists(PackageFileName) then
           AProjectFileName := PackageFileName
         else
           Result := False;
@@ -2541,7 +2541,7 @@ end;
 
 class function Ota.GetCurrentProjectFileName(NormalizeBdsProj: Boolean): string;
 begin
-  Result := Ota.GetProjectFileName(Ota.GetCurrentProject, NormalizeBdsProj);
+  Result := GetProjectFileName(GetCurrentProject, NormalizeBdsProj);
 end;
 
 function GxOtaGetProjectGroup: IOTAProjectGroup;
@@ -2583,7 +2583,7 @@ var
 begin
   Result := False;
 
-  IProjectGroup := Ota.GetProjectGroup;
+  IProjectGroup := GetProjectGroup;
   if not Assigned(IProjectGroup) then
   begin
     Assert(Assigned(BorlandIDEServices));
@@ -2617,7 +2617,7 @@ end;
 
 class function Ota.GetCurrentProject: IOTAProject;
 begin
-  if not Ota.TryGetCurrentProject(Result) then
+  if not TryGetCurrentProject(Result) then
     Result := nil;
 end;
 
@@ -2628,7 +2628,7 @@ end;
 
 class function Ota.HaveCurrentProject: Boolean;
 begin
-  Result := Ota.GetCurrentProject <> nil;
+  Result := GetCurrentProject <> nil;
 end;
 
 function GxOtaGetCurrentProjectName: string;
@@ -2642,7 +2642,7 @@ var
 begin
   Result := '';
 
-  IProject := Ota.GetCurrentProject;
+  IProject := GetCurrentProject;
   if Assigned(IProject) then
   begin
     Result := ExtractFileName(IProject.FileName);
@@ -2860,7 +2860,7 @@ var
 begin
   Result := False;
   MapFile := '';
-  Project := Ota.GetCurrentProject;
+  Project := GetCurrentProject;
   if not Assigned(Project) then begin
     // no project -> no .map file
     Exit; //==>
@@ -2873,8 +2873,8 @@ begin
 {$ELSE}
   // Unfortunately Delphi 6 and 7 don't supply the TargetName property, so we try
   // to generate the file name ourselves.
-  OutputDir := Ota.GetProjectOutputDir(Project);
-  ProjectFilename := Ota.GetProjectFileName(Project, True);
+  OutputDir := GetProjectOutputDir(Project);
+  ProjectFilename := GetProjectFileName(Project, True);
 
   // There seems to be no way to get the actual Target File Extension (from the project options),
   // so we support only the most common ones here. Most likely this will also work
@@ -2977,7 +2977,7 @@ var
   Module: IOTAModule;
 begin
   Result := '';
-  Module := Ota.GetCurrentModule;
+  Module := GetCurrentModule;
   if Assigned(Module) then
     Result := Module.FileName;
 end;
@@ -3028,7 +3028,7 @@ class function Ota.TryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions;
   _Project: IOTAProject = nil): Boolean;
 begin
   if not Assigned(_Project) then
-    _Project := Ota.GetCurrentProject;
+    _Project := GetCurrentProject;
   if Assigned(_Project) then
     _ProjectOptions := _Project.GetProjectOptions;
   Result := Assigned(_ProjectOptions);
@@ -3036,7 +3036,7 @@ end;
 
 class function Ota.GetActiveProjectOptions: IOTAProjectOptions;
 begin
-  if not Ota.TryGetProjectOptions(Result) then
+  if not TryGetProjectOptions(Result) then
     Result := nil;
 end;
 
@@ -3084,7 +3084,7 @@ var
 begin
   Result := False;
   Value := '';
-  if Ota.TryGetProjectOptions(ProjectOptions, _Project) then begin
+  if TryGetProjectOptions(ProjectOptions, _Project) then begin
     if HandleDelphiXEUpVersionInfo(Option, Value) then begin
       Result := True;
     end else begin
@@ -3103,7 +3103,7 @@ begin
   Value := Null;
   KeysStrings := TStringList.Create;
   try
-    if Ota.GetVersionInfoKeysStrings(KeysStrings) then
+    if GetVersionInfoKeysStrings(KeysStrings) then
     begin
       OptionValue := KeysStrings.Values[Option];
       if OptionValue <> '' then
@@ -3125,7 +3125,7 @@ begin
   Result := False;
   for i := Low(Options) to High(Options) do
   begin
-    Result := Ota.GetVersionInfoKeysOption(Options[i], Value);
+    Result := GetVersionInfoKeysOption(Options[i], Value);
     if Result then
       Break;
   end;
@@ -3153,7 +3153,7 @@ begin
   Result := False;
 
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
-  if Ota.TryGetProjectOptions(ProjectOptions) then
+  if TryGetProjectOptions(ProjectOptions) then
   begin
     if ProjectOptions.QueryInterface(IOTAProjectOptionsConfigurations, Configurations) = S_OK then
     begin
@@ -3179,7 +3179,7 @@ begin
     end;
   end;
 {$ELSE}
-  if Ota.TryGetProjectOption('Keys', KeysValue) then
+  if TryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -3202,7 +3202,7 @@ begin
   Result := '';
   Strings := TStringList.Create;
   try
-    if Ota.GetVersionInfoKeysStrings(Strings) then
+    if GetVersionInfoKeysStrings(Strings) then
       Result := Strings.Text;
   finally
     FreeAndNil(Strings);
@@ -3227,7 +3227,7 @@ begin
   Result := False;
 
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
-  ProjectOptions := Ota.GetActiveProjectOptions;
+  ProjectOptions := GetActiveProjectOptions;
   if Assigned(ProjectOptions) then
   begin
     if ProjectOptions.QueryInterface(IOTAProjectOptionsConfigurations, Configurations) = S_OK then
@@ -3250,7 +3250,7 @@ begin
     end;
   end;
 {$ELSE}
-  if Ota.TryGetProjectOption('Keys', KeysValue) then
+  if TryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -3273,7 +3273,7 @@ var
 begin
   Result := '';
 
-  if not Ota.TryGetTopMostEditView(EditView) then
+  if not TryGetTopMostEditView(EditView) then
     Exit;
 
   EditBlock := EditView.Block;
@@ -3490,7 +3490,7 @@ class function Ota.GetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer
     Result := '';
     CursorPosition := 0;
 
-    EditView := Ota.GetTopMostEditView;
+    EditView := GetTopMostEditView;
     if Assigned(EditView) then
     begin
       // Hack for macro templates that want accurate byte counts instead of
@@ -3499,7 +3499,7 @@ class function Ota.GetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer
       if ByteBased then
         GxOtaGetActiveEditorTextAsStringBytes(Result, False)
       else
-        Ota.GetActiveEditorTextAsString(Result, False);
+        GetActiveEditorTextAsString(Result, False);
       EditPos := EditView.CursorPos;
       EditView.ConvertPos(True, EditPos, CharPos);
       CursorLine := CharPos.Line;
@@ -3658,7 +3658,7 @@ var
   TailLen: Integer;
 begin
   Ident := '';
-  CurrentLine := Ota.GetCurrentLineData(StartOffset, ColumnNo, LineNo, ByteBased);
+  CurrentLine := GetCurrentLineData(StartOffset, ColumnNo, LineNo, ByteBased);
 
   CurrentPos.Col := ColumnNo;
   CurrentPos.Line := LineNo;
@@ -3748,7 +3748,7 @@ begin
   begin
     StartPos.CharIndex := EStart.Col - 1;
     StartPos.Line := EStart.Line;
-    EditView := Ota.GetTopMostEditView;
+    EditView := GetTopMostEditView;
     Assert(Assigned(EditView));
     EditView.ConvertPos(False, StartEditPos, StartPos);
   end;
@@ -3884,7 +3884,7 @@ var
   EditView: IOTAEditView;
 begin
   Assert(Assigned(Editor));
-  EditView := Ota.GetTopMostEditView(Editor);
+  EditView := GetTopMostEditView(Editor);
   Assert(Assigned(EditView));
 
   EditView.CursorPos := Start;
@@ -3921,7 +3921,7 @@ begin
   if Assigned(EditView) then
     UseView := EditView
   else
-    UseView := Ota.GetTopMostEditView;
+    UseView := GetTopMostEditView;
   if Assigned(UseView) then
   begin
     Block := UseView.Block;
@@ -3932,7 +3932,7 @@ begin
       BlockEnd.Col := Block.EndingColumn;
       BlockEnd.Line := Block.EndingRow;
 
-      if Ota.CompareEditPos(BlockStart, BlockEnd) < 0 then
+      if CompareEditPos(BlockStart, BlockEnd) < 0 then
         UseView.ConvertPos(True, BlockStart, CharPos)
       else
         UseView.ConvertPos(True, BlockEnd, CharPos);
@@ -4001,7 +4001,7 @@ begin
   Result := False;
   UseView := EditView;
   if not Assigned(UseView) then
-    UseView := Ota.GetTopMostEditView;
+    UseView := GetTopMostEditView;
   if Assigned(UseView) then
   begin
     Block := UseView.Block;
@@ -4042,7 +4042,7 @@ class procedure Ota.CloseCurrentEditorTab;
 var
   EditActions: IOTAEditActions;
 begin
-  EditActions := Ota.GetEditActions;
+  EditActions := GetEditActions;
   if Assigned(EditActions) then
     EditActions.ClosePage;
 end;
@@ -4074,11 +4074,11 @@ end;
 class function Ota.OpenFileOrForm(const FileName: string): Boolean;
 begin
   if IsForm(FileName) then begin
-    Result := Ota.OpenFile(Ota.GetBaseModuleFileName(FileName));
-    Ota.ShowFormForModule(Ota.GetCurrentModule);
+    Result := OpenFile(GetBaseModuleFileName(FileName));
+    ShowFormForModule(GetCurrentModule);
   end
   else
-    Result := Ota.OpenFile(FileName);
+    Result := OpenFile(FileName);
 end;
 
 function GxOtaIsFileOpen(const AFileName: string; UseBase: Boolean): Boolean;
@@ -4103,14 +4103,14 @@ begin
   Assert(Assigned(ModuleServices));
   FileName := AFileName;
   if UseBase then
-    FileName := Ota.GetBaseModuleFileName(FileName);
+    FileName := GetBaseModuleFileName(FileName);
 
   Module := ModuleServices.FindModule(FileName);
   if Assigned(Module) then
   begin
     for i := 0 to Module.GetModuleFileCount-1 do
     begin
-      FileEditor := Ota.GetFileEditorForModule(Module, i);
+      FileEditor := GetFileEditorForModule(Module, i);
       Assert(Assigned(FileEditor));
 
       Result := SameFileName(FileName, FileEditor.FileName);
@@ -4127,7 +4127,7 @@ end;
 
 class function Ota.FileOrModuleExists(const AFileName: string; UseBase: Boolean): Boolean;
 begin
-  Result := FileExists(AFileName) or Ota.IsFileOpen(AFileName, UseBase);
+  Result := FileExists(AFileName) or IsFileOpen(AFileName, UseBase);
 end;
 
 function GxOtaMakeSourceVisible(const FileName: string): Boolean;
@@ -4145,27 +4145,27 @@ var
   i: Integer;
   BaseFileName: string;
 begin
-  BaseFileName := Ota.GetBaseModuleFileName(FileName);
-  Module := Ota.GetModule(BaseFileName);
+  BaseFileName := GetBaseModuleFileName(FileName);
+  Module := GetModule(BaseFileName);
   if Module = nil then
-    Module := Ota.GetModule(FileName);
+    Module := GetModule(FileName);
   if Module = nil then
-    Module := Ota.GetModule(ChangeFileExt(FileName, '.dfm'));
+    Module := GetModule(ChangeFileExt(FileName, '.dfm'));
 
   if Module <> nil then
   begin
     if IsForm(FileName) then
     begin
-      if not Ota.ModuleIsShowingFormSource(Module) then
+      if not ModuleIsShowingFormSource(Module) then
       begin
-        SourceEditor := Ota.GetSourceEditorFromModule(Module, BaseFileName);
+        SourceEditor := GetSourceEditorFromModule(Module, BaseFileName);
         if Assigned(SourceEditor) then
           SourceEditor.Show;
         SourceEditor := nil;
-        EditActions := Ota.GetEditActionsFromModule(Module);
+        EditActions := GetEditActionsFromModule(Module);
         if EditActions <> nil then
         begin
-          FormEditor := Ota.GetFormEditorFromModule(Module);
+          FormEditor := GetFormEditorFromModule(Module);
           FormEditor.Show;
           EditActions.SwapSourceFormView;
         end;
@@ -4173,13 +4173,13 @@ begin
     end
     else // We are focusing a regular text file, not a form
     begin
-      if Ota.ModuleIsShowingFormSource(Module) then
+      if ModuleIsShowingFormSource(Module) then
       begin
-        SourceEditor := Ota.GetSourceEditorFromModule(Module);
+        SourceEditor := GetSourceEditorFromModule(Module);
         if Assigned(SourceEditor) then
           SourceEditor.Show;
         SourceEditor := nil;
-        EditActions := Ota.GetEditActionsFromModule(Module);
+        EditActions := GetEditActionsFromModule(Module);
         if EditActions <> nil then
           EditActions.SwapSourceFormView;
       end;
@@ -4189,8 +4189,8 @@ begin
   // D5/BDS 2006 sometimes delay opening the file until messages are processed
   Application.ProcessMessages;
 
-  if not (Ota.IsFileOpen(BaseFileName) or Ota.IsFileOpen(FileName)) then
-    Result := Ota.OpenFile(FileName)
+  if not (IsFileOpen(BaseFileName) or IsFileOpen(FileName)) then
+    Result := OpenFile(FileName)
   else
     Result := True;
 
@@ -4204,9 +4204,9 @@ begin
     // If it's a project file, then the opened file is most likely a source file and not the project file
     if IsBdsProjectFile(FileName) then
       Exit;
-    Module := Ota.GetModule(BaseFileName);
+    Module := GetModule(BaseFileName);
     if Module = nil then
-      Module := Ota.GetModule(FileName);
+      Module := GetModule(FileName);
     if Module <> nil then
     begin
       for i := 0 to Module.GetModuleFileCount-1 do
@@ -4258,8 +4258,8 @@ class procedure Ota.GoToFileLine(const FileName: string; Line: Integer);
 var
   EditRead: TEditReader;
 begin
-  if not Ota.IsFileOpen(FileName) then
-    if not Ota.OpenFile(FileName) then
+  if not IsFileOpen(FileName) then
+    if not OpenFile(FileName) then
       raise Exception.Create('Error opening ' + FileName);
 
   if Line < 0 then
@@ -4293,18 +4293,18 @@ resourcestring
   SCouldNotOpenFile = 'Could not open file %s';
 begin
   // Force the source editor to show the right file (cpp, pas, dfm, xfm, etc.)
-  if not Ota.MakeSourceVisible(FileName) then
+  if not MakeSourceVisible(FileName) then
     raise Exception.CreateFmt(SCouldNotOpenFile, [FileName]);
 
-  Module := Ota.GetModule(FileName);
+  Module := GetModule(FileName);
   if not Assigned(Module) then
     Exit;
 
-  SourceEditor := Ota.GetSourceEditorFromModule(Module, FileName);
+  SourceEditor := GetSourceEditorFromModule(Module, FileName);
   if not Assigned(SourceEditor) then
     Exit;
 
-  EditView := Ota.GetTopMostEditView(SourceEditor);
+  EditView := GetTopMostEditView(SourceEditor);
   if not Assigned(EditView) then
     Exit;
 
@@ -4323,16 +4323,16 @@ begin
 
   Application.ProcessMessages;
 
-  Ota.FocusCurrentIDEEditControl;
+  FocusCurrentIDEEditControl;
 
   // XE7 matches contains the correct block parameters in CharPos (not BytePos) (IVK)
   // todo: If this is a workaround for a bug and that bug was fixed in XE7, shouldn't it also be
   //       fixed in XE8 and later? So this should possibly be "not RunningRSXE7OrGreater". -- twm
   if RunningDelphi8OrGreater and not RunningRSXE7 then
   begin
-    LineData := Ota.GetEditorLine(EditView, Line);
-    StartColumn := Ota.ConvertColumnCharsToBytes(LineData, StartColumn, False);
-    StopColumn := Ota.ConvertColumnCharsToBytes(LineData, StopColumn, True);
+    LineData := GetEditorLine(EditView, Line);
+    StartColumn := ConvertColumnCharsToBytes(LineData, StartColumn, False);
+    StopColumn := ConvertColumnCharsToBytes(LineData, StopColumn, True);
   end;
 
   // Position the cursor to the line and column of the match
@@ -4420,14 +4420,14 @@ begin
   Result := FileName;
   if IsForm(FileName) then
   begin
-    if Ota.HaveCPPSupport then
+    if HaveCPPSupport then
     begin
       AltName := ChangeFileExt(FileName, '.cpp');
-      if Ota.FileOrModuleExists(AltName) then
+      if FileOrModuleExists(AltName) then
         Result := AltName;
     end;
     AltName := ChangeFileExt(FileName, '.pas');
-    if Ota.FileOrModuleExists(AltName) then
+    if FileOrModuleExists(AltName) then
       Result := AltName;
   end;
 end;
@@ -4439,7 +4439,7 @@ end;
 
 class function Ota.GetEnvironmentOptions: IOTAEnvironmentOptions;
 begin
-  Result := Ota.GetIDEServices.GetEnvironmentOptions;
+  Result := GetIDEServices.GetEnvironmentOptions;
   Assert(Assigned(Result));
 end;
 
@@ -4450,7 +4450,7 @@ end;
 
 class function Ota.GetIdeEnvironmentString(const EnvironmentStringName: string): string;
 begin
-  Result := Ota.GetEnvironmentOptions.Values[EnvironmentStringName];
+  Result := GetEnvironmentOptions.Values[EnvironmentStringName];
 end;
 
 procedure GxOtaGetIdeEnvironmentStrings(Settings: TStrings);
@@ -4464,7 +4464,7 @@ var
   i: Integer;
   Options: TOTAOptionNameArray;
 begin
-  EnvOptions := Ota.GetEnvironmentOptions;
+  EnvOptions := GetEnvironmentOptions;
 
   Settings.Clear;
   Options := EnvOptions.GetOptionNames; // Broken in Delphi 2005
@@ -4480,12 +4480,12 @@ end;
 class function Ota.GetIdeLibraryPath: string;
 begin
    // Do not localize.
-  if RunningBDS2006OrGreater and Ota.CurrentProjectIsDelphiDotNet then
-    Result := Ota.GetIdeEnvironmentString('DotNetLibraryPath')
-  else if RunningBDS2006OrGreater and Ota.CurrentProjectIsNativeCpp then
-    Result := Ota.GetIdeEnvironmentString('CppSearchPath')
+  if RunningBDS2006OrGreater and CurrentProjectIsDelphiDotNet then
+    Result := GetIdeEnvironmentString('DotNetLibraryPath')
+  else if RunningBDS2006OrGreater and CurrentProjectIsNativeCpp then
+    Result := GetIdeEnvironmentString('CppSearchPath')
   else
-    Result := Ota.GetIdeEnvironmentString('LibraryPath');
+    Result := GetIdeEnvironmentString('LibraryPath');
 end;
 
 function GxOtaGetIdeBrowsingPath: string;
@@ -4496,12 +4496,12 @@ end;
 class function Ota.GetIdeBrowsingPath: string;
 begin
    // Do not localize.
-  if RunningBDS2006OrGreater and Ota.CurrentProjectIsDelphiDotNet then
-    Result := Ota.GetIdeEnvironmentString('DotNetBrowsingPath')
-  else if RunningBDS2006OrGreater and Ota.CurrentProjectIsNativeCpp then
-    Result := Ota.GetIdeEnvironmentString('CppBrowsingPath')
-  else if (not RunningBDS2006OrGreater) or Ota.CurrentProjectIsNativeDelphi then
-    Result := Ota.GetIdeEnvironmentString('BrowsingPath')
+  if RunningBDS2006OrGreater and CurrentProjectIsDelphiDotNet then
+    Result := GetIdeEnvironmentString('DotNetBrowsingPath')
+  else if RunningBDS2006OrGreater and CurrentProjectIsNativeCpp then
+    Result := GetIdeEnvironmentString('CppBrowsingPath')
+  else if (not RunningBDS2006OrGreater) or CurrentProjectIsNativeDelphi then
+    Result := GetIdeEnvironmentString('BrowsingPath')
   else
     Result := '';
 end;
@@ -4581,7 +4581,7 @@ begin
   Result := '';
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentPlatform;
 {$ENDIF GX_VER230_up}
@@ -4597,7 +4597,7 @@ begin
   Result := '';
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentConfiguration;
 {$ENDIF GX_VER230_up}
@@ -4612,7 +4612,7 @@ class function Ota.GetProjectFrameworkType(Project: IOTAProject = nil): string;
 begin
 {$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
   Result := Project.FrameworkType;
 {$ELSE ~ GX_VER230_up}
   Result := '';
@@ -4680,7 +4680,7 @@ begin
   SearchPath.Clear;
   DefaultNamespace := '';
   if Project = nil then
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
   if Assigned(Project) then begin
     ProjectName := ExtractFilename(Project.FileName);
     // remove .dpr/dproj
@@ -4693,7 +4693,7 @@ begin
       EnsureStringInList(SearchPath, ProjectName);
     end;
     // Then the project search path
-    if Ota.TryGetProjectOptions(ProjectOptions, Project) then begin
+    if TryGetProjectOptions(ProjectOptions, Project) then begin
       DefaultNamespace := ProjectOptions.Values[OPTION_NAME_DEFAULT_NAMESPACE];
       ProjectNamespaces := ProjectOptions.Values[OPTION_NAME_NAMESPACE_PREFIX];
       SplitIdePath(SearchPath, ProjectNamespaces);
@@ -4702,7 +4702,7 @@ begin
       // prefix is removed, the project no longer compiles.
       // to prevent this, we add the framework type as the last entry to the
       // name spaces.
-      Framework := Ota.GetProjectFrameworkType;
+      Framework := GetProjectFrameworkType;
       if Framework <> '' then
         EnsureStringInList(SearchPath, Framework);
     end;
@@ -4727,14 +4727,14 @@ begin
   Assert(Assigned(Paths));
   Paths.Clear;
   if Project = nil then
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
   if Assigned(Project) then
   begin
     ProjectDir := ExtractFileDir(Project.FileName);
     // Add the current project directory first
     Paths.Add(ProjectDir);
     // Then the project search path
-    if Ota.TryGetProjectOptions(ProjectOptions, Project) then
+    if TryGetProjectOptions(ProjectOptions, Project) then
     begin
       IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
@@ -4742,7 +4742,7 @@ begin
       SplitIdePath(Paths, IdePathString);
     end;
     if DoProcessing then begin
-      PlatformName := Ota.GetProjectPlatform(Project);
+      PlatformName := GetProjectPlatform(Project);
       ProcessPaths(Paths, ProjectDir, PlatformName);
     end;
     for i := 0 to Paths.Count - 1 do begin
@@ -4760,7 +4760,7 @@ class function Ota.TryGetProjectSearchPath(out _Path: string; _Project: IOTAProj
 var
   ProjectOptions: IOTAProjectOptions;
 begin
-  Result := Ota.TryGetProjectOptions(ProjectOptions, _Project);
+  Result := TryGetProjectOptions(ProjectOptions, _Project);
   if Result then begin
     _Path := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
   end;
@@ -4775,7 +4775,7 @@ class function Ota.TrySetProjectSearchPath(const _Path: string; _Project: IOTAPr
 var
   ProjectOptions: IOTAProjectOptions;
 begin
-  Result := Ota.TryGetProjectOptions(ProjectOptions, _Project);
+  Result := TryGetProjectOptions(ProjectOptions, _Project);
   if Result then begin
     ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH] := _Path;
   end;
@@ -4793,7 +4793,7 @@ var
 begin
   Assert(Assigned(Paths));
   Paths.Clear;
-  IdePathString := Ota.GetIdeLibraryPath;
+  IdePathString := GetIdeLibraryPath;
   SplitIdePath(Paths, IdePathString);
   if DoProcessing then begin
     // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
@@ -4822,14 +4822,14 @@ begin
   Assert(Assigned(Paths));
   Paths.Clear;
   // DoProcessing = True uses the project file's directory as the base to expand relative paths
-  Ota.GetProjectSourcePathStrings(Paths, Project, DoProcessing);
+  GetProjectSourcePathStrings(Paths, Project, DoProcessing);
   LocalList := TStringList.Create;
   try
     // DoProcessing = True expands any general macros and relative paths
-    Ota.GetIdeLibraryPathStrings(LocalList, DoProcessing);
+    GetIdeLibraryPathStrings(LocalList, DoProcessing);
     if DoProcessing then begin
       // do another processing, this time also expanding the Platform related macros
-      PlatformName := Ota.GetProjectPlatform(Project);
+      PlatformName := GetProjectPlatform(Project);
       // There shouldn't be any more relatives paths left, so passing GetCurrentDir is probably fine
       ProcessPaths(LocalList, GetCurrentDir, PlatformName);
     end;
@@ -4841,10 +4841,10 @@ begin
       LocalList.Assign(AdditionalPaths);
       if DoProcessing then begin
         if not Assigned(Project) then
-          Project := Ota.GetCurrentProject;
+          Project := GetCurrentProject;
         if Assigned(Project) then begin
           ProjectDir := ExtractFileDir(Project.FileName);
-          PlatformName := Ota.GetProjectPlatform(Project);
+          PlatformName := GetProjectPlatform(Project);
         end else begin
           ProjectDir := GetCurrentDir;
           PlatformName := '';
@@ -4926,19 +4926,19 @@ begin
 
   // Add path of the current project
   if not Assigned(Project) then
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
 
   if Assigned(Project) then
-    AddAPath(GetPath(Ota.GetProjectFileName(Project)));
+    AddAPath(GetPath(GetProjectFileName(Project)));
 
   // Add library search paths
-  Ota.GetEffectiveLibraryPath(Paths);
+  GetEffectiveLibraryPath(Paths);
 
   // Add paths of all files included in the project
   if Assigned(Project) then begin
     UnitList := TList.Create;
     try
-      Ota.FillUnitInfoListForProject(UnitList, Project);
+      FillUnitInfoListForProject(UnitList, Project);
       for i := 0 to UnitList.Count - 1 do begin
         UnitInfo := TUnitInfo(UnitList[i]);
         AddAPath(GetPath(UnitInfo.FileName));
@@ -4949,13 +4949,13 @@ begin
   end;
 
   // Add current file path
-  AddAPath(GetPath(Ota.GetFileNameOfCurrentModule));
+  AddAPath(GetPath(GetFileNameOfCurrentModule));
 
   // Add path of the current source file (probably same as first one)
-  AddAPath(GetPath(Ota.GetCurrentSourceFile));
+  AddAPath(GetPath(GetCurrentSourceFile));
 
   // Add path of the project group
-  AddAPath(GetPath(Ota.GetProjectGroupFileName));
+  AddAPath(GetPath(GetProjectGroupFileName));
 
   // Add paths to VCL source (since we are smart)
   AddVCLPaths;
@@ -4967,7 +4967,7 @@ begin
       LocalList.Assign(AdditionalPaths);
       if Assigned(Project) then begin
         ProjectDir := ExtractFileDir(Project.FileName);
-        PlatformName := Ota.GetProjectPlatform(Project);
+        PlatformName := GetProjectPlatform(Project);
       end else begin
         ProjectDir := GetCurrentDir;
         PlatformName := '';
@@ -4993,7 +4993,7 @@ var
 begin
   PathList := TStringList.Create;
   try
-    Ota.GetAllPossiblePaths(PathList);
+    GetAllPossiblePaths(PathList);
     Result := GX_GenericUtils.TryFindPathToFile(FileName, FullFilename, PathList);
   finally
     FreeAndNil(PathList);
@@ -5007,7 +5007,7 @@ end;
 
 class function Ota.FindPathToFile(const FileName: string): string;
 begin
-  if not Ota.TryFindPathToFile(FileName, Result) then
+  if not TryFindPathToFile(FileName, Result) then
     Result := FileName;
 end;
 
@@ -5021,9 +5021,9 @@ var
   FoundFile: string;
 begin
   Result := False;
-  FoundFile := Ota.FindPathToFile(FileName);
+  FoundFile := FindPathToFile(FileName);
   if FileExists(FoundFile) then
-    Result := Ota.OpenFile(FoundFile);
+    Result := OpenFile(FoundFile);
 end;
 
 procedure GxOtaGetUnitAliases(Aliases: TStrings);
@@ -5040,7 +5040,7 @@ var
 begin
   Assert(Assigned(Aliases));
   Aliases.Clear;
-  FoundAliases := Ota.TryGetProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
+  FoundAliases := TryGetProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
   if FoundAliases then
   begin
     AliasString := VarAliases;
@@ -5069,7 +5069,7 @@ begin
   if IsStandAlone then
     Result := 'Software\' + CompilerDefinedProductRegistryKey
   else
-    Result := Ota.GetIDEServices.GetBaseRegistryKey;
+    Result := GetIDEServices.GetBaseRegistryKey;
 
   if Length(Result) > 0 then
   begin
@@ -5101,7 +5101,7 @@ begin
   end
   else
   begin
-    Result := Ota.GetIDEServices.GetProductIdentifier; // D2007: 'CodeGear Delphi for Microsoft Windows'
+    Result := GetIDEServices.GetProductIdentifier; // D2007: 'CodeGear Delphi for Microsoft Windows'
     Assert(NotEmpty(Result), 'GetProductIdentifier returns nothing');
   end;
 end;
@@ -5168,7 +5168,7 @@ var
   InspectedAction: TContainedAction;
   i: Integer;
 begin
-  IdeActionList := Ota.GetIdeActionList;
+  IdeActionList := GetIdeActionList;
   Assert(Assigned(IdeActionList));
   Result := False;
   i := IdeActionList.ActionCount;
@@ -5205,7 +5205,7 @@ end;
 
 class function Ota.GetIdeActionByName(const Name: string): TContainedAction;
 begin
-  if not Ota.TryGetIdeActionByName(Name, Result) then
+  if not TryGetIdeActionByName(Name, Result) then
     Result := nil;
 (*
   if not Assigned(Result) then
@@ -5229,7 +5229,7 @@ end;
 class function Ota.GetTopMostEditView(SourceEditor: IOTASourceEditor): IOTAEditView;
 begin
   if SourceEditor = nil then
-    SourceEditor := Ota.GetCurrentSourceEditor;
+    SourceEditor := GetCurrentSourceEditor;
   if Assigned(SourceEditor) and (SourceEditor.EditViewCount > 0) then
     Result := SourceEditor.EditViews[0]
   else
@@ -5265,7 +5265,7 @@ class procedure Ota.GetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
 var
   LServices : IOTAEditorServices;
 begin
-  LServices := Ota.GetEditorServices;
+  LServices := GetEditorServices;
   if Assigned(LServices) then begin
     AFont.Name := LServices.EditOptions.FontName;
     if ASizeAdjust > 0 then
@@ -5284,9 +5284,9 @@ class function Ota.GetTopMostEditView: IOTAEditView;
 begin
   Result := nil;
   // Bug: Delphi 5/6 crash when calling TopView with no files open
-  if Ota.GetOpenModuleCount = 0 then
+  if GetOpenModuleCount = 0 then
     Exit;
-  Result := Ota.GetEditorServices.TopView;
+  Result := GetEditorServices.TopView;
 end;
 
 function GxOtaTryGetTopMostEditView(out EditView: IOTAEditView): boolean;
@@ -5301,19 +5301,19 @@ end;
 
 class function Ota.TryGetTopMostEditView(out EditView: IOTAEditView): Boolean;
 begin
-  EditView := Ota.GetTopMostEditView;
+  EditView := GetTopMostEditView;
   Result := Assigned(EditView);
 end;
 
 class function Ota.TryGetTopMostEditView(SourceEditor: IOTASourceEditor; out EditView: IOTAEditView): Boolean;
 begin
-  EditView := Ota.GetTopMostEditView(SourceEditor);
+  EditView := GetTopMostEditView(SourceEditor);
   Result := Assigned(EditView);
 end;
 
 class function Ota.TryGetTopMostEditBuffer(out EditBuffer: IOTAEditBuffer): Boolean;
 begin
-  EditBuffer := Ota.GetEditorServices.TopBuffer;
+  EditBuffer := GetEditorServices.TopBuffer;
   Result := Assigned(EditBuffer);
 end;
 
@@ -5383,9 +5383,9 @@ var
 begin
   SourceEditor := nil;
   if TryGetTopMostEditBuffer(EditBuffer) and (EditBuffer.FileName <> '') then
-    SourceEditor := Ota.GetSourceEditorFromModule(Ota.GetCurrentModule, EditBuffer.FileName);
+    SourceEditor := GetSourceEditorFromModule(GetCurrentModule, EditBuffer.FileName);
   if SourceEditor = nil then
-    SourceEditor := Ota.GetSourceEditorFromModule(Ota.GetCurrentModule);
+    SourceEditor := GetSourceEditorFromModule(GetCurrentModule);
   Result := Assigned(SourceEditor);
 end;
 
@@ -5415,7 +5415,7 @@ class procedure Ota.ShowCurrentSourceEditor;
 var
   Editor: IOTASourceEditor;
 begin
-  if Ota.TryGetCurrentSourceEditor(Editor) then
+  if TryGetCurrentSourceEditor(Editor) then
     Editor.Show;
 end;
 
@@ -5444,7 +5444,7 @@ end;
 
 class function Ota.GetModule(const FileName: string): IOTAModule;
 begin
-  if not Ota.TryGetModule(FileName, Result) then
+  if not TryGetModule(FileName, Result) then
     Result := nil;
 end;
 
@@ -5471,7 +5471,7 @@ end;
 
 class function Ota.GetSourceEditor(const FileName: string): IOTASourceEditor;
 begin
-  if not Ota.TryGetSourceEditor(FileName, Result) then
+  if not TryGetSourceEditor(FileName, Result) then
     Result := nil;
 end;
 
@@ -5481,9 +5481,9 @@ var
   Editor: IOTASourceEditor;
 begin
   Result := False;
-  Module := Ota.GetModule(FileName);
+  Module := GetModule(FileName);
   if Assigned(Module) then begin
-    Editor := Ota.GetSourceEditorFromModule(Module, FileName);
+    Editor := GetSourceEditorFromModule(Module, FileName);
     if Assigned(Editor) then begin
       SourceEditor := Editor;
       Result := True;
@@ -5500,7 +5500,7 @@ class function Ota.TryGetEditView(const _fn: string; out _EditView: IOTAEditView
 var
   SourceEditor: IOTASourceEditor;
 begin
-  SourceEditor := Ota.GetSourceEditor(_fn);
+  SourceEditor := GetSourceEditor(_fn);
   Result := Assigned(SourceEditor) and (SourceEditor.EditViewCount > 0);
   if Result then
     _EditView := SourceEditor.EditViews[0];
@@ -5517,7 +5517,7 @@ var
   Editor: IOTAEditor;
 begin
   Result := '';
-  Module := Ota.GetCurrentModule;
+  Module := GetCurrentModule;
   if Module <> nil then
   begin
     Editor := Module.GetCurrentEditor;
@@ -5547,7 +5547,7 @@ var
 begin
   Result := gxpNone;
   if SourceEditor = nil then
-    SourceEditor := Ota.GetCurrentSourceEditor;
+    SourceEditor := GetCurrentSourceEditor;
   if not Assigned(SourceEditor) then
     Exit;
 
@@ -5557,7 +5557,7 @@ begin
   // in D7 and up, IOTASourceEditor.SetSyntaxHighlighter does not function any more.
   // so we have to use some heuristics from EditOptions to find out what
   // syntax highlighter is actually being used
-  EditView := Ota.GetTopMostEditView(SourceEditor);
+  EditView := GetTopMostEditView(SourceEditor);
   if not Assigned(EditView) then
     Exit;
   EditBuffer := EditView.Buffer;
@@ -5629,7 +5629,7 @@ var
   CurRecord: IOTARecord;
 begin
   Result := False;
-  CurRecord := Ota.GetKeyboardServices.CurrentRecord;
+  CurRecord := GetKeyboardServices.CurrentRecord;
   if Assigned(CurRecord) then
     Result := CurRecord.IsRecording;
 end;
@@ -5644,7 +5644,7 @@ var
   CurPlayback: IOTARecord;
 begin
   Result := False;
-  CurPlayback := Ota.GetKeyboardServices.CurrentPlayback;
+  CurPlayback := GetKeyboardServices.CurrentPlayback;
   if Assigned(CurPlayback) then
     Result := CurPlayback.IsPlaying;
 end;
@@ -5659,7 +5659,7 @@ var
   CurRecord: IOTARecord;
 begin
   Result := False;
-  CurRecord := Ota.GetKeyboardServices.CurrentRecord;
+  CurRecord := GetKeyboardServices.CurrentRecord;
   if Assigned(CurRecord) then
     Result := CurRecord.IsPaused;
 end;
@@ -5752,7 +5752,7 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  LService := Ota.GetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(LService) then
     Result := LService.IDEThemingEnabled;
 end;
@@ -5941,9 +5941,9 @@ begin
       end;
     tkSet:
       begin
-        if PreferStrings and Ota.ActiveDesignerIsVCL then
+        if PreferStrings and ActiveDesignerIsVCL then
         begin
-          NativeObject := Ota.GetNativeObject(AComponent);
+          NativeObject := GetNativeObject(AComponent);
           Assert(Assigned(NativeObject), 'No native object for property ' + PropertyName);
           Result := SetToString(GetPropInfo(NativeObject, PropertyName), Buffer.Int, True);
         end
@@ -5952,9 +5952,9 @@ begin
       end;
     tkEnumeration:
       begin
-        if PreferStrings and Ota.ActiveDesignerIsVCL then
+        if PreferStrings and ActiveDesignerIsVCL then
         begin
-          NativeObject := Ota.GetNativeObject(AComponent);
+          NativeObject := GetNativeObject(AComponent);
           Assert(Assigned(NativeObject));
           Result := GetEnumName(FindTypeInfo(NativeObject, PropertyName), Buffer.Int);
         end
@@ -5988,7 +5988,7 @@ begin
   PropType := Component.GetPropTypeByName(PropName);
   if PropType = tkEnumeration then
   begin
-    NativeObject := Ota.GetNativeObject(Component);
+    NativeObject := GetNativeObject(Component);
     if Assigned(NativeObject) then
       Result := IntToStr(GetEnumValueFromStr(NativeObject, PropName, Value))
     else
@@ -6040,8 +6040,8 @@ begin
   Result := False;
   if Trim(PropertyName) = '' then
     Exit;
-  ComponentName := Ota.GetComponentName(AComponent);
-  NativeObject := Ota.GetNativeObject(AComponent);
+  ComponentName := GetComponentName(AComponent);
+  NativeObject := GetNativeObject(AComponent);
 
   PropertyType := AComponent.GetPropTypeByName(PropertyName);
   PropertyTypeName := GetEnumName(TypeInfo(TTypeKind), Ord(PropertyType));
@@ -6162,7 +6162,7 @@ var
   CompHandle: TOTAHandle;
 begin
   Result := nil;
-  if (AComponent = nil) or ((Ota.CurrentlyEditingForm) and (not (Ota.ActiveDesignerIsVCL or Ota.ActiveDesignerIsFMX))) then
+  if (AComponent = nil) or ((CurrentlyEditingForm) and (not (ActiveDesignerIsVCL or ActiveDesignerIsFMX))) then
     Exit;
   CompHandle := AComponent.GetComponentHandle;
   if Assigned(CompHandle) then
@@ -6182,7 +6182,7 @@ begin
   ComponentObject := GetNativeObject(AComponent);
   if Assigned(ComponentObject) then
   begin
-    if Ota.ActiveDesignerIsNFM then begin
+    if ActiveDesignerIsNFM then begin
       {$IFOPT D+}SendDebugError('Attempt to get a native persistent for a .NET object');{$ENDIF}
       Exit;
     end;
@@ -6204,7 +6204,7 @@ begin
   ComponentObject := GetNativeObject(AComponent);
   if Assigned(ComponentObject) then
   begin
-    if Ota.ActiveDesignerIsNFM then begin
+    if ActiveDesignerIsNFM then begin
       {$IFOPT D+}SendDebugError('Attempt to get a native component for a .NET object');{$ENDIF}
       Exit;
     end;
@@ -6223,7 +6223,7 @@ var
   NativeComponent: TComponent;
 begin
   Result := False;
-  NativeComponent := Ota.GetNativeComponent(AComponent);
+  NativeComponent := GetNativeComponent(AComponent);
   if Assigned(NativeComponent) then
     Result := (csAncestor in NativeComponent.ComponentState);
 end;
@@ -6280,7 +6280,7 @@ begin
 
   // IOTAComponent.GetParent is broken in Delphi 5/6/7
   {$IFNDEF GX_VER160_up}
-  NativeComponent :=  Ota.GetNativeComponent(AComponent);
+  NativeComponent :=  GetNativeComponent(AComponent);
   if Assigned(NativeComponent) then
   begin
     Parent := NativeComponent.GetParentComponent;
@@ -6385,7 +6385,7 @@ var
   Module: IOTAModule;
   TopFile: string;
 begin
-  Module := Ota.GetCurrentModule;
+  Module := GetCurrentModule;
   Result := Assigned(Module);
   if Result then
   begin
@@ -6394,7 +6394,7 @@ begin
       TopFile := Editor.FileName
     else // C++Builder 6 returns nil for some old-style modules without DFMs
       TopFile := Module.FileName;
-    Editor := Ota.GetEditorFromModule(Module, TopFile);
+    Editor := GetEditorFromModule(Module, TopFile);
     Result := Assigned(Editor);
   end;
 end;
@@ -6481,7 +6481,7 @@ begin
 
   for i := 0 to Module.GetModuleFileCount-1 do
   begin
-    Editor := Ota.GetFileEditorForModule(Module, i);
+    Editor := GetFileEditorForModule(Module, i);
     if SameFileName(Editor.FileName, FileName) then
     begin
       Result := Editor;
@@ -6503,7 +6503,7 @@ begin
 
   for i := 0 to Module.GetModuleFileCount-1 do
   begin
-    IEditor := Ota.GetFileEditorForModule(Module, i);
+    IEditor := GetFileEditorForModule(Module, i);
 
     if Supports(IEditor, IOTASourceEditor, ISourceEditor) then
     begin
@@ -6537,7 +6537,7 @@ begin
     Exit;
   for i := 0 to Module.GetModuleFileCount-1 do
   begin
-    Editor := Ota.GetFileEditorForModule(Module, i);
+    Editor := GetFileEditorForModule(Module, i);
     if Supports(Editor, IOTAFormEditor, FormEditor) then
     begin
       Assert(not Assigned(Result), 'There should never be more than one form for a module');
@@ -6552,18 +6552,18 @@ class function Ota.GetFormEditorForFileName(const FileName: string): IOTAFormEdi
 var
   Module: IOTAModule;
 begin
-  Module := Ota.GetModule(Ota.GetBaseModuleFileName(FileName));
-  Result := Ota.GetFormEditorFromModule(Module);
+  Module := GetModule(GetBaseModuleFileName(FileName));
+  Result := GetFormEditorFromModule(Module);
 end;
 
 class function Ota.GetCurrentFormEditor: IOTAFormEditor;
 begin
-  Result := Ota.GetFormEditorFromModule(Ota.GetCurrentModule);
+  Result := GetFormEditorFromModule(GetCurrentModule);
 end;
 
 class function Ota.TryGetCurrentFormEditor(out FormEditor: IOTAFormEditor): Boolean;
 begin
-  FormEditor := Ota.GetCurrentFormEditor;
+  FormEditor := GetCurrentFormEditor;
   Result := Assigned(FormEditor);
 end;
 
@@ -6572,7 +6572,7 @@ var
   FormEditor: IOTAFormEditor;
 begin
   Result := 0;
-  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  if TryGetCurrentFormEditor(FormEditor) then
     Result := FormEditor.GetSelCount;
 end;
 
@@ -6582,14 +6582,14 @@ var
   FileName: string;
 begin
   Result := False;
-  FileName := Ota.GetCurrentSourceFile;
+  FileName := GetCurrentSourceFile;
   if not IsForm(FileName) then
     Exit;
 
-  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  if TryGetCurrentFormEditor(FormEditor) then
   begin
     Result := (FormEditor.GetSelCount > 0) and
-      not Ota.SelectedComponentIsRoot(FormEditor);
+      not SelectedComponentIsRoot(FormEditor);
   end;
 end;
 
@@ -6599,7 +6599,7 @@ var
 begin
   Result := False;
   Assert(Assigned(Module));
-  FormEditor := Ota.GetFormEditorFromModule(Module);
+  FormEditor := GetFormEditorFromModule(Module);
   if Assigned(FormEditor) then
   begin
     FormEditor.Show;
@@ -6640,7 +6640,7 @@ begin
   Assert(Assigned(Form));
   StringStream := TStringStream.Create('');
   try
-    Ota.GetFormAsText(Form, StringStream);
+    GetFormAsText(Form, StringStream);
     Result := StringStream.DataString;
   finally
     FreeAndNil(StringStream);
@@ -6656,7 +6656,7 @@ begin
   Result := nil;
   if Module = nil then
     Exit;
-  SourceEditor := Ota.GetSourceEditorFromModule(Module);
+  SourceEditor := GetSourceEditorFromModule(Module);
   if SourceEditor = nil then
     Exit;
   for i := 0 to SourceEditor.GetEditViewCount - 1 do
@@ -6670,7 +6670,7 @@ end;
 
 class function Ota.GetEditActions: IOTAEditActions;
 begin
-  Result := Ota.GetEditActionsFromModule(Ota.GetCurrentModule);
+  Result := GetEditActionsFromModule(GetCurrentModule);
 end;
 
 class procedure Ota.SelectComponentOnCurrentForm(const ComponentName: string);
@@ -6681,7 +6681,7 @@ begin
   if Length(ComponentName) = 0 then
     Exit;
 
-  FormEditor := Ota.GetCurrentFormEditor;
+  FormEditor := GetCurrentFormEditor;
   Assert(Assigned(FormEditor));
 
   FoundComponent := FormEditor.FindComponent(ComponentName);
@@ -6698,11 +6698,11 @@ var
   PersistentForm: TPersistent;
   Designer: IDesigner;
 begin
-  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  if TryGetCurrentFormEditor(FormEditor) then
   begin
     if Assigned(FormEditor.GetRootComponent) then
     begin
-      PersistentForm := Ota.GetNativePersistent(FormEditor.GetRootComponent);
+      PersistentForm := GetNativePersistent(FormEditor.GetRootComponent);
       Designer := (FormEditor as INTAFormEditor).FormDesigner;
       if Assigned(Designer) then
         if Assigned(PersistentForm) then
@@ -6720,13 +6720,13 @@ begin
   Assert(Assigned(Components));
   Components.Clear;
   if Form = nil then
-    Form := Ota.GetCurrentFormEditor;
+    Form := GetCurrentFormEditor;
   if Assigned(Form) then
   begin
     for i := 0 to Form.GetSelCount - 1 do
     begin
       Component := Form.GetSelComponent(i);
-      NativeComponent := Ota.GetNativeComponent(Component);
+      NativeComponent := GetNativeComponent(Component);
       if Assigned(NativeComponent) then
       begin
         if (not Assigned(ComponentClass)) or (Assigned(ComponentClass) and (NativeComponent is ComponentClass)) then
@@ -6760,10 +6760,10 @@ begin
   Assert(Assigned(Components));
   Components.Clear;
   if Form = nil then
-    Form := Ota.GetCurrentFormEditor;
+    Form := GetCurrentFormEditor;
   if Assigned(Form) then
   begin
-    Root := Ota.GetNativeComponent(Form.GetRootComponent);
+    Root := GetNativeComponent(Form.GetRootComponent);
     if Assigned(Root) and (Root is TWinControl) then
     begin
       RootControl := Root as TWinControl;
@@ -6780,7 +6780,7 @@ var
 begin
   Result := nil;
 
-  if not Ota.TryGetCurrentFormEditor(FormEditor) then
+  if not TryGetCurrentFormEditor(FormEditor) then
     Exit;
 
   FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
@@ -6805,7 +6805,7 @@ var
 begin
   Result := False;
 
-  if not Ota.TryGetCurrentFormEditor(FormEditor) then
+  if not TryGetCurrentFormEditor(FormEditor) then
     Exit;
 
   FormDesigner := (FormEditor as INTAFormEditor).FormDesigner;
@@ -6848,11 +6848,11 @@ var
   CurrentComponent: IOTAComponent;
 begin
   Result := '';
-  if Ota.TryGetCurrentFormEditor(FormEditor) then begin
+  if TryGetCurrentFormEditor(FormEditor) then begin
     if FormEditor.GetSelCount = 1 then begin
       CurrentComponent := FormEditor.GetSelComponent(0);
       if Assigned(CurrentComponent) then
-        Result := Ota.GetComponentName(CurrentComponent);
+        Result := GetComponentName(CurrentComponent);
     end;
   end;
 end;
@@ -6868,7 +6868,7 @@ begin
     FormComponent := Form.GetRootComponent;
     if Assigned(FormComponent) then
     begin
-      NativeForm := Ota.GetNativeComponent(FormComponent);
+      NativeForm := GetNativeComponent(FormComponent);
       if Assigned(NativeForm) and (NativeForm is TCustomForm) then
         Result := (NativeForm as TCustomForm).BiDiMode;
     end;
@@ -6885,7 +6885,7 @@ var
 begin
   Assert(Assigned(List));
 
-  if Ota.TryGetCurrentFormEditor(FormEditor) then
+  if TryGetCurrentFormEditor(FormEditor) then
   begin
     RootComponent := FormEditor.GetRootComponent;
     Assert(Assigned(RootComponent), 'FormEditor has no root component');
@@ -6896,7 +6896,7 @@ begin
       if Assigned(OwnedComponent) then
       begin
         CompInfo := TCompInfo.Create;
-        CompInfo.CompName := Ota.GetComponentName(OwnedComponent);
+        CompInfo.CompName := GetComponentName(OwnedComponent);
         CompInfo.CompType := OwnedComponent.GetComponentType;
         List.Add(CompInfo);
       end;
@@ -7029,17 +7029,17 @@ begin
   Lines.Clear;
   Result := False;
 
-  if not Ota.TryGetCurrentSourceEditor(ISourceEditor) then
+  if not TryGetCurrentSourceEditor(ISourceEditor) then
     Exit;
 
   if ISourceEditor.EditViewCount > 0 then
   begin
-    IEditView := Ota.GetTopMostEditView(ISourceEditor);
+    IEditView := GetTopMostEditView(ISourceEditor);
 
     if UseSelection and Assigned(IEditView) and Assigned(IEditView.Block) and (IEditView.Block.Size > 0) then
-      Lines.Text := Ota.GetCurrentSelection(False)
+      Lines.Text := GetCurrentSelection(False)
     else
-      Ota.LoadSourceEditorToUnicodeStrings(ISourceEditor, Lines);
+      LoadSourceEditorToUnicodeStrings(ISourceEditor, Lines);
     Result := True;
   end;
 end;
@@ -7053,7 +7053,7 @@ class function Ota.GetActiveEditorTextAsString(var Text: string; UseSelection: B
 var
   Lines: TGXUnicodeString;
 begin
-  Result := Ota.GetActiveEditorTextAsUnicodeString(Lines, UseSelection);
+  Result := GetActiveEditorTextAsUnicodeString(Lines, UseSelection);
   Text := Lines;
 end;
 
@@ -7165,12 +7165,12 @@ var
   EEnd: TOTAEditPos;
   Ident: string;
 begin
-  Result := Ota.GetCurrentIdentData(Ident, EStart);
+  Result := GetCurrentIdentData(Ident, EStart);
   if Result then
   begin
     EEnd.Line := EStart.Line;
     EEnd.Col := EStart.Col + Length(Ident);
-    Ota.SelectBlock(SourceEditor, EStart, EEnd);
+    SelectBlock(SourceEditor, EStart, EEnd);
   end;
 end;
 
@@ -7185,7 +7185,7 @@ var
   EditView: IOTAEditView;
 begin
   Assert(Assigned(SourceEditor));
-  EditView := Ota.GetTopMostEditView(SourceEditor);
+  EditView := GetTopMostEditView(SourceEditor);
   if EditView = nil then
     Exit;
   EditPos.Line := EditView.Position.Row;
@@ -7215,7 +7215,7 @@ var
 resourcestring
   SUnableToWriteToEditor = 'Unable to write to source editor';
 begin
-  EditView := Ota.GetTopMostEditView;
+  EditView := GetTopMostEditView;
   Assert(Assigned(EditView), SUnableToWriteToEditor);
   {$IFDEF UNICODE}
   EditView.Position.InsertText(Text);
@@ -7237,7 +7237,7 @@ var
   CharPos: TOTACharPos;
   EditPos: TOTAEditPos;
 begin
-  EditView := Ota.GetTopMostEditView;
+  EditView := GetTopMostEditView;
   Assert(Assigned(EditView), 'No edit view found');
   EditPos := EditView.CursorPos;
   EditView.ConvertPos(True, EditPos, CharPos);
@@ -7257,10 +7257,10 @@ resourcestring
   SEditWriterNotAvail = 'Edit writer not available';
 begin
   if not Assigned(SourceEditor) then
-    SourceEditor := Ota.GetCurrentSourceEditor;
+    SourceEditor := GetCurrentSourceEditor;
   if Assigned(SourceEditor) then
   begin
-    Ota.AssertSourceEditorNotReadOnly(SourceEditor);
+    AssertSourceEditorNotReadOnly(SourceEditor);
     Result := SourceEditor.CreateUndoableWriter;
   end;
   Assert(Assigned(Result), SEditWriterNotAvail);
@@ -7276,7 +7276,7 @@ resourcestring
   SEditReaderNotAvail = 'Edit reader not available';
 begin
   if not Assigned(SourceEditor) then
-    SourceEditor := Ota.GetCurrentSourceEditor;
+    SourceEditor := GetCurrentSourceEditor;
   if Assigned(SourceEditor) then
   begin
     Result := SourceEditor.CreateReader;
@@ -7327,7 +7327,7 @@ begin
   // Position is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
-  Buffer := Ota.ReadEditorTextToString(Ota.GetEditReaderForSourceEditor(SourceEditor));
+  Buffer := ReadEditorTextToString(GetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
   Position := CharIndexToUTF8Pos(IdeString, Position);
 {$ENDIF}
@@ -7348,7 +7348,7 @@ var
   CharPos: TOTACharPos;
 begin
   if not Assigned(EditView) then
-    EditView := Ota.GetTopMostEditView;
+    EditView := GetTopMostEditView;
   Assert(Assigned(EditView));
 
   CharPos := GetCharPosFromPos(Position, EditView);
@@ -7367,7 +7367,7 @@ var
   TopRow: TOTAEditPos;
 begin
   if not Assigned(EditView) then
-    EditView := Ota.GetTopMostEditView;
+    EditView := GetTopMostEditView;
   Result := Assigned(EditView);
   if not Result then
     Exit; //==>
@@ -7423,7 +7423,7 @@ class function Ota.TryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
 var
   View: IOTAEditView;
 begin
-  Result := Ota.TryGetTopMostEditView(View);
+  Result := TryGetTopMostEditView(View);
   if Result then
     _EditPos := View.CursorPos;
 end;
@@ -7438,7 +7438,7 @@ begin
   Result.Col := -1;
   Result.Line := -1;
   if EditView = nil then
-    EditView := Ota.GetTopMostEditView;
+    EditView := GetTopMostEditView;
   if EditView = nil then
     Exit;
   Result := EditView.CursorPos;
@@ -7455,7 +7455,7 @@ var
   CharPos: TOTACharPos;
 begin
   if EditView = nil then
-    EditView := Ota.GetTopMostEditView;
+    EditView := GetTopMostEditView;
   EditPos := GetCurrentEditPos(EditView);
   EditView.ConvertPos(True, EditPos, CharPos);
   Result := EditView.CharPosToPos(CharPos);
@@ -7465,7 +7465,7 @@ class procedure Ota.DeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: 
 var
   EditWriter: IOTAEditWriter;
 begin
-  EditWriter := Ota.GetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := GetEditWriterForSourceEditor(SourceEditor);
   EditWriter.CopyTo(StartIndex);
   EditWriter.DeleteTo(StartIndex + Count);
 end;
@@ -7487,12 +7487,12 @@ begin
   // "StartPos" is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
-  Buffer := Ota.ReadEditorTextToString(Ota.GetEditReaderForSourceEditor(SourceEditor));
+  Buffer := ReadEditorTextToString(GetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
   StartPos := CharIndexToUTF8Pos(IdeString, StartPos);
 {$ENDIF}
 
-  EditWriter := Ota.GetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := GetEditWriterForSourceEditor(SourceEditor);
   EditWriter.CopyTo(StartPos);
   EditWriter.DeleteTo(StartPos + Count);
 end;
@@ -7592,7 +7592,7 @@ var
 begin
   Assert(Assigned(Editor));
   Assert(Editor.EditViewCount > ViewNum, 'Editor.EditViewCount <= passed in ViewNum');
-  Ota.AssertSourceEditorNotReadOnly(Editor);
+  AssertSourceEditorNotReadOnly(Editor);
 
   View := Editor.GetEditView(ViewNum);
   Assert(Assigned(View), 'No edit view available');
@@ -7634,31 +7634,31 @@ var
 begin
   Assert(Assigned(Data));
   Data.Clear;
-  Module := Ota.GetModule(FileName);
-  BaseFileName := Ota.GetBaseModuleFileName(FileName);
-  BaseModule := Ota.GetModule(BaseFileName);
+  Module := GetModule(FileName);
+  BaseFileName := GetBaseModuleFileName(FileName);
+  BaseModule := GetModule(BaseFileName);
 
   if IsForm(FileName) then
   begin
     // Is the form currently open as text?
-    if Ota.ModuleIsShowingFormSource(Module) then
-      Ota.LoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data)
-    else if Ota.IsFileOpen(BaseFileName) then
+    if ModuleIsShowingFormSource(Module) then
+      LoadSourceEditorToUnicodeStrings(GetSourceEditor(FileName), Data)
+    else if IsFileOpen(BaseFileName) then
     begin
-      FormEditor := Ota.GetFormEditorFromModule(BaseModule);
-      Ota.LoadFormEditorToUnicodeStrings(FormEditor, Data);
+      FormEditor := GetFormEditorFromModule(BaseModule);
+      LoadFormEditorToUnicodeStrings(FormEditor, Data);
     end
     else if FileExists(FileName) then
       LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary);
   end
   else
   begin
-    SourceEditor := Ota.GetSourceEditorFromModule(BaseModule, FileName);
+    SourceEditor := GetSourceEditorFromModule(BaseModule, FileName);
     // If there is no source editor for the file name, we can't load it
     // We might be trying to load a .pas with the .dfm open as text
     if Assigned(SourceEditor) then begin
       // TODO: Test bdsgroup, bdsproj, dproj
-      Ota.LoadSourceEditorToUnicodeStrings(Ota.GetSourceEditor(FileName), Data);
+      LoadSourceEditorToUnicodeStrings(GetSourceEditor(FileName), Data);
     end
     else if FileExists(FileName) then // This might be an older version, but we have no choice
       LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary);
@@ -7680,7 +7680,7 @@ begin
   //TODO: Check stream format for forms as text (Ansi with escaped unicode, or UTF-8) in Delphi 2007/2009
   MemStream := TMemoryStream.Create;
   try
-    Ota.SaveReaderToStream(SourceEditor.CreateReader, MemStream, False);
+    SaveReaderToStream(SourceEditor.CreateReader, MemStream, False);
     MemStream.Position := 0;
     {$IFDEF UNICODE}
     Data.LoadFromStream(MemStream, TEncoding.UTF8);
@@ -7718,7 +7718,7 @@ begin
   RootComponent := FormEditor.GetRootComponent;
   if RootComponent <> nil then
   begin
-    Component := Ota.GetNativeComponent(RootComponent);
+    Component := GetNativeComponent(RootComponent);
     if Component <> nil then
     begin
       TextStream := nil;
@@ -7747,7 +7747,7 @@ class procedure Ota.LoadFileToUnicodeStrings(const FileName: string; Data: TGXUn
 var
   Dummy: Boolean;
 begin
-  Ota.LoadFileToUnicodeStrings(FileName, Data, Dummy);
+  LoadFileToUnicodeStrings(FileName, Data, Dummy);
 end;
 
 class procedure Ota.LoadFileToUnicodeStrings(const FileName: string; Data: TGXUnicodeStringList; var WasBinary: Boolean);
@@ -7758,8 +7758,8 @@ begin
     raise Exception.Create('Blank filenames are not allowed');
   WasBinary := False;
 
-  if not IsStandAlone and Ota.IsFileOpen(FileName, True) then
-    Ota.LoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
+  if not IsStandAlone and IsFileOpen(FileName, True) then
+    LoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
   else
     LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary)
 end;
@@ -7858,13 +7858,13 @@ end;
 class function Ota.IsWhiteSpaceInComment(const EditView: IOTAEditView;
   const EditorPosition: TOTAEditPos): Boolean;
 begin
-  Result := Ota.IsWhiteSpaceInElement(atComment, EditView, EditorPosition);
+  Result := IsWhiteSpaceInElement(atComment, EditView, EditorPosition);
 end;
 
 class function Ota.IsWhiteSpaceInString(const EditView: IOTAEditView;
   const EditorPosition: TOTAEditPos): Boolean;
 begin
-  Result := Ota.IsWhiteSpaceInElement(atString, EditView, EditorPosition);
+  Result := IsWhiteSpaceInElement(atString, EditView, EditorPosition);
 end;
 
 class procedure Ota.SetCurrentSourcePosition(Position: Integer);
@@ -7877,19 +7877,19 @@ var
   IdeString: UTF8String;
 {$ENDIF}
 begin
-  EditView := Ota.GetTopMostEditView;
+  EditView := GetTopMostEditView;
   if Assigned(EditView) then
   begin
 {$IFDEF GX_DELPHI8_UP}
     // Convert Position from character postion in the unicode/ansi string to
     // character position in UTF-8 encoded buffer.
     // todo: This should really be a function as well as the reverse.
-    if Ota.GetActiveEditorTextAsString(Buffer, False) then begin
+    if GetActiveEditorTextAsString(Buffer, False) then begin
       IdeString := ConvertToIDEEditorString(Buffer);
       Position := CharIndexToUTF8Pos(IdeString, Position);
     end;
 {$ENDIF}
-    CharPos := Ota.GetCharPosFromPos(Position - 1, EditView);
+    CharPos := GetCharPosFromPos(Position - 1, EditView);
     EditView.ConvertPos(False, EditPos, CharPos);
     EditView.CursorPos := EditPos;
     EditView.MoveViewToCursor;
@@ -7903,7 +7903,7 @@ var
   EditBuffer: IOTAEditBuffer;
 begin
   Result := '';
-  if Ota.TryGetTopMostEditBuffer(EditBuffer) and Assigned(EditBuffer.BufferOptions) then
+  if TryGetTopMostEditBuffer(EditBuffer) and Assigned(EditBuffer.BufferOptions) then
     Result := Trim(EditBuffer.BufferOptions.TabStops);
 end;
 
@@ -7915,7 +7915,7 @@ var
   SpacePos: Integer;
 begin
   if not IsStandAlone then
-    TabStops := Ota.GetTabStops;
+    TabStops := GetTabStops;
   SpacePos := LastCharPos(TabStops, ' ');
   if SpacePos > 0 then
     Result := StrToIntDef(Copy(TabStops, SpacePos + 1, 3), DefTabSize) - 1
@@ -7935,7 +7935,7 @@ var
   i: Integer;
   TabSize: Integer;
 begin
-  TabSize := Ota.GetTabWidth;
+  TabSize := GetTabWidth;
   for i := 0 to ALines.Count - 1 do
     ALines[i] := ExpandTabsInLine(ALines[i], TabSize);
 end;
@@ -7946,13 +7946,13 @@ var
   Lines: TStringList;
   MinIndex, MinSpaceCount: Integer;
 begin
-  SelText := Ota.GetCurrentSelection(False);
+  SelText := GetCurrentSelection(False);
 
   Lines := TStringList.Create;
   try
     Lines.Text := SelText;
 
-    Ota.ExpandTabsInList(Lines);
+    ExpandTabsInList(Lines);
     FindMinIndent(Lines, MinIndex, MinSpaceCount);
 
     if MinIndex >= 0 then
@@ -8018,7 +8018,7 @@ var
 begin
   List := TStringList.Create;
   try
-    Project := Ota.GetCurrentProject;
+    Project := GetCurrentProject;
     if not Assigned(Project) then
     begin
       ModuleServices := BorlandIDEServices as IOTAModuleServices;
@@ -8034,7 +8034,7 @@ begin
     end
     else
     begin
-      List.Add(Format('Project: %s (Personality: %s):', [Project.FileName, Ota.GetCurrentProjectPersonality]));
+      List.Add(Format('Project: %s (Personality: %s):', [Project.FileName, GetCurrentProjectPersonality]));
       AddEditorDetails(Project);
       List.Add('');
 
@@ -8043,7 +8043,7 @@ begin
         ModuleInfo := Project.GetModule(i);
         Assert(Assigned(ModuleInfo));
         List.Add(Format('ModuleInfo: %s (Name: %s, FormName: %s, DesignClass: %s):', [ModuleInfo.FileName, ModuleInfo.Name, ModuleInfo.FormName, ModuleInfo.DesignClass]));
-        Module := Ota.GetModule(ModuleInfo.FileName);
+        Module := GetModule(ModuleInfo.FileName);
         if not Assigned(Module) then
           List.Add('  <No IOTAModule>')
         else
@@ -8070,7 +8070,7 @@ var
   ActionShortCut: TShortCut;
   i: Integer;
 begin
-  Actions := Ota.GetIdeActionList;
+  Actions := GetIdeActionList;
   Assert(Assigned(Actions));
   Msg := '';
   for i := 0 to Actions.ActionCount - 1 do
@@ -8114,7 +8114,7 @@ var
   end;
 
 begin
-  View := Ota.GetTopMostEditView;
+  View := GetTopMostEditView;
   if not Assigned(View) then
     raise Exception.Create('No active edit view');
 
