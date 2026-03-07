@@ -94,7 +94,8 @@ object fmDeclareVariable: TfmDeclareVariable
     Top = 96
     Width = 30
     Height = 14
-    Caption = 'Type:'
+    Caption = '&Type:'
+    FocusControl = cmbType
   end
   object cmbType: TComboBox
     Left = 120
@@ -124,7 +125,8 @@ object fmDeclareVariable: TfmDeclareVariable
     Top = 128
     Width = 50
     Height = 14
-    Caption = 'Insert at:'
+    Caption = '&Insert at:'
+    FocusControl = cmbInsertAt
   end
   object cmbInsertAt: TComboBox
     Left = 120
@@ -140,7 +142,8 @@ object fmDeclareVariable: TfmDeclareVariable
     Top = 164
     Width = 79
     Height = 14
-    Caption = 'Read specifier:'
+    Caption = '&Read specifier:'
+    FocusControl = edtRead
     Visible = False
   end
   object edtRead: TEdit
@@ -157,7 +160,8 @@ object fmDeclareVariable: TfmDeclareVariable
     Top = 196
     Width = 82
     Height = 14
-    Caption = 'Write specifier:'
+    Caption = '&Write specifier:'
+    FocusControl = edtWrite
     Visible = False
   end
   object edtWrite: TEdit
