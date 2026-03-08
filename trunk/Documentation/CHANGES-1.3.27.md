@@ -43,6 +43,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Declare Variable: Type field changed to combobox with dropdown for selecting alternative types when multiple are possible (e.g. Integer/Cardinal/Int64/UInt64/Extended for Abs)
 - Declare Variable: External overloaded functions now collect all distinct return types as alternatives
 - Declare Variable: Added accelerator hotkeys (Alt+T, Alt+I, Alt+R, Alt+W) for Type, Insert at, Read specifier, and Write specifier fields
+- Declare Variable: Type inference now resolves inherited methods — covers `inherited Method`, `Self.Method`, `Obj.Method` on ancestors, and unqualified method calls inside class method bodies (e.g. `s := ClassName` resolving to `ShortString` via TObject)
 
 ## Bug Fixes
 
