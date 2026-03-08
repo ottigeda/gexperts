@@ -3,8 +3,8 @@ object fmPasteAsConfig: TfmPasteAsConfig
   Top = 292
   ActiveControl = cbPasteAsType
   BorderStyle = bsDialog
-  Caption = 'PasteAs Configuration'
-  ClientHeight = 209
+  Caption = 'String Conversion Options'
+  ClientHeight = 257
   ClientWidth = 313
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,16 +15,28 @@ object fmPasteAsConfig: TfmPasteAsConfig
   OldCreateOrder = True
   DesignSize = (
     313
-    209)
+    257)
   PixelsPerInch = 96
   TextHeight = 13
+  object lblSharedNote: TLabel
+    Left = 8
+    Top = 168
+    Width = 277
+    Height = 52
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 
+      'These settings are shared between the Paste Strings As, Convert ' +
+      'Raw Strings and Clipboard History experts.'#13#10'Note that the Conver' +
+      't Strings expert offers more extensive options.'
+    WordWrap = True
+  end
   object gbxPasteAsOptions: TGroupBox
     Left = 8
     Top = 8
     Width = 297
     Height = 153
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Caption = 'PasteAs Options'
+    Caption = 'Options'
     TabOrder = 0
     object lblMaxEntries: TLabel
       Left = 16
@@ -48,6 +60,7 @@ object fmPasteAsConfig: TfmPasteAsConfig
       Width = 170
       Height = 21
       Style = csDropDownList
+      ItemHeight = 13
       TabOrder = 0
     end
     object chkAddExtraSpaceAtTheEnd: TCheckBox
@@ -69,7 +82,7 @@ object fmPasteAsConfig: TfmPasteAsConfig
   end
   object btnOK: TButton
     Left = 152
-    Top = 176
+    Top = 224
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -80,7 +93,7 @@ object fmPasteAsConfig: TfmPasteAsConfig
   end
   object btnCancel: TButton
     Left = 232
-    Top = 176
+    Top = 224
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]

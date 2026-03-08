@@ -17,6 +17,7 @@ type
     cbPasteAsType: TComboBox;
     chkAddExtraSpaceAtTheEnd: TCheckBox;
     chkShowOptions: TCheckBox;
+    lblSharedNote: TLabel;
   private
     procedure SetData(_PasteAsType: TPasteAsType;
       _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean);
@@ -38,7 +39,7 @@ uses
 type
   ///<summary>
   /// @NOTE: Currently this expert shares the configuration of the TConvertRawStringsExpert expert
-  ///        (stored in the global GX_PastAs.PasteAsHandler).
+  ///        (stored in the global Framework\GX_PasteAs.PasteAsHandler).
   ///        The same configuration is used in the Clipboard History expert. </summary>
   TPasteAsExpert = class(TEditorExpert)
   protected
