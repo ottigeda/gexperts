@@ -777,6 +777,9 @@ var
   DeclText, ModifiedSource: string;
   Step: string;
   I: Integer;
+  NewCursorCharIdx: Integer;
+  CursorLinePos: TPoint;
+  CursorEditPos: TOTAEditPos;
   GExpertsObj: TGExperts;
   UsesExpert: TGX_Expert;
   Identifiers: TUnitExportlist;
@@ -845,8 +848,22 @@ begin
       Step := 'InsertDeclaration';
       ModifiedSource := InsertDeclaration(Src, InsertPt, DeclText);
 
+      // Calculate adjusted cursor position: if text was inserted before the
+      // cursor, shift the cursor by the number of inserted characters
+      NewCursorCharIdx := CursorCharIdx;
+      if InsertPt.CharPos <= CursorCharIdx then
+        NewCursorCharIdx := CursorCharIdx + (Length(ModifiedSource) - Length(Src));
+
       Step := 'ReplaceEditorText';
       Ota.ReplaceEditorText(SourceEditor, ModifiedSource);
+
+      Step := 'RestoreCursorPos';
+      CursorLinePos := CharPosToLinePos(NewCursorCharIdx, ModifiedSource);
+      if CursorLinePos.Y > 0 then begin
+        CursorEditPos.Line := CursorLinePos.Y;
+        CursorEditPos.Col := CursorLinePos.X;
+        Ota.GotoEditPos(CursorEditPos);
+      end;
       IncCallCount;
     finally
       FreeAndNil(Resolver);
