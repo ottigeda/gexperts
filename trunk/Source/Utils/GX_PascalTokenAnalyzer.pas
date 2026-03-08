@@ -1631,6 +1631,13 @@ begin
       if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkEqual) then begin
         TypeName := Tokens[I].Text;
         NI := NextNonJunk(Tokens, NI);
+        // Check for enum: TypeName = (val1, val2, ...)
+        // or set of enum: TypeName = set of (val1, val2, ...)
+        if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkSet) then begin
+          NI := NextNonJunk(Tokens, NI);
+          if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkOf) then
+            NI := NextNonJunk(Tokens, NI);
+        end;
         if (NI <= High(Tokens)) and (Tokens[NI].Kind = tkRoundOpen) then begin
           // Scan enum values inside parentheses
           ParenLevel := 1;

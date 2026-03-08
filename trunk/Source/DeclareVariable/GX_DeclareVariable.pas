@@ -510,6 +510,10 @@ begin
           Result := LookupVarType(Tokens, Tokens[RhsIdx].Text, Procs, Classes, I);
           if Result <> '' then
             Exit;
+          // Try local enum value (e.g., ssCtrl from TShiftState = set of (...))
+          Result := LookupEnumType(Tokens, Tokens[RhsIdx].Text);
+          if Result <> '' then
+            Exit;
           // Try external lookup for enum values, external constants, etc.
           if Assigned(ExternalLookup) then begin
             Result := ExternalLookup(Tokens[RhsIdx].Text, elkIdentType, -1);

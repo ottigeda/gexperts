@@ -89,6 +89,8 @@ type
     procedure TestInferFromClassNameUnqualifiedExternal;
     procedure TestBuildClassScopesSkipsBodylessClass;
     procedure TestInferWithBodylessClassesInSource;
+    procedure TestInferFromSetOfEnumValue;
+    procedure TestInferFromSetOfEnumValueExternal;
   end;
 
   TTestFindInsertionPoints = class(TTestCase)
@@ -496,7 +498,9 @@ var
   LookupClass, LookupMethod: string;
 begin
   Result := '';
-  if (Kind = elkMethodOfClass) and (FMockExternalSource <> '') then begin
+  if FMockExternalSource = '' then
+    Exit;
+  if Kind = elkMethodOfClass then begin
     DotPos := Pos('.', Name);
     if DotPos > 0 then begin
       LookupClass := Copy(Name, 1, DotPos - 1);
@@ -507,6 +511,11 @@ begin
       if ClsIdx >= 0 then
         Result := LookupMethodInClassDecl(Tokens, Classes[ClsIdx], LookupMethod);
     end;
+  end else if Kind = elkIdentType then begin
+    Tokens := TokenizeSource(FMockExternalSource);
+    Result := LookupEnumType(Tokens, Name);
+    if Result = '' then
+      Result := LookupConstType(Tokens, Name);
   end;
 end;
 
@@ -1025,6 +1034,32 @@ begin
     'begin'#13#10 +
     '  X := Self.GetName;'#13#10 +
     'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromSetOfEnumValue;
+begin
+  // s := ssCtrl where TShiftState = set of (ssShift, ssAlt, ssCtrl, ...)
+  CheckEquals('TShiftState', DoInfer(
+    'type'#13#10 +
+    '  TShiftState = set of (ssShift, ssAlt, ssCtrl,'#13#10 +
+    '    ssLeft, ssRight, ssMiddle, ssDouble);'#13#10 +
+    'procedure DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  s := ssCtrl;'#13#10 +
+    'end;', 's'));
+end;
+
+procedure TTestInferType.TestInferFromSetOfEnumValueExternal;
+begin
+  // s := ssCtrl where TShiftState is in an external unit
+  CheckEquals('TShiftState', DoInferWithExternal(
+    'procedure DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  s := ssCtrl;'#13#10 +
+    'end;', 's',
+    'type'#13#10 +
+    '  TShiftState = set of (ssShift, ssAlt, ssCtrl,'#13#10 +
+    '    ssLeft, ssRight, ssMiddle, ssDouble);'));
 end;
 
 { TTestFindInsertionPoints }

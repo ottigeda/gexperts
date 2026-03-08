@@ -876,6 +876,24 @@ begin
       FParser.NextNoJunkEx;
     end;
   end;
+  if FParser.Tokenid = tkSet then begin
+    // set of (...) -> extract anonymous enum values
+    FParser.NextNoJunkEx;
+    if FParser.Tokenid = tkOf then begin
+      FParser.NextNoJunkEx;
+      if FParser.Tokenid = tkRoundOpen then begin
+        FParser.NextNoJunkEx;
+        while FParser.Tokenid <> tkRoundClose do begin
+          if FParser.Tokenid = tkNull then
+            Exit; //==>
+          if FParser.Tokenid = tkIdentifier then begin
+            AddToIdentifiers(FParser.Token, itConst, FParser.LineNumber);
+          end;
+          FParser.NextNoJunkEx;
+        end;
+      end;
+    end;
+  end;
   if FParser.Tokenid = tkPacked then
     FParser.NextNoJunkEx;
   while FParser.Tokenid <> tkNull do begin
