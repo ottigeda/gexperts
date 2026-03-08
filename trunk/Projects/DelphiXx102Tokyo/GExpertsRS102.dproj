@@ -326,7 +326,9 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
-        <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_eRenameIdentifier.pas">
+            <Form>fmRenameIdentifier</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_PascalTokenAnalyzer.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_RenameIdentifier.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
@@ -526,6 +528,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_InspectionServer.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
             <FormType>dfm</FormType>
@@ -704,6 +707,7 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_SplitterPainter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>
@@ -747,6 +751,7 @@ $(PreBuildEvent)]]>
             <Form>fmUsesManager</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\UsesExpert\GX_UsesSortGroups.pas"/>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
             <FormType>dfm</FormType>
