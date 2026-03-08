@@ -13,7 +13,7 @@ uses
   mPasLex, mwPasParserTypes;
 
 type
-  TExternalLookupKind = (elkFuncReturn, elkParamType, elkIdentType);
+  TExternalLookupKind = (elkFuncReturn, elkParamType, elkIdentType, elkMethodOfClass);
 
   /// <summary>
   /// Callback for resolving types from external units (UCM, intrinsics, etc.).
@@ -348,10 +348,13 @@ function InferTypeFromContext(const Tokens: TTokenArray; IdentTokenIdx: Integer;
 var
   I, NI, PI, AssignIdx, RhsIdx, LhsIdx, FuncIdx: Integer;
   ParenLevel, ParamIndex: Integer;
-  FuncName, ArgType: string;
+  FuncName, ArgType, UnresolvedParent: string;
+  EncProcs: TProcScopeArray;
+  ClsIdx, K: Integer;
 begin
   Result := '';
   AlternativeTypes := nil;
+  EncProcs := nil;
 
   // Scan all occurrences of the identifier to find assignment context
   for I := 0 to High(Tokens) do begin
@@ -389,6 +392,30 @@ begin
         end;
       end;
 
+      // Pattern: Ident := inherited Method or inherited Method(...)
+      if Tokens[RhsIdx].Kind = tkInherited then begin
+        AssignIdx := NextNonJunk(Tokens, RhsIdx);
+        if (AssignIdx <= High(Tokens)) and (Tokens[AssignIdx].Kind in IdentDirect) then begin
+          // Find enclosing method's class and its parent
+          EncProcs := FindEnclosingProcs(Procs, I);
+          for K := High(EncProcs) downto 0 do begin
+            if EncProcs[K].ClassName <> '' then begin
+              ClsIdx := FindClassByName(Classes, EncProcs[K].ClassName);
+              if (ClsIdx >= 0) and (Classes[ClsIdx].ParentName <> '') then begin
+                Result := LookupMethodInLocalHierarchy(Tokens, Classes, Procs,
+                  Classes[ClsIdx].ParentName, Tokens[AssignIdx].Text, UnresolvedParent);
+                if (Result = '') and (UnresolvedParent <> '') and Assigned(ExternalLookup) then
+                  Result := ExternalLookup(UnresolvedParent + '.' + Tokens[AssignIdx].Text,
+                    elkMethodOfClass, -1);
+              end;
+              Break;
+            end;
+          end;
+          if Result <> '' then
+            Exit;
+        end;
+      end;
+
       // Check for True/False -> Boolean
       if (Tokens[RhsIdx].Kind in IdentDirect) then begin
         if SameText(Tokens[RhsIdx].Text, 'True') or SameText(Tokens[RhsIdx].Text, 'False') then begin
@@ -421,11 +448,31 @@ begin
             Result := LookupFuncReturnType(Tokens, Tokens[AssignIdx].Text,
               Tokens[RhsIdx].Text, Procs);
             if Result = '' then begin
-              // Qualifier may be a variable, not a class — look up its type
-              FuncName := LookupVarType(Tokens, Tokens[RhsIdx].Text, Procs, Classes, I);
-              if FuncName <> '' then
+              // Qualifier may be a variable or Self — look up its type
+              if SameText(Tokens[RhsIdx].Text, 'Self') then begin
+                // Self refers to the enclosing class
+                FuncName := '';
+                EncProcs := FindEnclosingProcs(Procs, I);
+                for K := High(EncProcs) downto 0 do begin
+                  if EncProcs[K].ClassName <> '' then begin
+                    FuncName := EncProcs[K].ClassName;
+                    Break;
+                  end;
+                end;
+              end else
+                FuncName := LookupVarType(Tokens, Tokens[RhsIdx].Text, Procs, Classes, I);
+              if FuncName <> '' then begin
                 Result := LookupFuncReturnType(Tokens, Tokens[AssignIdx].Text,
                   FuncName, Procs);
+                // Try hierarchy walking for inherited methods
+                if Result = '' then begin
+                  Result := LookupMethodInLocalHierarchy(Tokens, Classes, Procs,
+                    FuncName, Tokens[AssignIdx].Text, UnresolvedParent);
+                  if (Result = '') and (UnresolvedParent <> '') and Assigned(ExternalLookup) then
+                    Result := ExternalLookup(UnresolvedParent + '.' + Tokens[AssignIdx].Text,
+                      elkMethodOfClass, -1);
+                end;
+              end;
             end;
             // Fallback: try external lookup for Obj.Method
             if (Result = '') and Assigned(ExternalLookup) then
@@ -470,6 +517,22 @@ begin
               Exit;
           end;
         end;
+
+        // Fallback: try enclosing class hierarchy for unqualified method calls
+        // (e.g., s := ClassName inside a method body — ClassName is on TObject)
+        EncProcs := FindEnclosingProcs(Procs, I);
+        for K := High(EncProcs) downto 0 do begin
+          if EncProcs[K].ClassName <> '' then begin
+            Result := LookupMethodInLocalHierarchy(Tokens, Classes, Procs,
+              EncProcs[K].ClassName, Tokens[RhsIdx].Text, UnresolvedParent);
+            if (Result = '') and (UnresolvedParent <> '') and Assigned(ExternalLookup) then
+              Result := ExternalLookup(UnresolvedParent + '.' + Tokens[RhsIdx].Text,
+                elkMethodOfClass, -1);
+            Break;
+          end;
+        end;
+        if Result <> '' then
+          Exit;
 
         // Fallback: check if expression contains '/' (always float in Delphi)
         if ExpressionIsFloat(Tokens, RhsIdx) then begin

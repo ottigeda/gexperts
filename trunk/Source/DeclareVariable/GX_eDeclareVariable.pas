@@ -85,6 +85,7 @@ type
     function ParseFileForParamType(const FilePath, FuncName: string;
       ParamIndex: Integer): string;
     function ParseFileForIdentType(const FilePath, IdentName: string): string;
+    function ResolveMethodInExternalHierarchy(const ClassName, MethodName: string): string;
   public
     constructor Create(Identifiers: TUnitExportlist;
       SourceEditor: IOTASourceEditor);
@@ -397,6 +398,54 @@ begin
   Result := LookupConstType(Tokens, IdentName);
 end;
 
+function TExternalTypeResolver.ResolveMethodInExternalHierarchy(
+  const ClassName, MethodName: string): string;
+var
+  Found: TList;
+  I, ClsIdx, Level: Integer;
+  Export: TUnitExport;
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+  Procs: TProcScopeArray;
+  CurrentClass: string;
+begin
+  Result := '';
+  CurrentClass := ClassName;
+
+  for Level := 0 to 9 do begin
+    if CurrentClass = '' then
+      Exit;
+
+    Found := TList.Create;
+    try
+      if not FIdentifiers.FindExact(AnsiString(LowerCase(CurrentClass)), Found) then
+        Exit;
+
+      for I := 0 to Found.Count - 1 do begin
+        Export := TUnitExport(Found[I]);
+        if not IsUnitInUses(Export.FileName) then
+          Continue;
+        if not GetCachedTokens(Export.FileName, Tokens, Procs, Classes) then
+          Continue;
+
+        ClsIdx := FindClassByName(Classes, CurrentClass);
+        if ClsIdx < 0 then
+          Continue;
+
+        Result := LookupMethodInClassDecl(Tokens, Classes[ClsIdx], MethodName);
+        if Result <> '' then
+          Exit;
+
+        // Move to parent class
+        CurrentClass := Classes[ClsIdx].ParentName;
+        Break; // Found the class definition, move to next level
+      end;
+    finally
+      Found.Free;
+    end;
+  end;
+end;
+
 function TExternalTypeResolver.Lookup(const Name: string; Kind: TExternalLookupKind;
   ParamIndex: Integer): string;
 var
@@ -407,11 +456,24 @@ var
   Classes: TClassScopeArray;
   Procs: TProcScopeArray;
   AllTypes: TTypeAlternatives;
+  DotPos: Integer;
+  LookupClass, LookupMethod: string;
 begin
   Result := '';
   FLastAlternatives := nil;
   if not Assigned(FIdentifiers) then
     Exit;
+
+  // Handle elkMethodOfClass: Name is "ClassName.MethodName"
+  if Kind = elkMethodOfClass then begin
+    DotPos := Pos('.', Name);
+    if DotPos > 0 then begin
+      LookupClass := Copy(Name, 1, DotPos - 1);
+      LookupMethod := Copy(Name, DotPos + 1, Length(Name) - DotPos);
+      Result := ResolveMethodInExternalHierarchy(LookupClass, LookupMethod);
+    end;
+    Exit;
+  end;
 
   Found := TList.Create;
   try

@@ -20,9 +20,14 @@ type
 
   TTestInferType = class(TTestCase)
   private
+    FMockExternalSource: string;
     function DoInfer(const Source: string; const IdentName: string): string;
     function DoInferWithAlternatives(const Source: string; const IdentName: string;
       out Alternatives: TTypeAlternatives): string;
+    function DoInferWithExternal(const Source: string; const IdentName: string;
+      const ExternalSource: string): string;
+    function MockExternalLookup(const Name: string; Kind: TExternalLookupKind;
+      ParamIndex: Integer): string;
   published
     procedure TestInferFromIntegerLiteral;
     procedure TestInferFromFloatLiteral;
@@ -69,6 +74,21 @@ type
     procedure TestAbsAlternativesWhenUnknown;
     procedure TestAbsAlternativesWhenKnownInteger;
     procedure TestPredAlternativesWhenUnknown;
+    // Inherited methods / hierarchy walking
+    procedure TestInferFromInheritedMethod;
+    procedure TestInferFromInheritedMethodNoParens;
+    procedure TestInferFromMethodOnAncestorClass;
+    procedure TestInferFromMethodOnGrandparentClass;
+    procedure TestInferFromSelfDotMethod;
+    procedure TestInferFromSelfDotInheritedMethod;
+    procedure TestInferFromUnqualifiedMethodInBody;
+    procedure TestInferFromUnqualifiedInheritedMethodInBody;
+    procedure TestInferFromSelfDotMethodImplicitTObject;
+    procedure TestInferFromUnqualifiedMethodImplicitTObject;
+    procedure TestInferFromSelfDotClassNameExternal;
+    procedure TestInferFromClassNameUnqualifiedExternal;
+    procedure TestBuildClassScopesSkipsBodylessClass;
+    procedure TestInferWithBodylessClassesInSource;
   end;
 
   TTestFindInsertionPoints = class(TTestCase)
@@ -467,6 +487,58 @@ begin
   end;
 end;
 
+function TTestInferType.MockExternalLookup(const Name: string;
+  Kind: TExternalLookupKind; ParamIndex: Integer): string;
+var
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+  DotPos, ClsIdx: Integer;
+  LookupClass, LookupMethod: string;
+begin
+  Result := '';
+  if (Kind = elkMethodOfClass) and (FMockExternalSource <> '') then begin
+    DotPos := Pos('.', Name);
+    if DotPos > 0 then begin
+      LookupClass := Copy(Name, 1, DotPos - 1);
+      LookupMethod := Copy(Name, DotPos + 1, Length(Name) - DotPos);
+      Tokens := TokenizeSource(FMockExternalSource);
+      Classes := BuildClassScopes(Tokens);
+      ClsIdx := FindClassByName(Classes, LookupClass);
+      if ClsIdx >= 0 then
+        Result := LookupMethodInClassDecl(Tokens, Classes[ClsIdx], LookupMethod);
+    end;
+  end;
+end;
+
+function TTestInferType.DoInferWithExternal(const Source: string;
+  const IdentName: string; const ExternalSource: string): string;
+var
+  Tokens: TTokenArray;
+  Procs: TProcScopeArray;
+  Classes: TClassScopeArray;
+  I: Integer;
+  IdentIdx: Integer;
+begin
+  Tokens := TokenizeSource(Source);
+  Classes := BuildClassScopes(Tokens);
+  Procs := BuildProcScopes(Tokens, Classes);
+
+  IdentIdx := -1;
+  for I := 0 to High(Tokens) do begin
+    if SameText(Tokens[I].Text, IdentName) then begin
+      IdentIdx := I;
+      Break;
+    end;
+  end;
+
+  FMockExternalSource := ExternalSource;
+  if IdentIdx >= 0 then
+    Result := InferTypeFromContext(Tokens, IdentIdx, IdentName, Procs, Classes,
+      MockExternalLookup)
+  else
+    Result := '';
+end;
+
 procedure TTestInferType.TestInferAbsOfInteger;
 begin
   CheckEquals('Integer', DoInfer(
@@ -664,6 +736,295 @@ begin
   CheckEquals(2, Length(Alts), 'Should have 2 alternatives');
   CheckEquals('Char', Alts[0]);
   CheckEquals('Byte', Alts[1]);
+end;
+
+procedure TTestInferType.TestInferFromInheritedMethod;
+begin
+  // X := inherited GetValue(...) where parent has function GetValue: Double
+  CheckEquals('Double', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetValue: Double;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetValue: Double;'#13#10 +
+    'begin Result := 0.0; end;'#13#10 +
+    'procedure TChild.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := inherited GetValue;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromInheritedMethodNoParens;
+begin
+  // Same but with parens: X := inherited GetName(...)
+  CheckEquals('string', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetName: string;'#13#10 +
+    'begin Result := ''''; end;'#13#10 +
+    'procedure TChild.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := inherited GetName();'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromMethodOnAncestorClass;
+begin
+  // X := Obj.GetName where Obj: TChild, GetName is on TBase
+  CheckEquals('string', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetName: string;'#13#10 +
+    'begin Result := ''''; end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  Obj: TChild;'#13#10 +
+    'begin'#13#10 +
+    '  X := Obj.GetName;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromMethodOnGrandparentClass;
+begin
+  // X := Obj.GetId where Obj: TGrandChild, GetId is on TBase (3 levels)
+  CheckEquals('Integer', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetId: Integer;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '  end;'#13#10 +
+    '  TGrandChild = class(TChild)'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetId: Integer;'#13#10 +
+    'begin Result := 0; end;'#13#10 +
+    'procedure Foo;'#13#10 +
+    'var'#13#10 +
+    '  Obj: TGrandChild;'#13#10 +
+    'begin'#13#10 +
+    '  X := Obj.GetId;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromSelfDotMethod;
+begin
+  // X := Self.GetValue where GetValue is on the same class
+  CheckEquals('Integer', DoInfer(
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    function GetValue: Integer;'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TMyClass.GetValue: Integer;'#13#10 +
+    'begin Result := 0; end;'#13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := Self.GetValue;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromSelfDotInheritedMethod;
+begin
+  // X := Self.GetName where GetName is on ancestor TBase
+  CheckEquals('string', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetName: string;'#13#10 +
+    'begin Result := ''''; end;'#13#10 +
+    'procedure TChild.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := Self.GetName;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromUnqualifiedMethodInBody;
+begin
+  // X := GetValue (no qualifier) inside TMyClass.DoStuff
+  CheckEquals('Integer', DoInfer(
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    function GetValue: Integer;'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TMyClass.GetValue: Integer;'#13#10 +
+    'begin Result := 0; end;'#13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := GetValue;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromUnqualifiedInheritedMethodInBody;
+begin
+  // X := GetName (no qualifier) inside TChild.DoStuff, GetName is on TBase
+  CheckEquals('string', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetName: string;'#13#10 +
+    'begin Result := ''''; end;'#13#10 +
+    'procedure TChild.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := GetName;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromSelfDotMethodImplicitTObject;
+begin
+  // X := Self.GetTag where GetTag is on TBase, TMyClass has no explicit parent
+  // but TBase is in the same unit. TMyClass = class (implicit TObject parent)
+  // but since TObject is external, this won't resolve locally.
+  // Instead, test with explicit parent.
+  CheckEquals('Integer', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetTag: Integer;'#13#10 +
+    '  end;'#13#10 +
+    '  TMyClass = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetTag: Integer;'#13#10 +
+    'begin Result := 0; end;'#13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := Self.GetTag;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromUnqualifiedMethodImplicitTObject;
+begin
+  // X := GetTag (no qualifier) inside TMyClass.DoStuff, GetTag on TBase
+  // TMyClass inherits from TBase
+  CheckEquals('Integer', DoInfer(
+    'type'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetTag: Integer;'#13#10 +
+    '  end;'#13#10 +
+    '  TMyClass = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'function TBase.GetTag: Integer;'#13#10 +
+    'begin Result := 0; end;'#13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := GetTag;'#13#10 +
+    'end;', 'X'));
+end;
+
+procedure TTestInferType.TestInferFromSelfDotClassNameExternal;
+begin
+  // s := Self.ClassName where ClassName is on TObject (external unit)
+  // TMyClass = class (no explicit parent -> implicit TObject)
+  CheckEquals('ShortString', DoInferWithExternal(
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  s := Self.ClassName;'#13#10 +
+    'end;', 's',
+    // Mock external source simulating System.pas with TObject
+    'type'#13#10 +
+    '  TObject = class'#13#10 +
+    '    constructor Create;'#13#10 +
+    '    procedure Free;'#13#10 +
+    '    class function ClassName: ShortString;'#13#10 +
+    '    function ClassType: TClass;'#13#10 +
+    '  end;'));
+end;
+
+procedure TTestInferType.TestInferFromClassNameUnqualifiedExternal;
+begin
+  // s := ClassName (no qualifier) inside TMyClass.DoStuff
+  // ClassName is on TObject (external), TMyClass has no explicit parent
+  CheckEquals('ShortString', DoInferWithExternal(
+    'type'#13#10 +
+    '  TMyClass = class'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'procedure TMyClass.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  s := ClassName;'#13#10 +
+    'end;', 's',
+    // Mock external source simulating System.pas with TObject
+    'type'#13#10 +
+    '  TObject = class'#13#10 +
+    '    constructor Create;'#13#10 +
+    '    procedure Free;'#13#10 +
+    '    class function ClassName: ShortString;'#13#10 +
+    '    function ClassType: TClass;'#13#10 +
+    '  end;'));
+end;
+
+procedure TTestInferType.TestBuildClassScopesSkipsBodylessClass;
+var
+  Source: string;
+  Tokens: TTokenArray;
+  Classes: TClassScopeArray;
+begin
+  // Bodyless classes like EFoo = class(Exception); must not break
+  // BuildClassScopes — they have no 'end' and must be skipped.
+  Source :=
+    'type'#13#10 +
+    '  EStreamError = class(Exception);'#13#10 +
+    '  EFileStreamError = class(EStreamError)'#13#10 +
+    '    constructor Create(const Msg: string);'#13#10 +
+    '  end;'#13#10 +
+    '  EFCreateError = class(EFileStreamError);'#13#10 +
+    '  EFOpenError = class(EFileStreamError);'#13#10 +
+    '  TComponent = class(TPersistent)'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '  end;';
+  Tokens := TokenizeSource(Source);
+  Classes := BuildClassScopes(Tokens);
+
+  // Should find only the two classes with bodies, not the bodyless ones
+  CheckEquals(2, Length(Classes), 'Should find 2 classes (bodyless skipped)');
+  CheckEquals('EFileStreamError', Classes[0].Name);
+  CheckEquals('TComponent', Classes[1].Name);
+end;
+
+procedure TTestInferType.TestInferWithBodylessClassesInSource;
+begin
+  // Verify type inference works when bodyless exception classes precede
+  // the real class declarations (the bug that broke Classes.pas parsing)
+  CheckEquals('string', DoInfer(
+    'type'#13#10 +
+    '  EMyError = class(Exception);'#13#10 +
+    '  EMyOtherError = class(EMyError);'#13#10 +
+    '  TBase = class'#13#10 +
+    '    function GetName: string;'#13#10 +
+    '  end;'#13#10 +
+    '  TChild = class(TBase)'#13#10 +
+    '    procedure DoStuff;'#13#10 +
+    '  end;'#13#10 +
+    'procedure TChild.DoStuff;'#13#10 +
+    'begin'#13#10 +
+    '  X := Self.GetName;'#13#10 +
+    'end;', 'X'));
 end;
 
 { TTestFindInsertionPoints }

@@ -45,6 +45,7 @@ type
 
   TClassScope = record
     Name: string;
+    ParentName: string;    // parent class name ('' if none or not detected)
     DeclStart: Integer;    // token index of 'class'/'record' keyword
     DeclEnd: Integer;      // token index of matching 'end'
   end;
@@ -244,6 +245,43 @@ function LookupEnumType(const Tokens: TTokenArray;
 function LookupConstType(const Tokens: TTokenArray;
   const ConstName: string): string;
 
+/// <summary>
+/// Finds a class in the class scope array by name (case-insensitive).
+/// @param Classes the class scope array to search
+/// @param Name the class name to find
+/// @returns the index into Classes, or -1 if not found </summary>
+function FindClassByName(const Classes: TClassScopeArray;
+  const Name: string): Integer;
+
+/// <summary>
+/// Scans a class declaration's token range for a function/method with the given
+/// name and returns its return type. Only checks interface-section-style
+/// declarations (not implementation bodies).
+/// @param Tokens the token array
+/// @param Cls the class scope to search within
+/// @param MethodName the method name to look up
+/// @returns the return type string, or '' if not found </summary>
+function LookupMethodInClassDecl(const Tokens: TTokenArray;
+  const Cls: TClassScope; const MethodName: string): string;
+
+/// <summary>
+/// Walks the ancestor chain within the local unit to find a method's return type.
+/// Tries both implementation-section procs (via LookupFuncReturnType) and
+/// interface-section class declarations (via LookupMethodInClassDecl) for each
+/// ancestor class. If the parent class is not found locally, returns its name
+/// in UnresolvedParent for external lookup.
+/// @param Tokens the token array
+/// @param Classes the class scope array
+/// @param Procs the proc scope array
+/// @param StartClassName the class to start searching from
+/// @param MethodName the method name to look up
+/// @param UnresolvedParent receives the name of the first ancestor not found locally
+/// @returns the return type string, or '' if not found </summary>
+function LookupMethodInLocalHierarchy(const Tokens: TTokenArray;
+  const Classes: TClassScopeArray; const Procs: TProcScopeArray;
+  const StartClassName, MethodName: string;
+  out UnresolvedParent: string): string;
+
 implementation
 
 uses
@@ -344,6 +382,43 @@ var
   I, J, NestLevel, Count, Capacity: Integer;
   Cls: TClassScope;
   PrevI, NameI, NextI: Integer;
+
+  // Checks whether the struct keyword at position StructIdx is bodyless:
+  // forward declaration (class;), class reference (class of), or bodyless
+  // class with parent (class(Parent);). Returns True if bodyless.
+  function IsBodylessStruct(StructIdx: Integer): Boolean;
+  var
+    NI, Depth: Integer;
+  begin
+    Result := False;
+    NI := NextNonJunk(Tokens, StructIdx);
+    if NI > High(Tokens) then
+      Exit;
+    // Forward declaration: class;
+    if Tokens[NI].Kind = tkSemiColon then begin
+      Result := True;
+      Exit;
+    end;
+    // Class reference: class of
+    if Tokens[NI].Kind = tkOf then begin
+      Result := True;
+      Exit;
+    end;
+    // Bodyless class with parent: class(Parent, IFoo, ...);
+    if Tokens[NI].Kind = tkRoundOpen then begin
+      Depth := 1;
+      Inc(NI);
+      while (NI <= High(Tokens)) and (Depth > 0) do begin
+        if Tokens[NI].Kind = tkRoundOpen then Inc(Depth)
+        else if Tokens[NI].Kind = tkRoundClose then Dec(Depth);
+        Inc(NI);
+      end;
+      // NI is past ')'. Check next non-junk for ';'
+      NI := NextNonJunk(Tokens, NI - 1);
+      Result := (NI <= High(Tokens)) and (Tokens[NI].Kind = tkSemiColon);
+    end;
+  end;
+
 begin
   Capacity := 16;
   SetLength(Result, Capacity);
@@ -363,20 +438,34 @@ begin
         Continue;
       end;
 
-      NextI := NextNonJunk(Tokens, I);
-      // Forward declaration: class;
-      if (NextI <= High(Tokens)) and (Tokens[NextI].Kind = tkSemiColon) then begin
-        Inc(I);
-        Continue;
-      end;
-      // Class reference: class of
-      if (NextI <= High(Tokens)) and (Tokens[NextI].Kind = tkOf) then begin
+      if IsBodylessStruct(I) then begin
         Inc(I);
         Continue;
       end;
 
+      NextI := NextNonJunk(Tokens, I);
+
       Cls.Name := Tokens[NameI].Text;
       Cls.DeclStart := I;
+
+      // Extract parent class name if present: class(TParent, ...)
+      Cls.ParentName := '';
+      if (NextI <= High(Tokens)) and (Tokens[NextI].Kind = tkRoundOpen) then begin
+        NextI := NextNonJunk(Tokens, NextI);
+        if (NextI <= High(Tokens)) and (Tokens[NextI].Kind in IdentDirect) then begin
+          Cls.ParentName := Tokens[NextI].Text;
+          // Handle dotted names like System.TObject — take last part
+          NextI := NextNonJunk(Tokens, NextI);
+          while (NextI <= High(Tokens)) and (Tokens[NextI].Kind = tkPoint) do begin
+            NextI := NextNonJunk(Tokens, NextI);
+            if (NextI <= High(Tokens)) and (Tokens[NextI].Kind in IdentDirect) then begin
+              Cls.ParentName := Tokens[NextI].Text;
+              NextI := NextNonJunk(Tokens, NextI);
+            end else
+              Break;
+          end;
+        end;
+      end;
 
       // Find matching 'end'
       NestLevel := 1;
@@ -384,10 +473,11 @@ begin
       while (J <= High(Tokens)) and (NestLevel > 0) do begin
         if IsStructKeyword(Tokens[J].Kind) then begin
           PrevI := PrevNonJunk(Tokens, J);
+          // Handle both '= class' and '= packed record'
+          if (PrevI >= 0) and (Tokens[PrevI].Kind = tkPacked) then
+            PrevI := PrevNonJunk(Tokens, PrevI);
           if (PrevI >= 0) and (Tokens[PrevI].Kind = tkEqual) then begin
-            // Check not forward
-            NextI := NextNonJunk(Tokens, J);
-            if not ((NextI <= High(Tokens)) and (Tokens[NextI].Kind = tkSemiColon)) then
+            if not IsBodylessStruct(J) then
               Inc(NestLevel);
           end;
         end else if Tokens[J].Kind = tkEnd then
@@ -409,6 +499,99 @@ begin
       Inc(I);
   end;
   SetLength(Result, Count);
+end;
+
+function FindClassByName(const Classes: TClassScopeArray;
+  const Name: string): Integer;
+var
+  I: Integer;
+begin
+  Result := -1;
+  for I := 0 to High(Classes) do begin
+    if SameText(Classes[I].Name, Name) then begin
+      Result := I;
+      Exit;
+    end;
+  end;
+end;
+
+function LookupMethodInClassDecl(const Tokens: TTokenArray;
+  const Cls: TClassScope; const MethodName: string): string;
+var
+  I, NI: Integer;
+begin
+  Result := '';
+  I := Cls.DeclStart + 1;
+  while I < Cls.DeclEnd do begin
+    if Tokens[I].Kind = tkFunction then begin
+      NI := NextNonJunk(Tokens, I);
+      if (NI < Cls.DeclEnd) and (Tokens[NI].Kind in IdentDirect) and
+         SameText(Tokens[NI].Text, MethodName) then begin
+        // Find the return type colon (skip past parameter list)
+        NI := NI + 1;
+        while (NI < Cls.DeclEnd) and (Tokens[NI].Kind <> tkColon) and
+              (Tokens[NI].Kind <> tkSemiColon) do begin
+          if Tokens[NI].Kind = tkRoundOpen then begin
+            // Skip parameter list
+            Inc(NI);
+            while (NI < Cls.DeclEnd) and (Tokens[NI].Kind <> tkRoundClose) do
+              Inc(NI);
+          end;
+          Inc(NI);
+        end;
+        if (NI < Cls.DeclEnd) and (Tokens[NI].Kind = tkColon) then begin
+          Result := ExtractTypeAfterColon(Tokens, NI);
+          if Result <> '' then
+            Exit;
+        end;
+      end;
+    end;
+    Inc(I);
+  end;
+end;
+
+function LookupMethodInLocalHierarchy(const Tokens: TTokenArray;
+  const Classes: TClassScopeArray; const Procs: TProcScopeArray;
+  const StartClassName, MethodName: string;
+  out UnresolvedParent: string): string;
+var
+  CurrentClass: string;
+  ClsIdx, Level: Integer;
+begin
+  Result := '';
+  UnresolvedParent := '';
+  CurrentClass := StartClassName;
+
+  for Level := 0 to 9 do begin
+    if CurrentClass = '' then
+      Exit;
+
+    // Try implementation-section procs first (LookupFuncReturnType uses Procs)
+    Result := LookupFuncReturnType(Tokens, MethodName, CurrentClass, Procs);
+    if Result <> '' then
+      Exit;
+
+    // Try interface-section class declaration
+    ClsIdx := FindClassByName(Classes, CurrentClass);
+    if ClsIdx < 0 then begin
+      // Class not found locally — return for external lookup
+      UnresolvedParent := CurrentClass;
+      Exit;
+    end;
+
+    Result := LookupMethodInClassDecl(Tokens, Classes[ClsIdx], MethodName);
+    if Result <> '' then
+      Exit;
+
+    // Move to parent (implicit TObject for classes without explicit parent)
+    CurrentClass := Classes[ClsIdx].ParentName;
+    if (CurrentClass = '') and (Tokens[Classes[ClsIdx].DeclStart].Kind = tkClass) then
+      CurrentClass := 'TObject';
+  end;
+
+  // If we exhausted levels without finding it and last class had a parent
+  if CurrentClass <> '' then
+    UnresolvedParent := CurrentClass;
 end;
 
 function IsTokenInsideAnyClass(TokenIndex: Integer; const Classes: TClassScopeArray): Boolean;
