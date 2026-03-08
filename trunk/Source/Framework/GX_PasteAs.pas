@@ -102,6 +102,8 @@ var
   I, FirstCharPos: Integer;
   ALine, BaseIndent, ALineStart, ALineEnd, ALineStartBase, AAddDot: String;
 begin
+  if ALines.Count = 0 then
+    Exit; //==>
   FirstCharPos := DetermineIndent(ALines);
   // this works, because FirstCharPos is the smallest Indent for all lines
   BaseIndent := LeftStr(ALines[0], FirstCharPos - 1);
@@ -158,6 +160,8 @@ var
   Line, BaseIndent: String;
   sl: TStringList;
 begin
+  if ALines.Count = 0 then
+    Exit; //==>
   FirstCharPos := DetermineIndent(ALines);
   // this works, because FirstCharPos is the smallest Indent for all lines
   BaseIndent := LeftStr(ALines[0], FirstCharPos - 1);
