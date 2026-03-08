@@ -465,6 +465,20 @@ begin
       Prop[i].SetComponent(CompIntf);
 end;
 
+{$IFDEF GX_BUGFIX150}
+// Bug #150: Properties like AutoSize, Align, Anchors and WordWrap affect the
+// component's size when set. If they are copied after Height/Width, the
+// dimensions get overridden. This two-pass version sets "controlling" properties
+// first, then everything else.
+function IsPriorityProperty(const _Name: string): Boolean;
+begin
+  Result := SameText(_Name, 'AutoSize')
+    or SameText(_Name, 'Align')
+    or SameText(_Name, 'Anchors')
+    or SameText(_Name, 'WordWrap');
+end;
+{$ENDIF GX_BUGFIX150}
+
 // For each property: 1) find mappings, 2) execute assign
 procedure TPropList.AssignPropsToCompByMapping(OldCompIntf, NewCompIntf: IOTAComponent);
 var
@@ -480,6 +494,25 @@ begin
   try
     NewPropList := TPropList.Create(FController, NewCompIntf);
     try
+{$IFDEF GX_BUGFIX150}
+      // Bug #150: First pass — set properties that control sizing behavior
+      for i := 0 to Count-1 do
+        if not SameText(Prop[i].Name, 'Name') and IsPriorityProperty(Prop[i].Name) then
+        begin
+          Mappings.Clear;
+          FController.PrepareMappingForProp(CompClassName, Prop[i].Name, Mappings);
+          ExecutePropAssignWithMapping(OldCompIntf, NewCompIntf, Prop[i], NewPropList, Mappings);
+        end;
+
+      // Second pass — set all remaining properties
+      for i := 0 to Count-1 do
+        if not SameText(Prop[i].Name, 'Name') and not IsPriorityProperty(Prop[i].Name) then
+        begin
+          Mappings.Clear;
+          FController.PrepareMappingForProp(CompClassName, Prop[i].Name, Mappings);
+          ExecutePropAssignWithMapping(OldCompIntf, NewCompIntf, Prop[i], NewPropList, Mappings);
+        end;
+{$ELSE GX_BUGFIX150}
       // Apply defined copy property mappings
       for i := 0 to Count-1 do
         if not SameText(Prop[i].Name, 'Name') then
@@ -488,6 +521,7 @@ begin
           FController.PrepareMappingForProp(CompClassName, Prop[i].Name, Mappings);
           ExecutePropAssignWithMapping(OldCompIntf, NewCompIntf, Prop[i], NewPropList, Mappings);
         end;
+{$ENDIF GX_BUGFIX150}
 
       // Apply defined constant mappings
       for i := 0 to NewPropList.Count-1 do
