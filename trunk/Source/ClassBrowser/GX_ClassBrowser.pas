@@ -225,7 +225,7 @@ type
     procedure PrintClassReportBuiltIn;
     procedure PrintClassBuiltIn(OInfo: TBrowseClassInfoCollection; ACanvas: TCanvas);
     procedure PrintClassHierarchyBuiltIn;
-    procedure PrintClassDiagramBuiltIn(OInfo: TBrowseClassInfoCollection; ACanvas: TCanvas; BoxSize, VSpace: Integer);
+    procedure PrintClassDiagramBuiltIn(_Node: TTreeNode; ACanvas: TCanvas; BoxSize, VSpace: Integer);
     procedure RefreshNode;
     procedure AddProject;
     procedure RemoveProject;
@@ -1508,7 +1508,7 @@ begin
   StatusBar.SimpleText := '';
 end;
 
-procedure TfmClassBrowser.PrintClassDiagramBuiltIn(OInfo: TBrowseClassInfoCollection;
+procedure TfmClassBrowser.PrintClassDiagramBuiltIn(_Node: TTreeNode;
     ACanvas: TCanvas; BoxSize, VSpace: Integer);
 const
   PR_OffsetX = 30;
@@ -1520,14 +1520,16 @@ var
   IndentX, IndentY: Integer;
   PageNum: Integer;
 
-  procedure PrintClassSquare(Info: TBrowseClassInfoCollection; Level: Integer; var Py: Integer);
+  procedure PrintClassSquare(ANode: TTreeNode; Level: Integer; var Py: Integer);
   var
+    Info: TBrowseClassInfoCollection;
     Rect: TRect;
-    Node: TTreeNode;
+    Child: TTreeNode;
     np: Integer;
     op: Integer;
     OldBrushColor: TColor;
   begin
+    Info := TBrowseClassInfoCollection(ANode.Data);
     if y + BoxH + 20 > Printer.PageHeight then
     begin
       Printer.NewPage;
@@ -1554,16 +1556,14 @@ var
     Dec(Rect.Right, 1);
     ACanvas.TextRect(Rect, x + 4, y + 4, Info.Name);
     y := y + BoxH + IndentY;
-    Node := tvBrowse.Items[0];
     StatusBar.SimpleText := Info.Name;
-    while Assigned(Node) do
+    Child := ANode.getFirstChild;
+    while Assigned(Child) do
     begin
       if op <> PageNum then
         np := 0;
-      if Node.Level > 0 then
-        if SameText(TBrowseClassInfoCollection(Node.Data).ObjectDerivedFrom, Info.Name) then
-          PrintClassSquare(TBrowseClassInfoCollection(Node.Data), Level + 1, np);
-      Node := Node.GetNext;
+      PrintClassSquare(Child, Level + 1, np);
+      Child := Child.getNextSibling;
     end;
   end;
 
@@ -1582,16 +1582,17 @@ begin
   IndentX := (BoxW div 2);
   IndentY := VSpace;
   p := 0;
-  PrintClassSquare(OInfo, 0, p);
+  PrintClassSquare(_Node, 0, p);
 end;
 
 procedure TfmClassBrowser.PrintClassHierarchyBuiltIn;
 var
-  OInfo: TBrowseClassInfoCollection;
+  Selected: TTreeNode;
 resourcestring
   SClassReport = 'Class Hierarchy Report';
 begin
-  if not TryGetClassInfo(OInfo) then
+  Selected := tvBrowse.Selected;
+  if (Selected = nil) or (Selected.Level = 0) or (Selected.Data = nil) then
     raise Exception.Create(SSelectClassFirst);
 
   TCursor_TempHourglass;
@@ -1602,7 +1603,7 @@ begin
     Printer.Canvas.Font.Name := FClassHierarchyFont;
     Printer.Canvas.Font.Size := FClassHierarchyFontSize;
     Printer.Canvas.Font.Style := [];
-    PrintClassDiagramBuiltIn(OInfo, Printer.Canvas, FClassHierarchyBoxWidth,
+    PrintClassDiagramBuiltIn(Selected, Printer.Canvas, FClassHierarchyBoxWidth,
       FClassHierarchyBoxSpace);
   finally
     Printer.EndDoc;
