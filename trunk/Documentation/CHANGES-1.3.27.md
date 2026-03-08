@@ -101,6 +101,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Class Browser: Fixed nested type declarations (class/record inside class) having their members attributed to the outer class instead of being skipped (bug #248)
 - Class Browser: Nested classes now show with fully qualified names (e.g. TOuterClass.TInnerClass) in tree and list views (bug #248)
 - Class Browser: Fixed Print Class Hierarchy printing duplicate nodes for deep inheritance trees (bug #355)
+- Source Export: Replaced 16-color grid with full color dialog for highlighting colors (bug #119)
 
 ## Contributors
 

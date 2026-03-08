@@ -39,40 +39,76 @@ object fmSourceExportOptions: TfmSourceExportOptions
       Height = 123
       Caption = ' Element Attributes '
       TabOrder = 4
-      object chkBold: TCheckBox
-        Left = 123
+      object lblForeground: TLabel
+        Left = 9
+        Top = 20
+        Width = 66
+        Height = 14
+        Caption = '&Foreground:'
+        FocusControl = pnlForeground
+      end
+      object lblBackground: TLabel
+        Left = 9
+        Top = 48
+        Width = 66
+        Height = 14
+        Caption = 'Bac&kground:'
+        FocusControl = pnlBackground
+      end
+      object pnlForeground: TPanel
+        Left = 80
         Top = 17
+        Width = 25
+        Height = 20
+        BevelOuter = bvLowered
+
+        TabOrder = 0
+        OnClick = pnlForegroundClick
+      end
+      object pnlBackground: TPanel
+        Left = 80
+        Top = 45
+        Width = 25
+        Height = 20
+        BevelOuter = bvLowered
+
+        TabOrder = 1
+        OnClick = pnlBackgroundClick
+      end
+      object chkBold: TCheckBox
+        Left = 9
+        Top = 73
         Width = 92
         Height = 17
         Caption = '&Bold'
-        TabOrder = 0
-        OnClick = AttributeChange
-      end
-      object chkItalic: TCheckBox
-        Left = 123
-        Top = 36
-        Width = 92
-        Height = 17
-        Caption = '&Italic'
-        TabOrder = 1
-        OnClick = AttributeChange
-      end
-      object chkUnderline: TCheckBox
-        Left = 123
-        Top = 56
-        Width = 92
-        Height = 17
-        Caption = '&Underline'
         TabOrder = 2
         OnClick = AttributeChange
       end
+      object chkItalic: TCheckBox
+        Left = 9
+        Top = 92
+        Width = 92
+        Height = 17
+        Caption = '&Italic'
+        TabOrder = 3
+        OnClick = AttributeChange
+      end
+      object chkUnderline: TCheckBox
+        Left = 113
+        Top = 73
+        Width = 92
+        Height = 17
+        Caption = '&Underline'
+        TabOrder = 4
+        OnClick = AttributeChange
+      end
       object chkStrikeOut: TCheckBox
-        Left = 123
-        Top = 76
+        Left = 113
+        Top = 92
         Width = 92
         Height = 17
         Caption = '&Strikeout'
-        TabOrder = 3
+        TabOrder = 5
         OnClick = AttributeChange
       end
     end
@@ -166,8 +202,9 @@ object fmSourceExportOptions: TfmSourceExportOptions
     BorderWidth = 6
     TabOrder = 1
   end
-  object dlgBackground: TColorDialog
+  object dlgColor: TColorDialog
     Ctl3D = True
+    Options = [cdFullOpen]
     Left = 232
     Top = 56
   end

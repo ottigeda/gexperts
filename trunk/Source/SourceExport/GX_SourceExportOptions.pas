@@ -5,13 +5,13 @@ unit GX_SourceExportOptions;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ColorGrd,
+  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   SynEdit, Dialogs, GX_BaseForm;
 
 type
   TfmSourceExportOptions = class(TfmBaseForm)
     pnlSettings: TPanel;
-    dlgBackground: TColorDialog;
+    dlgColor: TColorDialog;
     pnlButtons: TPanel;
     pnlButtonsRight: TPanel;
     btnOK: TButton;
@@ -27,16 +27,19 @@ type
     btnBackgroundColor: TButton;
     btnLoadIde: TButton;
     lblElement: TLabel;
+    lblForeground: TLabel;
+    lblBackground: TLabel;
+    pnlForeground: TPanel;
+    pnlBackground: TPanel;
     procedure AttributeChange(Sender: TObject);
     procedure cbxAttributesChange(Sender: TObject);
     procedure btnLoadIdeClick(Sender: TObject);
     procedure btnBackgroundColorClick(Sender: TObject);
+    procedure pnlForegroundClick(Sender: TObject);
+    procedure pnlBackgroundClick(Sender: TObject);
   private
     FSampleEditor: TSynEdit;
-    HiddenGrid: TColorGrid;
-    ColorGrid: TColorGrid;
     NoChangeEvents: Boolean;
-    function GetColorIndexFromColor(Color: TColor; IsBackground: Boolean): Integer;
     procedure SynEditSelectionChange(Sender: TObject; Changes: TSynStatusChanges);
   public
     BackgroundColor: TColor;
@@ -62,26 +65,6 @@ var
   GXHighlighter: TGXSyntaxHighlighter;
 begin
   inherited;
-
-  // Destroyed with form
-  ColorGrid := TColorGrid.Create(Self);
-  HiddenGrid := TColorGrid.Create(Self);
-  HiddenGrid.Visible := False;
-  HiddenGrid.Parent := Self;
-  with ColorGrid do
-  begin
-    Name := 'ColorGrid';
-    Parent := gbxAttributes;
-    Left := 9;
-    Top := 17;
-    Width := 100;
-    Height := 100;
-    ClickEnablesColor := True;
-    BackgroundIndex := 15;
-    TabOrder := 0;
-    TabStop := True;
-    OnChange := AttributeChange;
-  end;
 
   FSampleEditor := TSynEdit.Create(Self);
   FSampleEditor.Parent := pnlCode;
@@ -113,6 +96,29 @@ begin
   InitDpiScaler;
 end;
 
+// Bug #119: Replaced TColorGrid (16 colors only) with color panels + TColorDialog
+// to support the full color palette.
+
+procedure TfmSourceExportOptions.pnlForegroundClick(Sender: TObject);
+begin
+  dlgColor.Color := pnlForeground.Color;
+  if dlgColor.Execute then
+  begin
+    pnlForeground.Color := dlgColor.Color;
+    AttributeChange(nil);
+  end;
+end;
+
+procedure TfmSourceExportOptions.pnlBackgroundClick(Sender: TObject);
+begin
+  dlgColor.Color := pnlBackground.Color;
+  if dlgColor.Execute then
+  begin
+    pnlBackground.Color := dlgColor.Color;
+    AttributeChange(nil);
+  end;
+end;
+
 procedure TfmSourceExportOptions.AttributeChange(Sender: TObject);
 var
   Attr: TSynHighlighterAttributes;
@@ -124,8 +130,8 @@ begin
     cbxAttributes.Items[cbxAttributes.ItemIndex]);
   try
     AttrStyle := [];
-    Attr.Foreground := ColorGrid.ForegroundColor;
-    Attr.Background := ColorGrid.BackgroundColor;
+    Attr.Foreground := pnlForeground.Color;
+    Attr.Background := pnlBackground.Color;
     if chkBold.Checked then
       Include(AttrStyle, fsBold);
     if chkItalic.Checked then
@@ -151,11 +157,8 @@ begin
     Attr.Assign(FSampleEditor.Highlighter.Attribute[cbxAttributes.ItemIndex]);
     NoChangeEvents := True;
     try
-      // Buggy!
-      //ColorGrid.ForegroundIndex := ColorGrid.ColorToIndex(Attr.Foreground);
-      //ColorGrid.BackgroundIndex := ColorGrid.ColorToIndex(Attr.Background);
-      ColorGrid.ForegroundIndex := GetColorIndexFromColor(Attr.Foreground, False);
-      ColorGrid.BackgroundIndex := GetColorIndexFromColor(Attr.Background, True);
+      pnlForeground.Color := Attr.Foreground;
+      pnlBackground.Color := Attr.Background;
 
       chkBold.Checked := (fsBold in Attr.Style);
       chkItalic.Checked := (fsItalic in Attr.Style);
@@ -192,29 +195,9 @@ begin
   finally
     FreeAndNil(UserSettings);
   end;
-end;
-
-// Temporary hack, since TColorGrid.ColorToIndex seems buggy?
-function TfmSourceExportOptions.GetColorIndexFromColor(Color: TColor; IsBackground: Boolean): Integer;
-var
- i: Integer;
-begin
-  for i := 0 to 15 do
-  begin
-    HiddenGrid.ForegroundIndex := i;
-    if ColorToRGB(HiddenGrid.ForegroundColor) = ColorToRGB(Color) then
-    begin
-      Result := HiddenGrid.ForegroundIndex;
-      Exit;
-    end;
-  end;
-  // Fallback for unknown colors
-  {$IFOPT D+}SendDebugError('Source Export: Unknown color requested!');{$ENDIF}
-
-  if IsBackground then
-    Result := 15 // White
-  else
-    Result := 0; // Black
+  // Update color panels after loading IDE settings
+  if cbxAttributes.ItemIndex >= 0 then
+    cbxAttributesChange(Self);
 end;
 
 procedure TfmSourceExportOptions.SynEditSelectionChange(Sender: TObject; Changes: TSynStatusChanges);
@@ -239,10 +222,9 @@ end;
 
 procedure TfmSourceExportOptions.btnBackgroundColorClick(Sender: TObject);
 begin
-  dlgBackground.Color := BackgroundColor;
-  if dlgBackground.Execute then
-    BackgroundColor := dlgBackground.Color;
+  dlgColor.Color := BackgroundColor;
+  if dlgColor.Execute then
+    BackgroundColor := dlgColor.Color;
 end;
 
 end.
-
