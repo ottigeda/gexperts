@@ -399,26 +399,29 @@ begin
   SetLength(Buffer, Stream.Size);
   Stream.Position := 0;
   Stream.ReadBuffer(Buffer[1], Stream.Size);
-  // In theory we could rely on UTF-8 having a BOM, meaning that
-  // every file not containing a BOM is ANSI. Unfortunately this
-  // turns out to be unreliable, so we assume everything to be
-  // UTF-8, try to convert it to ANSI.
+{$IFDEF GX_DELPHI8_UP}
+  // Delphi 8+ supports UTF-8 source files, so we assume everything to be
+  // UTF-8 and try to convert it.
   // There are four possible cases:
-  // 1) If it is ANSI and does not contain any high ASCII charactes the
+  // 1) If it is ANSI and does not contain any high ASCII characters the
   //    conversion will do nothing
   // 2) If it is UTF-8, the conversion will work fine
-  // 3) If it is ANSI with high ASCII charactes, the conversion will fail
+  // 3) If it is ANSI with high ASCII characters, the conversion will fail
   //    and return an empty string. In this case we take the string as is.
   // 4) If it is neither valid UTF-8 nor ANSI, the conversion will fail
   //    and return an empty string. In this case we still take the string
   //    as is and hope for the best.
-  // If this is a non-unicode version of Delphi, all files should be ANSI anyway
-  // UTF8ToUnicodeString does nothing.
   // -- 2015-06-14 twm
   Result := UTF8ToUnicodeString(Buffer);
   if (Result = '') and (Buffer <> '') then begin
     Result := String(Buffer);
   end;
+{$ELSE}
+  // Delphi 6/7: all source files are ANSI, so no conversion is needed.
+  // Calling Utf8ToAnsi here would corrupt non-ASCII characters (e.g. Chinese,
+  // Polish) whose byte sequences happen to look like valid UTF-8. (bug #176)
+  Result := Buffer;
+{$ENDIF}
 end;
 
 function TEditReader.GetText: string;

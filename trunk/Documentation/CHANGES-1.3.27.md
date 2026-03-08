@@ -64,6 +64,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 
 - PasteAs / Convert Raw Strings: Renamed configuration dialog to "String Conversion Options" and added a note that these settings are shared between Paste Strings As, Convert Raw Strings and Clipboard History experts (bug #362)
 - PasteAs / Convert Raw Strings: Fixed "List index out of bounds (0)" error when selected lines contain no quoted strings
+- ToDo List / Bookmarks: Fixed non-ASCII ANSI characters (e.g. Chinese, Polish) being corrupted in Delphi 6/7 by skipping the unnecessary UTF-8 conversion for pre-Delphi 8 builds (bug #176)
 - Reverse Statement: Fixed regex matching bare-dot expressions like `.ReadInteger()` which produced invalid code (feature #14)
 - Backup Project: Show actual matched files instead of wildcard patterns in file list (bug #19)
 - Backup Project: Added ListView with Path, File Name, Size, and Last Modified columns
