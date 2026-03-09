@@ -1285,7 +1285,7 @@ end;
 function TryStr2Int64(const _s: string; var _Value: Int64): Boolean; overload;
 var
   e: Integer;
-  v: Integer;
+  v: Int64;
 begin
   Val(_s, v, e);
   Result := (e = 0);
