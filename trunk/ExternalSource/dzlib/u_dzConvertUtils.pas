@@ -1678,7 +1678,7 @@ end;
 
 class operator TBits64.LogicalNot(_a: TBits64): TBits64;
 begin
-  Result.Init(_a.Value xor $FF);
+  Result.Init(_a.Value xor $FFFFFFFFFFFFFFFF);
 end;
 
 class operator TBits64.BitwiseOr(_a, _b: TBits64): TBits64;
@@ -1798,7 +1798,7 @@ end;
 
 class operator TBits32.LogicalNot(_a: TBits32): TBits32;
 begin
-  Result.Init(_a.Value xor $FF);
+  Result.Init(_a.Value xor $FFFFFFFF);
 end;
 
 class operator TBits32.BitwiseOr(_a, _b: TBits32): TBits32;
@@ -1867,7 +1867,7 @@ end;
 
 class operator TBits16.LogicalNot(_a: TBits16): TBits16;
 begin
-  Result.Init(_a.Value xor $FF);
+  Result.Init(_a.Value xor $FFFF);
 end;
 
 class operator TBits16.BitwiseOr(_a, _b: TBits16): TBits16;
