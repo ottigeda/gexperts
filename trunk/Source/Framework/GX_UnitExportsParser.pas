@@ -477,8 +477,8 @@ begin
     if Tokenid = tkCompDirect then begin
       if TokenIsEndif then
         Exit; //==>
-      if TokenIsIfdef(Expression) then begin
-        // nested $if
+      if TokenIsIfdef(Expression) or TokenIsIfndef(Expression) then begin
+        // nested $if (bug #232: must handle $IFNDEF just like $IFDEF)
         SkipToEndif;
       end;
     end;

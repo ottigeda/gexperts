@@ -31,6 +31,7 @@ type
     procedure TestMagickWand;
     procedure TestIdGlobalProtocols;
     procedure TestToolsApi;
+    procedure TestBug232NestedIfndefElse;
   end;
 
 implementation
@@ -255,6 +256,32 @@ begin
     TUnitExportsParser.AddDefaultSymbols(Parser.Symbols);
     Parser.Execute;
 
+    CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
+    for i := 0 to Parser.Identifiers.Count - 1 do
+      CheckEquals(Identifiers[i], Parser.Identifiers[i]);
+  finally
+    FreeAndNil(Parser);
+  end;
+end;
+
+procedure TTestUnitExportsParser.TestBug232NestedIfndefElse;
+// When DELPHI2007_UP is defined, the ELSE branch of the outer IFNDEF must be parsed.
+// Before the fix, SkipToEndif did not handle nested $IFNDEF, causing it to exit
+// prematurely and the ELSE branch to be skipped.
+const
+  Identifiers: array[0..0] of string = ('FooInElseBranch');
+var
+  Parser: TUnitExportsParser;
+  fn: string;
+  i: Integer;
+begin
+  fn := IncludeTrailingPathDelimiter(ExtractFileDir(ParamStr(0))) + 'testcases\bug232.pas';
+  Parser := TUnitExportsParser.Create(fn);
+  try
+    TUnitExportsParser.AddDefaultSymbols(Parser.Symbols);
+    // AddDefaultSymbols adds DELPHI2007_UP on Delphi 2007+,
+    // so FooInElseBranch must be in the parsed identifiers
+    Parser.Execute;
     CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
     for i := 0 to Parser.Identifiers.Count - 1 do
       CheckEquals(Identifiers[i], Parser.Identifiers[i]);
