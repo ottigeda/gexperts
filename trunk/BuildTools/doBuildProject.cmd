@@ -115,6 +115,10 @@ exit /b 1
 :dcc32
 @rem determine the .dpr file
 for %%a in (*.dpr) do set dprname=%%a
+if "%dprname%"=="" (
+  echo ERROR: No .dpr file found in %CD%
+  goto :buildfailed
+)
 @rem build is done with dcc32, -B forces full rebuild (consistent with msbuild /target:rebuild)
 "%DelphiPath%\bin\dcc32.exe" -B -$D- -$L- -$Y- -DRELEASE %GX_DCC_EXTRA% %dprname%
 if errorlevel 1 goto :buildfailed
