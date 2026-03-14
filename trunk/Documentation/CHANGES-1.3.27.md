@@ -103,6 +103,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Class Browser: Fixed Print Class Hierarchy printing duplicate nodes for deep inheritance trees (bug #355)
 - Source Export: Replaced 16-color grid with full color dialog for highlighting colors (bug #119)
 - Uses Clause Manager: Fixed nested `$IFNDEF`/`$ELSE` not being handled correctly by the unit exports parser — `SkipToEndif` now recurses into nested `$IFNDEF` blocks, matching the existing `$IFDEF` handling (bug #232)
+- Build: Fixed `doBuildProject.cmd` error paths (wrong .NET Framework for Rio, missing `Borland.Delphi.Targets` for Delphi 2007) to use `exit /b 1` instead of `goto :done`/`goto :eof`
 - Unit Tests: Fixed `_BuildProject.cmd` failure paths in all unit test projects (including UnitTestsFormatter) using `exit /b 1` instead of `goto :done` so build failures are correctly propagated to the bash wrapper
 - Unit Tests: Fixed I/O error 105 in TestDeclareVariable and TestRenameIdentifier console mode by calling `AttachConsole`/`AllocConsole` before any `WriteLn`
 
