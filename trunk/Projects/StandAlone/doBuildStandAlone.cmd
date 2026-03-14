@@ -10,7 +10,7 @@ setlocal
 set projectprefix=%~1
 if "%projectprefix%"=="" (
   echo Error: Project name prefix required
-  goto :eof
+  exit /b 1
 )
 
 rem Select the correct .dproj file based on format group
@@ -26,7 +26,7 @@ if "%delphigroup%"=="2007" (
 rem Check if selected .dproj exists
 if not exist "%dprname%" (
   echo Error: %dprname% not found
-  goto :eof
+  exit /b 1
 )
 
 echo Building %dprname% with Delphi %delphiver%
@@ -38,7 +38,7 @@ call "%buildtools%\doGetDelphiPath.cmd" %delphiver%
 
 if not exist "%DelphiPath%" (
   echo Error: Delphi not found at %DelphiPath%
-  goto :eof
+  exit /b 1
 )
 
 rem Build based on Delphi version
@@ -47,7 +47,8 @@ if "%delphigroup%"=="2007" goto build2007
 rem Delphi 10.2+ build
 call "%DelphiPath%\bin\rsvars.bat"
 msbuild /target:rebuild /p:config=Release "%dprname%"
-goto :eof
+if errorlevel 1 exit /b 1
+exit /b 0
 
 :build2007
 rem Delphi 2007 needs special handling for 64-bit Windows
@@ -64,7 +65,7 @@ if not exist "%FrameworkDir%%FrameworkVersion%\Borland.Delphi.Targets" (
   echo.
   echo This can happen after Windows updates.
   echo Copy the files from %buildtools%\dotNET2007 to the directory above.
-  goto :eof
+  exit /b 1
 )
 
 rem Set BDS for msbuild
@@ -72,4 +73,5 @@ set BDS=%DelphiPath:~0,-1%
 
 rem Note: Delphi 2007 uses /p:Configuration= instead of /p:config=
 msbuild /target:rebuild /p:Configuration=Release "%dprname%"
-goto :eof
+if errorlevel 1 exit /b 1
+exit /b 0
