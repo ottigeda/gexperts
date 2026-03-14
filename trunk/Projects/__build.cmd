@@ -2,8 +2,20 @@
 
 rem we no longer increment the build number, it's now set to the highest svn revision
 
-if "%1"=="" goto :list
-call :dobuild %1
+set buildver=
+set buildflags=
+:parseargs
+if "%~1"=="" goto :endparse
+if "%~1"=="--nowait" (set buildflags=--nowait) else (set buildver=%~1)
+shift
+goto :parseargs
+:endparse
+
+if not "%buildver%"=="" goto :buildone
+goto :list
+
+:buildone
+call :dobuild %buildver%
 goto :eof
 
 :list
@@ -37,7 +49,7 @@ goto :eof
 :dobuild
 pushd Delphi%1
 setlocal
-call __Build_Project.cmd
+call __Build_Project.cmd %buildflags%
 endlocal
 popd
 goto :eof
