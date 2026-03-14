@@ -68,7 +68,7 @@ echo dotNET %FrameworkVersion% not found on your computer. Check
 echo https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed#to-find-net-framework-versions-by-viewing-the-registry-net-framework-45-and-later
 echo on how to find or install it.
 pause
-goto :done
+exit /b 1
 
 :is2007
 @rem Delphi 2007 sets the FrameworkDir incorrectly on 64 bit Windows, so we fix this here
@@ -110,7 +110,7 @@ echo See
 echo https://blog.dummzeuch.de/2013/11/10/delphi-2007-on-windows-8-1/
 echo for some more details.
 pause
-goto :eof
+exit /b 1
 
 :dcc32
 @rem determine the .dpr file
