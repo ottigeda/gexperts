@@ -83,7 +83,8 @@ if %BUILDERROR%==0 (endlocal & exit /b 0)
 if "%BUILDNOWAIT%"=="1" (endlocal & exit /b 0)
 echo.
 echo Build failed for Delphi %_ver%.
-choice /c ARC /n /m "[A]bort  [R]etry  [C]ontinue with next version? "
-if errorlevel 3 (endlocal & exit /b 0)
-if errorlevel 2 goto :dobuild_retry
-endlocal & exit /b 2
+set "_choice=R"
+set /p "_choice=[A]bort  [R]etry (default)  [C]ontinue with next version? "
+if /i "%_choice%"=="A" (endlocal & exit /b 2)
+if /i "%_choice%"=="C" (endlocal & exit /b 0)
+goto :dobuild_retry
