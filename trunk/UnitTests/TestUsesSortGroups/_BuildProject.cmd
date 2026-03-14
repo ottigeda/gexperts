@@ -21,12 +21,12 @@ goto :done
 
 :nodelphi
 echo ERROR: Delphi 13 not found. Check that c:\Delphi\13\bin\rsvars.bat exists.
-goto :done
+exit /b 1
 
 :buildfailed
 echo.
 echo ERROR: Build failed.
-goto :done
+exit /b 1
 
 :done
 if "%NOWAIT%"=="0" pause
