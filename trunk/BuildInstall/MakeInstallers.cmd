@@ -12,6 +12,7 @@ set version=%result%
 rem set instver=13D
 set instver=%version%
 call :getdate
+if errorlevel 1 goto :buildfailed
 set special=%dateYYYYMMDD%
 
 rem call :makeinst RS120 RS12
@@ -19,37 +20,66 @@ rem pause
 rem goto :eof
 
 call :makeinst Delphi6 D6
+if errorlevel 1 goto :buildfailed
 call :makeinst Delphi7 D7
+if errorlevel 1 goto :buildfailed
 call :makeinst Delphi2005
+if errorlevel 1 goto :buildfailed
 call :makeinst BDS2006
+if errorlevel 1 goto :buildfailed
 call :makeinst Delphi2007
+if errorlevel 1 goto :buildfailed
 call :makeinst RS2009
+if errorlevel 1 goto :buildfailed
 call :makeinst RS2010
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE1
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE2
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE3
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE4
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE5
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE6
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE7
+if errorlevel 1 goto :buildfailed
 call :makeinst RSXE8
+if errorlevel 1 goto :buildfailed
 call :makeinst RS100 RS10
+if errorlevel 1 goto :buildfailed
 call :makeinst RS101 RS10.1
+if errorlevel 1 goto :buildfailed
 call :makeinst RS102 RS10.2
+if errorlevel 1 goto :buildfailed
 call :makeinst RS103 RS10.3
+if errorlevel 1 goto :buildfailed
 call :makeinst RS104 RS10.4
+if errorlevel 1 goto :buildfailed
 call :makeinst RS110 RS11
+if errorlevel 1 goto :buildfailed
 call :makeinst RS120 RS12
+if errorlevel 1 goto :buildfailed
 call :makeinst RS130 RS13
-goto :eof
+if errorlevel 1 goto :buildfailed
+exit /b 0
+
+:buildfailed
+echo.
+echo BUILD FAILED
+exit /b 1
 
 :makeinst
 set Delphi=%1
 set Prefix=%2
 if "%prefix%" == "" set Prefix=%Delphi%
 %iscc% GExperts.iss /d%Delphi% /dVersion=%version% /fGExperts_%Prefix%_%instver%_%special%
+if errorlevel 1 exit /b 1
 rem %iscc% GExperts.iss /dDelphi2010 /dVersion=%version% /fGXRS2010-%instver%-experimental-twm-%date%.exe
-goto :eof
+exit /b 0
 
 :readver
 rem taken from https://stackoverflow.com/a/2866328/49925 but heavily modified
@@ -119,14 +149,11 @@ Set logtimestamp=%dateYYYYMMDD%_%timeHHMMSS%
 goto :eof
 
 :s_error
-echo WMIC is not available, cannot deterimine date and time
-goto :eof
-pause
-
+echo WMIC is not available, cannot determine date and time
+exit /b 1
 
 :ISerror
 echo InnoSetup compiler not found:
 echo %iscc%
-echo Install InnnoSetup or correct the setting for iscc at the start of the script!
-pause
-goto :eof
+echo Install InnoSetup or correct the setting for iscc at the start of the script!
+exit /b 1
