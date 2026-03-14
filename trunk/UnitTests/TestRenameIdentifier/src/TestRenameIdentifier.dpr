@@ -29,6 +29,13 @@ begin
   end;
 end;
 
+const
+  ATTACH_PARENT_PROCESS = DWORD(-1);
+
+{$IF not Declared(AttachConsole)}
+function AttachConsole(dwProcessId: DWORD): BOOL; stdcall; external kernel32 name 'AttachConsole';
+{$IFEND}
+
 procedure Main;
 var
   OutputFileName: string;
@@ -36,6 +43,8 @@ var
 begin
   ReportMemoryLeaksOnShutdown := True;
   if IsConsoleMode(OutputFileName) then begin
+    if not AttachConsole(ATTACH_PARENT_PROCESS) then
+      AllocConsole;
     if OutputFileName <> '' then begin
       WriteLn('Writing results to file ' + OutputFileName);
       AssignFile(Output, OutputFileName);
