@@ -23,6 +23,7 @@ goto continue
 call "%buildtools%doGetDelphiVer.cmd"
 :continue
 call "%buildtools%\doGetDelphiPath.cmd" %delphiver%
+title Building Delphi %delphiver%
 
 if "%delphiver%" == "6" goto dcc32
 if "%delphiver%" == "7" goto dcc32
@@ -39,6 +40,7 @@ call "%DelphiPath%\bin\rsvars.bat"
 for %%a in (GExperts*.dproj) do set dprname=%%a
 @rem build it
 :dobuild
+title Building %dprname%
 msbuild /target:rebuild /p:config=Release %dprname%
 if errorlevel 1 goto :buildfailed
 goto :done
@@ -89,6 +91,7 @@ for %%a in (GExperts*.dproj) do set dprname=%%a
 @rem note that for Delphi 2007 the target is rebuild and the configuration must be specified with
 @rem /p:Configuration= instead of /p:Config= as in later versions.
 :: if msbuild stuff fails, then add this parameter: -verbosity:diagnostic
+title Building %dprname%
 msbuild /target:rebuild /p:Configuration=Release -p:DCC_Quiet=true %dprname%
 if errorlevel 1 goto :buildfailed
 goto :done
@@ -120,6 +123,7 @@ if "%dprname%"=="" (
   goto :buildfailed
 )
 @rem build is done with dcc32, -B forces full rebuild (consistent with msbuild /target:rebuild)
+title Building %dprname%
 "%DelphiPath%\bin\dcc32.exe" -B -$D- -$L- -$Y- -DRELEASE %GX_DCC_EXTRA% %dprname%
 if errorlevel 1 goto :buildfailed
 goto :done

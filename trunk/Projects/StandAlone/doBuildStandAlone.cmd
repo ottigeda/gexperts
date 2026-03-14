@@ -46,6 +46,7 @@ if "%delphigroup%"=="2007" goto build2007
 
 rem Delphi 10.2+ build
 call "%DelphiPath%\bin\rsvars.bat"
+title Building %dprname%
 msbuild /target:rebuild /p:config=Release "%dprname%"
 if errorlevel 1 exit /b 1
 exit /b 0
@@ -72,6 +73,7 @@ rem Set BDS for msbuild
 set BDS=%DelphiPath:~0,-1%
 
 rem Note: Delphi 2007 uses /p:Configuration= instead of /p:config=
+title Building %dprname%
 msbuild /target:rebuild /p:Configuration=Release "%dprname%"
 if errorlevel 1 exit /b 1
 exit /b 0
