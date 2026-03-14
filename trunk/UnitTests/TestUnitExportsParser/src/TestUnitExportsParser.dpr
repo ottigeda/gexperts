@@ -34,6 +34,8 @@ var
 begin
   ReportMemoryLeaksOnShutdown := True;
   if IsConsoleMode(OutputFileName) then begin
+    if not AttachConsole(ATTACH_PARENT_PROCESS) then
+      AllocConsole;
     if OutputFileName <> '' then begin
       WriteLn('Writing results to file ' + OutputFileName);
       AssignFile(Output, OutputFileName);
