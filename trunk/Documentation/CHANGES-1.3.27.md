@@ -44,6 +44,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Declare Variable: External overloaded functions now collect all distinct return types as alternatives
 - Declare Variable: Added accelerator hotkeys (Alt+T, Alt+I, Alt+R, Alt+W) for Type, Insert at, Read specifier, and Write specifier fields
 - Declare Variable: Type inference now resolves inherited methods — covers `inherited Method`, `Self.Method`, `Obj.Method` on ancestors, and unqualified method calls inside class method bodies (e.g. `s := ClassName` resolving to `ShortString` via TObject)
+- Duplicate Line: New editor expert that duplicates the current line, inserting a copy immediately below and placing the cursor at the same column on the new line
+- Duplicate Instance dialog: Added option to close the second IDE instance (feature #179) (by Achim Kalwa)
 
 ## Bug Fixes
 
@@ -115,4 +117,5 @@ Changes since version 1.3.26 (released 2026-02-07)
 ## Contributors
 
 - Thomas Mueller (twm)
+- Achim Kalwa
 - freeman35

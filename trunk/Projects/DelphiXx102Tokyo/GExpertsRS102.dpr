@@ -112,6 +112,7 @@ uses
   GX_eReverseRuleEdit in '..\..\source\ReverseStatement\GX_eReverseRuleEdit.pas' {fmReverseRuleEdit},
   GX_eSelectIdentifier in '..\..\source\Editor\GX_eSelectIdentifier.pas',
   GX_eSelectionEditorExpert in '..\..\source\Editor\GX_eSelectionEditorExpert.pas',
+  GX_eDuplicateLine in '..\..\Source\DuplicateLine\GX_eDuplicateLine.pas',
   GX_eSort in '..\..\Source\Editor\GX_eSort.pas' {fmeSortConfig},
   GX_eSortOptions in '..\..\Source\Editor\GX_eSortOptions.pas' {frmSortOptions},
   GX_EventHook in '..\..\source\framework\GX_EventHook.pas',
