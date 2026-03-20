@@ -30,24 +30,53 @@ type
     type
       TStringArray = array of string;
   public
+    ///<summary>
+    /// Checks if a published property with the given name exists
+    /// @param Name is the name of the property
+    /// @param Type receives the type kind of the property if found
+    /// @returns True if the property exists </summary>
     function HasProperty(const _Name: string; out _Type: TTypeKind): Boolean; overload;
     class function HasProperty(_Instance: TObject; const _Name: string; out _Type: TTypeKind): Boolean; overload;
 
+    ///<summary>
+    /// Checks if a published enum property with the given name exists
+    /// @param Name is the name of the property
+    /// @returns True if the property exists and is an enum property </summary>
     function HasEnumProperty(const _Name: string): Boolean; overload;
     class function HasEnumProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
+    ///<summary>
+    /// Checks if a published string property with the given name exists
+    /// @param Name is the name of the property
+    /// @returns True if the property exists and is a string property </summary>
     function HasStringProperty(const _Name: string): Boolean; overload;
     class function HasStringProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
+    ///<summary>
+    /// Checks if a published float property with the given name exists
+    /// @param Name is the name of the property
+    /// @returns True if the property exists and is a float property </summary>
     function HasFloatProperty(const _Name: string): Boolean; overload;
     class function HasFloatProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
+    ///<summary>
+    /// Checks if a published integer property with the given name exists
+    /// @param Name is the name of the property
+    /// @returns True if the property exists and is an integer property </summary>
     function HasIntProperty(const _Name: string): Boolean; overload;
     class function HasIntProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
+    ///<summary>
+    /// Checks if a published object property with the given name exists
+    /// @param Name is the name of the property
+    /// @returns True if the property exists and is an object property </summary>
     function HasObjectProperty(const _Name: string): Boolean; overload;
     class function HasObjectProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
+    ///<summary>
+    /// Checks if a published event property with the given name exists
+    /// @param Name is the name of the property
+    /// @returns True if the property exists and is an event property </summary>
     function HasEventProperty(const _Name: string): Boolean; overload;
     class function HasEventProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
@@ -71,8 +100,18 @@ type
     ///          false if it either doesn't exist or has a different type </summary>
     function TryGetStringProperty(const _Name: string; out _Value: string): Boolean; overload;
     class function TryGetStringProperty(_Instance: TObject; const _Name: string; out _Value: string): Boolean; overload;
+    ///<summary>
+    /// Returns a string property value or a default if the property does not exist
+    /// @param Name is the name of the property
+    /// @param Default is the value to return if the property does not exist
+    /// @returns the property value or Default </summary>
     function GetStringProperty(const _Name: string; const _Default: string): string; overload;
     class function GetStringProperty(_Instance: TObject; const _Name: string; const _Default: string): string; overload;
+    ///<summary>
+    /// Returns a string property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetStringProperty(const _Name: string): string; overload;
     class function GetStringProperty(_Instance: TObject; const _Name: string): string; overload;
     ///<summary>
@@ -110,8 +149,18 @@ type
     /// Note: It is not possible to distinguish between Boolean and any other enum type
     ///       So, this will Get or Set any enum property. </summary>
     class function TryGetBoolProperty(_Instance: TObject; const _Name: string; out _Value: Boolean): Boolean; overload;
+    ///<summary>
+    /// Returns a boolean property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetBoolProperty(const _Name: string): Boolean; overload;
     class function GetBoolProperty(_Instance: TObject; const _Name: string): Boolean; overload;
+    ///<summary>
+    /// Sets a boolean property, returns True on success
+    /// @param Name is the name of the property to set
+    /// @param Value is the value to set the property to
+    /// @returns True if the property could be set </summary>
     function SetBoolProperty(const _Name: string; _Value: Boolean): Boolean; overload;
     class function SetBoolProperty(_Instance: TObject; const _Name: string; _Value: Boolean): Boolean; overload;
 
@@ -127,16 +176,46 @@ type
     function TryGetFloatProperty(const _Name: string; out _Value: Double): Boolean; overload;
     function TryGetFloatProperty(const _Name: string; out _Value: Single): Boolean; overload;
 {$IFDEF SUPPORTS_EXTENDED}
+    ///<summary>
+    /// Returns a float property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     class function GetFloatProperty(_Instance: TObject; const _Name: string): Extended; overload;
+    ///<summary>
+    /// Returns a float property value or a default if the property does not exist
+    /// @param Name is the name of the property
+    /// @param Default is the value to return if the property does not exist
+    /// @returns the property value or Default </summary>
     class function GetFloatProperty(_Instance: TObject; const _Name: string; const _Default: Extended): Extended; overload;
     function GetFloatProperty(const _Name: string; const _Default: Extended): Extended; overload;
     function GetFloatProperty(const _Name: string): Extended; overload;
+    ///<summary>
+    /// Sets a float property, returns True on success
+    /// @param Name is the name of the property to set
+    /// @param Value is the value to set the property to
+    /// @returns True if the property could be set </summary>
     class function SetFloatProperty(_Instance: TObject; const _Name: string; const _Value: Extended): Boolean; overload;
 {$ELSE}
+    ///<summary>
+    /// Returns a float property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     class function GetFloatProperty(_Instance: TObject; const _Name: string): Double; overload;
+    ///<summary>
+    /// Returns a float property value or a default if the property does not exist
+    /// @param Name is the name of the property
+    /// @param Default is the value to return if the property does not exist
+    /// @returns the property value or Default </summary>
     class function GetFloatProperty(_Instance: TObject; const _Name: string; const _Default: Double): Double; overload;
     function GetFloatProperty(const _Name: string; const _Default: Double): Double; overload;
     function GetFloatProperty(const _Name: string): Double; overload;
+    ///<summary>
+    /// Sets a float property, returns True on success
+    /// @param Name is the name of the property to set
+    /// @param Value is the value to set the property to
+    /// @returns True if the property could be set </summary>
     class function SetFloatProperty(_Instance: TObject; const _Name: string; const _Value: Double): Boolean; overload;
 {$ENDIF}
 
@@ -148,8 +227,18 @@ type
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetIntProperty(const _Name: string; out _Value: Integer): Boolean; overload;
     class function TryGetIntProperty(_Instance: TObject; const _Name: string; out _Value: Integer): Boolean; overload;
+    ///<summary>
+    /// Returns an integer property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetIntProperty(const _Name: string): Integer; overload;
     class function GetIntProperty(_Instance: TObject; const _Name: string): Integer; overload;
+    ///<summary>
+    /// Sets an integer property, returns True on success
+    /// @param Name is the name of the property to set
+    /// @param Value is the value to set the property to
+    /// @returns True if the property could be set </summary>
     function SetIntProperty(const _Name: string; _Value: Integer): Boolean; overload;
     class function SetIntProperty(_Instance: TObject; const _Name: string; _Value: Integer): Boolean; overload;
 
@@ -162,8 +251,18 @@ type
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetEnumProperty(const _Name: string; out _Value: Integer): Boolean; overload;
     class function TryGetEnumProperty(_Instance: TObject; const _Name: string; out _Value: Integer): Boolean; overload;
+    ///<summary>
+    /// Returns an enum property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value as Integer (must be type cast to the enum type)
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetEnumProperty(const _Name: string): Integer; overload;
     class function GetEnumProperty(_Instance: TObject; const _Name: string): Integer; overload;
+    ///<summary>
+    /// Sets an enum property, returns True on success
+    /// @param Name is the name of the property to set
+    /// @param Value is the ordinal value to set
+    /// @returns True if the property could be set </summary>
     function SetEnumProperty(const _Name: string; _Value: Integer): Boolean; overload;
     class function SetEnumProperty(_Instance: TObject; const _Name: string; _Value: Integer): Boolean; overload;
 
@@ -175,10 +274,26 @@ type
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetObjectProperty(const _Name: string; out _Value: TObject): Boolean; overload;
     class function TryGetObjectProperty(_Instance: TObject; const _Name: string; out _Value: TObject): Boolean; overload;
+    ///<summary>
+    /// Returns an object property value or a default if the property does not exist
+    /// @param Name is the name of the property
+    /// @param Default is the value to return if the property does not exist
+    /// @returns the property value or Default </summary>
     function GetObjectProperty(const _Name: string; _Default: TObject): TObject; overload;
     class function GetObjectProperty(_Instance: TObject; const _Name: string; _Default: TObject): TObject; overload;
+    ///<summary>
+    /// Returns an object property value, raises EPropertyNotFound if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value
+    /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetObjectProperty(const _Name: string): TObject; overload;
     class function GetObjectProperty(_Instance: TObject; const _Name: string): TObject; overload;
+    ///<summary>
+    /// Sets an object property, returns True on success
+    /// @param Instance is the object instance
+    /// @param Name is the name of the property to set
+    /// @param Value is the value to set the property to
+    /// @returns True if the property could be set </summary>
     class function SetObjectProperty(_Instance: TObject; const _Name: string; _Value: TObject): Boolean;
 
     ///<summary>
@@ -188,7 +303,16 @@ type
     /// @returns True, if the property exists and is an event property
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetEventProperty(const _Name: string; out _Value: TMethod): Boolean;
+    ///<summary>
+    /// Returns an event property value or a default if the property does not exist
+    /// @param Name is the name of the property
+    /// @param Default is the value to return if the property does not exist
+    /// @returns the property value or Default </summary>
     function GetEventProperty(const _Name: string; _Default: TMethod): TMethod; overload;
+    ///<summary>
+    /// Returns an event property value, raises an exception if it does not exist
+    /// @param Name is the name of the property
+    /// @returns the property value </summary>
     function GetEventProperty(const _Name: string): TMethod; overload;
 
     ///<summary>
@@ -196,10 +320,22 @@ type
     function SetEventProperty(const _Name: string; _Value: TMethod): Boolean; overload;
     class function SetEventProperty(_Instance: TObject; const _Name: string; _Value: TMethod): Boolean; overload;
 
+    ///<summary>
+    /// Returns an array of all published property names
+    /// @returns a TStringArray containing the property names </summary>
     function GetProperties: TStringArray;
 
+    ///<summary>
+    /// Tries to get the possible values of an enum property
+    /// @param Name is the name of the enum property
+    /// @param sl receives the list of enum value names
+    /// @returns True if the property exists and is an enum property </summary>
     function TryGetEnumValues(const _Name: string; _sl: TStrings): Boolean; overload;
     class function TryGetEnumValues(_Instance: TObject; const _Name: string; _sl: TStrings): Boolean; overload;
+    ///<summary>
+    /// Gets the possible values of an enum property, raises an exception if not found
+    /// @param Name is the name of the enum property
+    /// @param sl receives the list of enum value names </summary>
     procedure GetEnumValues(const _Name: string; _sl: TStrings); overload;
     class procedure GetEnumValues(_Instance: TObject; const _Name: string; _sl: TStrings); overload;
   end;
