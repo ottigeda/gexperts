@@ -62,7 +62,7 @@ type
     /// Is true, when the thread has finished executing </summary>
     property HasFinished: Boolean read FHasFinished;
     ///<summary>
-    /// If an unhandled exception occurred in the callback, its message is stored in ErrorMessage.
+    /// If an unhandled exception occurred in doExecute, its message is stored in ErrorMessage.
     /// Only valid after the thread has finished executing (that is HasFinished = true).
     /// see also TThread.FatalException (which is never set if you are using TErrorThread!) </summary>
     property ErrorMessage: string read FErrorMessage;

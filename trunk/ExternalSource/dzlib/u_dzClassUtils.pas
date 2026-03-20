@@ -351,8 +351,7 @@ function TStream_WriteFmtLn(_Stream: TStream; const _Format: string; _Args: arra
 /// @returns the string whose object matches Obj or an empty string, if none
 ///          was found and RaiseExeption was false
 /// @raises EObjectNotFound if a matching object was not found and RaiseException
-///         is true.
-/// </summary>
+///         is true. </summary>
 function TStrings_StringByObj(_Strings: TStrings; _Obj: Pointer; _RaiseException: Boolean = True): string;
 
 /// <summary>

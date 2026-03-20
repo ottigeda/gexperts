@@ -1,5 +1,5 @@
 {.GXFormatter.config=twm}
-/// <summary>
+///<summary>
 /// implements utility functions for file accesss </summary>
 unit u_dzFileUtils;
 
@@ -18,8 +18,9 @@ uses
 type
   EFileUtils = class(Exception);
   ECreateUniqueDir = class(EFileUtils);
-  /// <summary>
-  /// raised by DelTree if the DirName parameter is not a valid directory name </summary>
+  ///<summary>
+  /// raised by DelTree if the DirName parameter is not a valid directory name
+  /// @param DirName is the directory name that caused the error </summary>
   EDirNotFound = class(EFileUtils);
   EPathTooLong = class(EFileUtils);
   EInvalidPropertyCombination = class(EFileUtils);
@@ -74,7 +75,7 @@ type
   TOnFileEnumCallback = procedure(_Sender: TObject; const _Filename: string) of object;
 
 type
-  /// <summary>
+  ///<summary>
   /// a simple wrapper around FindFirst/FindNext which allows to search for
   /// specified attributes only (e.g. only directories), it automatically
   /// ignores the special '.' and '..' directories. </summary>
@@ -88,12 +89,12 @@ type
     FMayHaveAttr: TFileAttributeSet;
     /// internally used TSearchRec structure
     FSr: TSearchRec;
-    /// true if FindFirst was called and returned no error code
+    /// True if FindFirst was called and returned no error code
     FActive: Boolean;
     /// number of matching files found
     FMatchCount: Integer;
   public
-    /// <summary>
+    ///<summary>
     /// Creates a TSimpleDirEnumerator, sets the Mask, MayHaveAttr and MustHaveAttr
     /// properties.
     /// MustHaveAttr is set to []
@@ -112,17 +113,23 @@ type
     /// <summary>
     /// Destructor, will call FindClose if necessary </summary>
     destructor Destroy; override;
-    /// <summary>
+    ///<summary>
     /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
     /// @param List is a string list to which the files will be appended, may be nil
-    /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
+    /// @param IncludePath determines whether the List of filenames includes the full path or not
+    /// @param Sort determines whether the list should be sorted
+    /// @param Recursive determines whether subdirectories should be included
+    /// @returns the number of files found </summary>
     class function Execute(const _Mask: string; _List: TStrings;
       _MayHaveAttr: TFileAttributeSet = ALL_FILES_ATTRIB_SET; _IncludePath: Boolean = False;
       _Sort: Boolean = True; _Recursive: Boolean = False): Integer;
-    /// <summary>
+    ///<summary>
     /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
     /// @param List is a string list to which the files will be appended, may be nil
-    /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
+    /// @param IncludePath determines whether the List of filenames includes the full path or not
+    /// @param Sort determines whether the list should be sorted
+    /// @param Recursive determines whether subdirectories should be included
+    /// @returns the number of files found </summary>
     class function EnumFilesOnly(const _Mask: string; _List: TStrings;
       _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): Integer; overload;
     class function EnumFilesOnly(const _Mask: string;
@@ -141,25 +148,25 @@ type
     /// <summary>
     /// Calls SysUtils.FindFirst on first call and SysUtls.FindNext in later
     /// calls.
-    /// @param Filename is the name of the file found, if result is true, if you need
-    ///       more information about it, use the SR property, note that it
-    ///       does not include the path
+    /// @param Filename is the name of the file found, if result is True, if you need
+    ///                 more information about it, use the SR property, note that it
+    ///                 does not include the path
     /// @param IncludePath determines whether the List of filenames includes the full path or not
     ///                    defaults to false
-    /// @Returns true, if a matching file was found, false otherwise </summary>
+    /// @Returns True, if a matching file was found, false otherwise </summary>
     function FindNext(out _Filename: string; _IncludePath: Boolean = False): Boolean; overload;
     /// <summary>
     /// Calls SysUtils.FindFirst on first call and SysUtls.FindNext in later
-    /// calls. If it returns true, use the SR property to get information about
+    /// calls. If it returns True, use the SR property to get information about
     /// the file. See the overloaded @link(FindNext) version if you need only
     /// the filename.
-    /// @Returns true, if a matching file was found, false otherwise </summary>
+    /// @Returns True, if a matching file was found, false otherwise </summary>
     function FindNext: Boolean; overload;
     /// <summary>
     /// Calls FindNext until it returns false, stores all filenames in List and
     /// returns the number of files found.
     /// @param List is a TStrings object which will be filled with the filenames
-    ///        of matching files, may be nil.
+    ///             of matching files, may be nil.
     /// @param IncludePath determines whether the List of filenames includes the full path or not
     /// @returns the number of matching files </summary>
     function FindAll(_List: TStrings = nil; _IncludePath: Boolean = False): Integer;
@@ -265,7 +272,7 @@ type
   ///<summary>
   /// Called instead of TOnFileExists if a destination file does not exist to allow filtering
   /// of e.g. file types.
-  /// @param SyncIt must be set to false if the file should be skipped, default is true for
+  /// @param SyncIt must be set to false if the file should be skipped, default is True for
   ///               copying the file </summary>
   TOnQueryFileSync = procedure(_Sender: TObject; const _SrcFile: TFileInfoRec; const _DstFile: string;
     var _Action: TQueryFileSyncAction) of object;
@@ -299,7 +306,7 @@ type
     procedure CheckOneWay(const _SrcDir, _DstDir: string);
     /// <summary>
     /// copies all files from DirA to DirB if they don't already exist
-    /// (not implemented: if CheckContent=true, the content existing files will be checked and if
+    /// (not implemented: if CheckContent=True, the content existing files will be checked and if
     ///                   it doesn't match, OnDifferentFileExists is called)
     /// @param FlattenDirHierarchy determines whether all files should be copied
     ///                            directly to DstDir or if subdirectories should
@@ -307,12 +314,12 @@ type
     procedure SyncOneWay(const _SrcDir, _DstDir: string; _FlattenDirHierarchy: Boolean = False);
     /// <summary>
     /// calls SyncOneWay(DirA, DirB) and SyncOneWay(DirB, DirA)
-    /// (not implemented: if CheckContent=true, the content existing files will be checked and if
+    /// (not implemented: if CheckContent=True, the content existing files will be checked and if
     ///                   it doesn't match, OnDifferentFileExists is called) </summary>
     procedure SyncBothWays(const _DirA, _DirB: string);
 //    {! Not implemented: Called, if the content of an existing file is different }
 //    property OnDifferentFileExists: TOnDifferentFileExists read FOnDifferentFileExists write FOnDifferentFileExists;
-//    {! Not implemented: if true, OnDifferentFileExists will be called }
+//    {! Not implemented: if True, OnDifferentFileExists will be called }
 //    property CheckContent: boolean read FCheckContent write FCheckContent default false;
     /// <summary>
     /// called when a new directory is entered, to abort synchronization,
@@ -442,7 +449,7 @@ type
     ///        retrieves the Windows error and raises an exception
     ///        if it fails. If false, it will not raise an exception
     ///        but just return false if moving the file fails.
-    /// @returns true, if the file could be moved, false otherwise. </summary>
+    /// @returns True, if the file could be moved, False otherwise. </summary>
     class function MoveFile(const _Source, _Dest: string;
       _RaiseException: Boolean): Boolean; overload; deprecated;
     /// <summary>
@@ -453,7 +460,7 @@ type
     ///        retrieves the Windows error and raises an exception
     ///        if it fails. If ehReturnFalse, it will not raise an exception
     ///        but just return false if moving the file fails.
-    /// @returns true, if the file could be moved, false otherwise. </summary>
+    /// @returns True, if the file could be moved, False otherwise. </summary>
     class function MoveFile(const _Source, _Dest: string;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean; overload;
 
@@ -467,7 +474,7 @@ type
     ///        retrieves the Windows error and raises an exception
     ///        if it fails. If false, it will not raise an exception
     ///        but just return false if moving the file fails.
-    /// @returns true, if the file could be moved, false otherwise. </summary>
+    /// @returns True, if the file could be moved, False otherwise. </summary>
     class function MoveFileEx(const _Source, _Dest: string; _Flags: TMoveFileExFlagSet;
       _RaiseException: Boolean): Boolean; overload; deprecated;
     /// <summary>
@@ -479,7 +486,7 @@ type
     ///        retrieves the Windows error and raises an exception
     ///        if it fails. If ehReturnFalse, it will not raise an exception
     ///        but just return false if moving the file fails.
-    /// @returns true, if the file could be moved, false otherwise. </summary>
+    /// @returns True, if the file could be moved, False otherwise. </summary>
     class function MoveFileEx(const _Source, _Dest: string; _Flags: TMoveFileExFlagSet;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean; overload;
 
@@ -496,7 +503,7 @@ type
     ///                       but just return false if copying the file fails.
     /// @param ForceOverwrite is a boolean which controls whether the function removes
     ///                       a read-only flag from the destination file if necessary.
-    /// @returns true, if the file could be copied, false otherwise.
+    /// @returns True, if the file could be copied, False otherwise.
     /// @raises  EOSError if an error occurs and cfwRaiseException was passed </summary>
     class function CopyFile(const _Source, _Dest: string; _FailIfExists: Boolean;
       _RaiseException: Boolean = True; _ForceOverwrite: Boolean = False): Boolean; overload; deprecated;
@@ -518,7 +525,7 @@ type
     ///                   * cforDoNotOverwriteReadonly    and
     ///                   * cforOverwriteReadonly
     ///                   Defaults to cforDoNotOverwriteReadonly.
-    /// @returns true, if the file could be copied, false otherwise.
+    /// @returns True, if the file could be copied, False otherwise.
     /// @raises  EOSError if an error occurs and cfwRaiseException was passed </summary>
     class function CopyFile(const _Source, _Dest: string;
       _IfExists: TCopyFileFlagIfExists = cfeFailIfExists;
@@ -535,7 +542,7 @@ type
     ///        cfRaiseException: retrieve the Windows error and raise an exception if it fails.
     ///          If not set, it will not raise an exception but just return false if
     ///          copying the file fails.
-    /// @returns true, if the file could be copied, false otherwise.
+    /// @returns True, if the file could be copied, False otherwise.
     /// @raises  EOSError if an error occurs and cfwRaiseException was passed </summary>
     class function CopyFile(const _Source, _Dest: string; _Flags: TCopyFileFlagSet): Boolean; overload;
 
@@ -608,9 +615,9 @@ type
     /// Creates a directory (parent directories must already exist)
     /// NOTE: this function is deprecated, use the overloaded version!
     /// @param DirectoryName is the name for the new directory
-    /// @param RaiseException determines whether an exception is raised on error, default = true
-    /// @returns true, if the directory was created
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @param RaiseException determines whether an exception is raised on error, default = True
+    /// @returns True, if the directory was created
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function CreateDir(const _DirectoryName: string; _RaiseException: Boolean): Boolean; overload; deprecated;
     /// <summary>
     /// Creates a directory (parent directories must already exist)
@@ -619,8 +626,8 @@ type
     ///                      the Windows error and raises an exception if it fails.
     ///                      If ehReturnFalse, it will not raise an exception
     ///                      but just return false if copying the file fails.
-    /// @returns true, if the directory was created
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @returns True, if the directory was created
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function CreateDir(const _DirectoryName: string;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean; overload;
 
@@ -628,9 +635,9 @@ type
     /// Creates a new directory, including the creation of parent directories as needed.
     /// NOTE: this function is deprecated, use the overloaded version!
     /// @param DirectoryPath is the name for the new directory
-    /// @param RaiseException determines whether an exception is raised on error, default = true
-    /// @returns true, if the directory was created
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @param RaiseException determines whether an exception is raised on error, default = True
+    /// @returns True, if the directory was created
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function ForceDir_old(const _DirectoryPath: string; _RaiseException: Boolean): Boolean; deprecated;
     /// <summary>
     /// Creates a directory (parent directories must already exist)
@@ -639,18 +646,18 @@ type
     ///                      the Windows error and raises an exception if it fails.
     ///                      If ehReturnFalse, it will not raise an exception
     ///                      but just return false if copying the file fails.
-    /// @returns true, if the directory was created
+    /// @returns True, if the directory was created
     /// @raises EOSError if there was an error and ErrorHandling was ehRaiseException </summary>
     class function ForceDir(const _DirectoryPath: string;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
     ///<summary>
     /// Creates the directory for storing the given filename
-    /// @param _FullFilename is the full name of the file to save
+    /// @param FullFilename is the full name of the file to save
     /// @param ErrorHandling is a TErrorHandlingEnum which controls whether the function retrieves
     ///                      the Windows error and raises an exception if it fails.
     ///                      If ehReturnFalse, it will not raise an exception
     ///                      but just return false if copying the file fails.
-    /// @returns true, if the directory was created
+    /// @returns True, if the directory was created
     /// @raises EOSError if there was an error and ErrorHandling was ehRaiseException </summary>
     class function ForceDirFor(const _FullFilename: string;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
@@ -666,8 +673,8 @@ type
     /// Sets a file's readonly flag
     /// @param Filename is the file to change
     /// @param Set determines whether to set or clear the flag
-    /// @returns true, if the readonly flag has been changed
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @returns True, if the readonly flag has been changed
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function SetReadonly(const _Filename: string; _Value: Boolean;
       _RaiseException: Boolean): Boolean; overload; deprecated;
     /// <summary>
@@ -678,8 +685,8 @@ type
     ///                      the Windows error and raises an exception if it fails.
     ///                      If ehReturnFalse, it will not raise an exception
     ///                      but just return false if copying the file fails.
-    /// @returns true, if the readonly flag has been changed
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @returns True, if the readonly flag has been changed
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function SetReadonly(const _Filename: string; _Value: Boolean;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean; overload;
 
@@ -691,10 +698,10 @@ type
     ///        if it fails. If false, it will not raise an exception
     ///        but just return false if deleting the file fails.
     /// @param Force is a boolean which controls whether this function will try to delete
-    ///        readonly files, If true, it will use SetFileAttr to reset the
+    ///        readonly files, If True, it will use SetFileAttr to reset the
     ///        readonly attribut and try to delete the file again.
-    /// @returns true, if the file could be deleted, false otherwise.
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @returns True, if the file could be deleted, False otherwise.
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function DeleteFile(const _Filename: string; _RaiseException: Boolean = True;
       _Force: Boolean = False): Boolean;
 
@@ -709,13 +716,13 @@ type
     ///                       if it fails. If false, it will not raise an exception
     ///                       but just return false if moving the file fails.
     /// @param Force is a boolean which controls whether this function will try to delete
-    ///              readonly files, If true, it will use SetFileAttr to reset the
+    ///              readonly files, If True, it will use SetFileAttr to reset the
     ///              readonly attribut and try to delete the file again.
     /// @param ExceptMask is a string contaning a mask for files not to delete even if they
     ///                   match the Mask, defaults to an empty string meaning no exceptions.
     ///                   The comparison is case insensitive.
     /// @returns the number of files that could *not* be deleted.
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function DeleteMatchingFiles(const _Dir, _Mask: string;
       _RaiseException: Boolean = True; _Force: Boolean = False): Integer; overload;
     class function DeleteMatchingFiles(const _Dir, _Mask: string; const _ExceptMask: string = '';
@@ -739,7 +746,7 @@ type
     /// @param Mask is the name mask to match, note that it can contain wildcards only in the
     ///             last part of the name (e.g. 'c:\grmpf*\trallala' will NOT work)
     /// @param Dir is a String to which the matching directory will be written.
-    /// @returns true, if a matching directory was found. </summary>
+    /// @returns True, if a matching directory was found. </summary>
     class function FindMatchingDir(const _Mask: string; out _Dir: string): Boolean;
 
     ///<summary>
@@ -774,7 +781,7 @@ type
     /// Returns true, if the given file exists. Note that wildcards are not supported! If you
     /// need wildcards, use FindMatchingFile.
     /// @param RaiseException determines whether an exception should be raised if the file does not exist
-    /// @raises EFileNotFound if the file does not exist and RaiseException is true </summary>
+    /// @raises EFileNotFound if the file does not exist and RaiseException is True </summary>
     class function FileExists(const _Filename: string): Boolean; overload;
     class function FileExists(const _Filename: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertFileExists instead
     ///<summary>
@@ -789,7 +796,7 @@ type
 
     ///<summary>
     /// @param RaiseException determines whether an exception should be raised if the directory does not exist
-    /// @raises EDirNotFound if the directory does not exist and RaiseException is true </summary>
+    /// @raises EDirNotFound if the directory does not exist and RaiseException is True </summary>
     class function DirExists(const _DirName: string): Boolean; overload;
     class function DirExists(const _DirName: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertDirExists instead
     /// <summary>
@@ -815,7 +822,7 @@ type
 
     ///<summary>
     /// @param DirNames is a TStrings object containing a list of directory names to check.
-    /// @returns true, if all directories in the list exist, false otherwise
+    /// @returns True, if all directories in the list exist, false otherwise
     /// @NOTE: Passing an empty list will return True. </summary>
     class function AllDirsExist(_DirNames: TStrings): Boolean;
 
@@ -828,10 +835,10 @@ type
     ///                       if it fails. If false, it will not raise an exception
     ///                       but just return false if deleting the directory fails.
     /// @param Force is a boolean which controls whether this function will try to delete
-    ///              readonly directories, If true, it will use SetFileAttr to reset the
+    ///              readonly directories, If True, it will use SetFileAttr to reset the
     ///              readonly attribut and try to delete the directory again.
-    /// @returns True, if the directory could be deleted, false otherwise.
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @returns True, if the directory could be deleted, False otherwise.
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function RemoveDir(const _DirName: string; _RaiseException: Boolean = True;
       _Force: Boolean = False): Boolean;
 
@@ -850,8 +857,8 @@ type
     ///                      if it fails. If false, it will not raise an exception
     ///                      but just return false if deleting the directory fails.
     /// @param Force specifies whether it should also delete readonly files
-    /// @returns True, if the directory could be deleted, false otherwise.
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @returns True, if the directory could be deleted, False otherwise.
+    /// @raises EOSError if there was an error and RaiseException was True </summary>
     class function DelDirTree(const _DirName: string; _RaiseException: Boolean = True;
       _Force: Boolean = False): Boolean;
 
@@ -868,7 +875,7 @@ type
     ///<summary>
     /// checks if a filename is relative (meaning: Not an absolute path)
     /// (This calls shlwapi.PathIsRelativeA/W.)
-    /// @returns true, if the filename is relative </summary>
+    /// @returns True, if the filename is relative </summary>
     class function PathIsRelative(const _Filename: string): Boolean;
 
     /// <summary>
@@ -876,10 +883,10 @@ type
     /// does not contain one of the characters defined in INVALID_FILENAME_CHARS
     /// @param s is the string to check
     /// @param AllowDot determines whether a dot ('.') is allowed in the filename
-    ///        the default is true, but you might not want that
+    ///        the default is True, but you might not want that
     /// @param AllowPathChars determines whether the name may contain '\' characters and a single
     ///                       ':' as the second character, so a full path can be checked.
-    /// @returns true, if the string is a valid filename, false otherwise </summary>
+    /// @returns True, if the string is a valid filename, False otherwise </summary>
     class function IsValidFilename(const _s: string; _AllowDot: Boolean = True;
       _AllowPathChars: Boolean = False): Boolean; overload;
     /// <summary>
@@ -889,10 +896,10 @@ type
     /// @param s is the string to check
     /// @param ErrPos is the first error position, only valid it result = false
     /// @param AllowDot determines whether a dot ('.') is allowed in the filename
-    ///        the default is true, but you might not want that
+    ///        the default is True, but you might not want that
     /// @param AllowPathChars determines whether the name may contain '\' characters and a single
     ///                       ':' as the second character, so a full path can be checked.
-    /// @returns true, if the string is a valid filename, false otherwise </summary>
+    /// @returns True, if the string is a valid filename, False otherwise </summary>
     class function IsValidFilename(const _s: string; out _ErrPos: Integer; _AllowDot: Boolean = True;
       _AllowPathChars: Boolean = False): Boolean; overload;
     ///<summary>
@@ -909,10 +916,10 @@ type
 
     /// <summary>
     /// see also IsFileWritable
-    /// @Returns true if the file exists and its readonly flag is set </summary>
+    /// @Returns True if the file exists and its readonly flag is set </summary>
     class function IsFileReadonly(const _Filename: string): Boolean;
     /// <summary>
-    /// @Returns true if the file exists and is writable </summary>
+    /// @Returns True if the file exists and is writable </summary>
     class function IsFileWritable(const _Filename: string): Boolean;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
@@ -1007,7 +1014,7 @@ type
     /// <summary>
     /// Tries to get the file information containing filename, filesize
     /// and last access timestamp of the file.
-    /// @param Info will contain these values, only valid if result = true </summary>
+    /// @param Info will contain these values, only valid if result = True </summary>
     class function TryGetFileInfo(const _Filename: string; out _Info: TFileInfoRec): Boolean;
     class function TryGetFileSize(const _Filename: string; out _Size: Int64): Boolean;
     class function GetFileSize(const _Filename: string): Int64;
@@ -1142,8 +1149,8 @@ type
     /// ReplaceLastExtension('.doc') will change the file name to 'c:\bla\file.bla.doc' </summary>
     procedure ReplaceLastExtension(const _Extension: string);
     ///<summary>
-    /// @returns true, if the filename contains either a drive letter or is a UNC, false otherwise
-    /// @param Root either contains '<drive>:\' or '\\<server>\<share>' if the result is true. </summary>
+    /// @returns True, if the filename contains either a drive letter or is a UNC, False otherwise
+    /// @param Root either contains '<drive>:\' or '\\<server>\<share>' if the result is True. </summary>
     function TryGetRootDir(out _Root: string): Boolean;
     ///<summary>
     /// @Returns the first Depth parts of the filename as separated by PathDelim characters, without
@@ -1207,8 +1214,8 @@ type
     ///<summary>
     /// searches the file in the path
     /// @param FilenameOnly is the file name without a directory
-    /// @param is the full file name if the file, only valid it result = true
-    /// @returns true, if the file has been found, false otherwise </summary>
+    /// @param is the full file name if the file, only valid it result = True
+    /// @returns True, if the file has been found, False otherwise </summary>
     function TryFindFile(const _FilenameOnly: string; out _FoundFile: TFilename): Boolean;
     ///<summary>
     /// Calls TryFindFile and raises EFileNotFound if that call returns false </summary>
