@@ -60,9 +60,9 @@ type
     class function HasFloatProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
     ///<summary>
-    /// Checks if a published integer property with the given name exists
+    /// Checks if a published Integer property with the given name exists
     /// @param Name is the name of the property
-    /// @returns True if the property exists and is an integer property </summary>
+    /// @returns True if the property exists and is an Integer property </summary>
     function HasIntProperty(const _Name: string): Boolean; overload;
     class function HasIntProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
@@ -81,13 +81,13 @@ type
     class function HasEventProperty(_Instance: TObject; const _Name: string): Boolean; overload;
 
     ///<summary>
-    /// Calls HasEnumProperty and raises an exception if that call returns false
+    /// Calls HasEnumProperty and raises an exception if that call returns False
     /// @param Instance is the object instance to check
     /// @param Name is the name of the property to check </summary>
     class procedure CheckHasEnumProperty(_Instance: TObject; const _Name: string);
 
     ///<summary>
-    /// Calls HasIntProperty and raises an exception if that call returns false
+    /// Calls HasIntProperty and raises an exception if that call returns False
     /// @param Instance is the object instance to check
     /// @param Name is the name of the property to check </summary>
     class procedure CheckHasIntProperty(_Instance: TObject; const _Name: string);
@@ -95,9 +95,9 @@ type
     ///<summary>
     /// Access a string property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
-    /// @returns true, if the property exists and is a string property
-    ///          false if it either doesn't exist or has a different type </summary>
+    /// @param Value is the value of the property, only valid if Result is True
+    /// @returns True, if the property exists and is a string property
+    ///          False if it either doesn't exist or has a different type </summary>
     function TryGetStringProperty(const _Name: string; out _Value: string): Boolean; overload;
     class function TryGetStringProperty(_Instance: TObject; const _Name: string; out _Value: string): Boolean; overload;
     ///<summary>
@@ -115,14 +115,14 @@ type
     function GetStringProperty(const _Name: string): string; overload;
     class function GetStringProperty(_Instance: TObject; const _Name: string): string; overload;
     ///<summary>
-    /// Sets a string property, returns true on success
+    /// Sets a string property, returns True on success
     /// @param Name is the name of the property to set
     /// @param Value is the value to set the property to
-    /// @returns true, if the property could be set
-    ///          false otherwise </summary>
+    /// @returns True, if the property could be set
+    ///          False otherwise </summary>
     function SetStringProperty(const _Name: string; const _Value: string): Boolean; overload;
     ///<summary>
-    /// Sets a string property, returns true on success
+    /// Sets a string property, returns True on success
     /// @param Instance is the object instance
     /// @param Name is the name of the property to set
     /// @param Value is the value to set the property to
@@ -131,33 +131,33 @@ type
     class function SetStringProperty(_Instance: TObject; const _Name: string; const _Value: string): Boolean; overload;
 
     ///<summary>
-    /// Access a boolean property
+    /// Access a Boolean property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
-    /// @returns true, if the property exists and is an enum(!) property
-    ///          false if it either doesn't exist or has a different type
+    /// @param Value is the value of the property, only valid if Result is True
+    /// @returns True, if the property exists and is an enum(!) property
+    ///          False if it either doesn't exist or has a different type
     /// Note: It is not possible to distinguish between Boolean and any other enum type
     ///       So, this will Get or Set any enum property. </summary>
     function TryGetBoolProperty(const _Name: string; out _Value: Boolean): Boolean; overload;
     ///<summary>
-    /// Access a boolean property
+    /// Access a Boolean property
     /// @param Instance is the object instance
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
+    /// @param Value is the value of the property, only valid if Result is True
     /// @returns True, if the property exists and is an enum(!) property
     ///          False if it either doesn't exist or has a different type
     /// Note: It is not possible to distinguish between Boolean and any other enum type
     ///       So, this will Get or Set any enum property. </summary>
     class function TryGetBoolProperty(_Instance: TObject; const _Name: string; out _Value: Boolean): Boolean; overload;
     ///<summary>
-    /// Returns a boolean property value, raises EPropertyNotFound if it does not exist
+    /// Returns a Boolean property value, raises EPropertyNotFound if it does not exist
     /// @param Name is the name of the property
     /// @returns the property value
     /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetBoolProperty(const _Name: string): Boolean; overload;
     class function GetBoolProperty(_Instance: TObject; const _Name: string): Boolean; overload;
     ///<summary>
-    /// Sets a boolean property, returns True on success
+    /// Sets a Boolean property, returns True on success
     /// @param Name is the name of the property to set
     /// @param Value is the value to set the property to
     /// @returns True if the property could be set </summary>
@@ -167,7 +167,7 @@ type
     ///<summary>
     /// Access a float property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
+    /// @param Value is the value of the property, only valid if Result is True
     /// @returns True, if the property exists and is a float property
     ///          False if it either doesn't exist or has a different type </summary>
 {$IFDEF SUPPORTS_EXTENDED}
@@ -220,22 +220,22 @@ type
 {$ENDIF}
 
     ///<summary>
-    /// Access an integer property
+    /// Access an Integer property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
-    /// @returns True, if the property exists and is an integer property
+    /// @param Value is the value of the property, only valid if Result is True
+    /// @returns True, if the property exists and is an Integer property
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetIntProperty(const _Name: string; out _Value: Integer): Boolean; overload;
     class function TryGetIntProperty(_Instance: TObject; const _Name: string; out _Value: Integer): Boolean; overload;
     ///<summary>
-    /// Returns an integer property value, raises EPropertyNotFound if it does not exist
+    /// Returns an Integer property value, raises EPropertyNotFound if it does not exist
     /// @param Name is the name of the property
     /// @returns the property value
     /// @raises EPropertyNotFound if the property does not exist </summary>
     function GetIntProperty(const _Name: string): Integer; overload;
     class function GetIntProperty(_Instance: TObject; const _Name: string): Integer; overload;
     ///<summary>
-    /// Sets an integer property, returns True on success
+    /// Sets an Integer property, returns True on success
     /// @param Name is the name of the property to set
     /// @param Value is the value to set the property to
     /// @returns True if the property could be set </summary>
@@ -245,7 +245,7 @@ type
     ///<summary>
     /// Access an enum property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
+    /// @param Value is the value of the property, only valid if Result is True
     ///              Note: The value must be type cast to the appropriate enum type
     /// @returns True, if the property exists and is an enum property
     ///          False if it either doesn't exist or has a different type </summary>
@@ -269,7 +269,7 @@ type
     ///<summary>
     /// Access an object reference property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
+    /// @param Value is the value of the property, only valid if Result is True
     /// @returns True, if the property exists and is an object reference property
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetObjectProperty(const _Name: string; out _Value: TObject): Boolean; overload;
@@ -299,7 +299,7 @@ type
     ///<summary>
     /// Access an event property
     /// @param Name is the name of the property
-    /// @param Value is the value of the property, only valid if Result is true
+    /// @param Value is the value of the property, only valid if Result is True
     /// @returns True, if the property exists and is an event property
     ///          False if it either doesn't exist or has a different type </summary>
     function TryGetEventProperty(const _Name: string; out _Value: TMethod): Boolean;
@@ -316,7 +316,7 @@ type
     function GetEventProperty(const _Name: string): TMethod; overload;
 
     ///<summary>
-    /// Sets an event property, returns true on success </summary>
+    /// Sets an event property, returns True on success </summary>
     function SetEventProperty(const _Name: string; _Value: TMethod): Boolean; overload;
     class function SetEventProperty(_Instance: TObject; const _Name: string; _Value: TMethod): Boolean; overload;
 
