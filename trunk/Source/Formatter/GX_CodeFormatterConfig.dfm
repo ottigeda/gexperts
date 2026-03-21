@@ -242,7 +242,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
-          TabOrder = 7
+          TabOrder = 3
           OnChange = UpdatePreview
           Items.Strings = (
             'Unchanged'
@@ -255,7 +255,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Width = 167
           Height = 17
           Caption = 'Wrap long lines'
-          TabOrder = 4
+          TabOrder = 5
           OnClick = UpdatePreview
         end
         object ed_WrapPosition: TEdit
@@ -263,7 +263,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Top = 288
           Width = 33
           Height = 21
-          TabOrder = 5
+          TabOrder = 6
           Text = '0'
           OnChange = UpdatePreview
         end
@@ -276,14 +276,14 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Min = 0
           Max = 254
           Position = 0
-          TabOrder = 6
+          TabOrder = 7
           Wrap = False
         end
         object grp_AlwaysBreakLine: TGroupBox
           Left = 8
           Top = 8
           Width = 217
-          Height = 386
+          Height = 417
           Caption = 'Always Break Line'
           TabOrder = 0
           object chk_FeedAfterVar: TCheckBox
@@ -297,34 +297,34 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedBeforeEnd: TCheckBox
             Left = 8
-            Top = 72
+            Top = 48
             Width = 201
             Height = 17
             Caption = 'Before "end"'
-            TabOrder = 2
+            TabOrder = 1
             OnClick = UpdatePreview
           end
           object chk_FeedAfterSemiColon: TCheckBox
             Left = 8
-            Top = 96
+            Top = 72
             Width = 201
             Height = 17
             Caption = 'After semicolon (except directives)'
-            TabOrder = 3
+            TabOrder = 2
             OnClick = UpdatePreview
           end
           object chk_FeedElseIf: TCheckBox
             Left = 8
-            Top = 120
+            Top = 104
             Width = 201
             Height = 17
             Caption = 'Between else and if'
-            TabOrder = 4
+            TabOrder = 3
             OnClick = UpdatePreview
           end
           object chk_FeedAfterThen: TCheckBox
             Left = 8
-            Top = 144
+            Top = 152
             Width = 201
             Height = 17
             Caption = 'After "then","else","do",":"'
@@ -333,7 +333,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_ExceptSingle: TCheckBox
             Left = 16
-            Top = 168
+            Top = 176
             Width = 193
             Height = 17
             Caption = 'Except single lines'
@@ -342,7 +342,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_NoFeedBeforeThen: TCheckBox
             Left = 8
-            Top = 192
+            Top = 200
             Width = 201
             Height = 17
             Caption = 'Never before "then", "do"'
@@ -351,7 +351,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedAfterUses: TCheckBox
             Left = 8
-            Top = 216
+            Top = 232
             Width = 201
             Height = 17
             Caption = 'After "uses"'
@@ -360,7 +360,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedEachUnit: TCheckBox
             Left = 8
-            Top = 240
+            Top = 256
             Width = 201
             Height = 17
             Caption = 'Between every unit in "uses"'
@@ -369,8 +369,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedEachUnitBeforeComma: TCheckBox
             Left = 16
-            Top = 264
-            Width = 168
+            Top = 280
+            Width = 193
             Height = 17
             Caption = 'Before the comma'
             TabOrder = 10
@@ -378,7 +378,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedEachEnum: TCheckBox
             Left = 8
-            Top = 288
+            Top = 312
             Width = 201
             Height = 17
             Caption = 'Between every enum identifier'
@@ -387,8 +387,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedEachEnumBeforeComma: TCheckBox
             Left = 16
-            Top = 312
-            Width = 168
+            Top = 336
+            Width = 193
             Height = 17
             Caption = 'Before the comma'
             TabOrder = 12
@@ -396,7 +396,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedAfterOpenParenEnum: TCheckBox
             Left = 8
-            Top = 336
+            Top = 360
             Width = 201
             Height = 17
             Caption = 'After opening ( for enums'
@@ -405,7 +405,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_RemoveDoubleBlank: TCheckBox
             Left = 8
-            Top = 360
+            Top = 392
             Width = 201
             Height = 17
             Caption = 'Remove double blank lines'
@@ -414,11 +414,11 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           end
           object chk_FeedBeforeElse: TCheckBox
             Left = 8
-            Top = 48
+            Top = 128
             Width = 201
             Height = 17
             Caption = 'Before "else"'
-            TabOrder = 1
+            TabOrder = 4
             OnClick = UpdatePreview
           end
         end
@@ -472,7 +472,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
-          TabOrder = 3
+          TabOrder = 4
           OnChange = UpdatePreview
           Items.Strings = (
             'Unchanged'
@@ -911,8 +911,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
   end
   object pm_Extra: TPopupMenu
-    Left = 328
-    Top = 40
+    Left = 400
+    Top = 56
     object mi_ResetTo: TMenuItem
       Caption = 'Reset to'
       object mi_ResetToDefault: TMenuItem
