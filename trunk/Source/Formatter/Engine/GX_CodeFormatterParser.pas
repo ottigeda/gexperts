@@ -180,7 +180,10 @@ begin
 
     if FPrevType = wtSpaces then begin
       if FPrevLine <> nil then begin
-        if FPrevLine.NoOfSpaces = 0 then begin
+        if (FPrevLine.NoOfSpaces = 0)
+          and FTokens.TryGetLastItem(PrevToken) and (PrevToken = FPrevLine) then begin
+          // Leading whitespace: only if the linefeed is still the last token
+          // (no real tokens have been added on this line yet)
           FPrevLine.NoOfSpaces := Length(s);
           FPrevLine.OldNoOfSpaces := FPrevLine.NoOfSpaces;
         end else begin
