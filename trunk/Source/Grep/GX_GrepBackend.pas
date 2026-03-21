@@ -422,7 +422,7 @@ implementation
 uses
   Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
   u_dzClassUtils, u_dzMapFileReader, u_dzStringUtils,
-  GX_Logging,
+  GX_Logging, GX_MessageBox,
   GX_OtaUtils, GX_IdeUtils, GX_GrepProgress, GX_GenericUtils;
 
 var
@@ -748,6 +748,38 @@ begin
   end; // finally
 end;
 
+type
+  TGrepAccessErrors = class(TGxMsgBoxAdaptor)
+  protected
+    function GetMessage: string; override;
+    function GetDetails: string; override;
+    function GetCaption: string; override;
+  end;
+
+function TGrepAccessErrors.GetMessage: string;
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    sl.Text := FData;
+    Result := Format('%d file(s) or directories could not be accessed during the search.'
+      + #13#10 + 'Click "Details" for the full list.', [sl.Count]);
+  finally
+    sl.Free;
+  end;
+end;
+
+function TGrepAccessErrors.GetDetails: string;
+begin
+  Result := FData;
+end;
+
+function TGrepAccessErrors.GetCaption: string;
+begin
+  Result := 'GExperts Grep - Access Errors';
+end;
+
 procedure TGrepSearchRunner.Execute;
 var
   i: Integer;
@@ -834,9 +866,7 @@ begin
               GrepResults;
           end; // end case
           if FExceptionList.Count > 0 then
-          begin
-            MessageDlg(FExceptionList.Text, mtError, [mbOK], 0);
-          end;
+            ShowGxMessageBox(TGrepAccessErrors, FExceptionList.Text);
         finally
           FreeAndNil(FExceptionList);
         end;

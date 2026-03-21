@@ -37,6 +37,9 @@ type
     // Returns whether the message box should be shown.
     function ShouldShow: Boolean; virtual;
     function AllowSuppress: Boolean; virtual;
+    // Returns optional detail text shown behind a "Details" button.
+    // If non-empty, the detail button is shown automatically.
+    function GetDetails: string; virtual;
   public
     class function ConfigurationKey: string;
   end;
@@ -124,6 +127,7 @@ var
   frm: TfmGxMessageBox;
   Buttons: TDialogButtonArr;
   DialogButtons: TMsgDlgButtons;
+  DetailText: string;
 begin
   Adaptor := AdaptorClass.Create;
   try
@@ -137,7 +141,9 @@ begin
       try
         GxSetDefaultFont(frm);
         frm.ShowDontShowAgain := Adaptor.AllowSuppress;
-        frm.ShowDetailButton := False;
+        DetailText := Adaptor.GetDetails;
+        frm.ShowDetailButton := (DetailText <> '');
+        frm.Details := DetailText;
         DialogButtons := Adaptor.GetButtons;
         Buttons := MsgDlgButtons2DialogButtonArr(DialogButtons);
         frm.SetVisibleButtons(Buttons);
@@ -217,6 +223,11 @@ end;
 function TGxMsgBoxAdaptor.AllowSuppress: Boolean;
 begin
   Result := True;
+end;
+
+function TGxMsgBoxAdaptor.GetDetails: string;
+begin
+  Result := '';
 end;
 
 class function TGxMsgBoxAdaptor.ConfigurationKey: string;
