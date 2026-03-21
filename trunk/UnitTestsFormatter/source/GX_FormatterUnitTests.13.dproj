@@ -11,7 +11,7 @@
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectGuid>{29a50c38-e85b-424f-86b6-68e259c53afd}</ProjectGuid>
         <ProjectName Condition="'$(ProjectName)'==''">GX_FormatterUnitTests.13</ProjectName>
-        <ProjectVersion>20.3</ProjectVersion>
+        <ProjectVersion>20.4</ProjectVersion>
         <TargetedPlatforms>1</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -128,6 +128,8 @@
         <DCCReference Include="..\dunit\TestFrameworkExt.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="DelForExUsesTests.pas"/>
+        <DCCReference Include="DelForExSpecialCasesTests.pas"/>
+        <DCCReference Include="DelForExBeyondCompare.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
