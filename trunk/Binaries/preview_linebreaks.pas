@@ -7,11 +7,24 @@ uses SysUtils, Classes, Forms, Graphics, Controls;
 type
   TDemo = class
   public
+type
+  TEnum = (a, // description for a
+   b,
+   c, // description for c
+    d // description for d
+);
     procedure Execute;
   end;
 
 implementation
 uses Windows, Messages;
+type
+  TEnum2 = (a1, // description for a1
+           b2,
+      c3, // description for c3
+    d4 // description for d4
+);
+
 
 procedure TDemo.Execute;
 var I: Integer; S: string;
