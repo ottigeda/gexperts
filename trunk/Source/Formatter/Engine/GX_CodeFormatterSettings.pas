@@ -81,6 +81,9 @@ type
     FeedAfterUses: Boolean; {: line feed after "uses" }
     FeedEachUnit: Boolean; {: line feed after each unit }
     FeedEachUnitBeforeComma: Boolean; {: inserts the feed before, not after the comma }
+    FeedAfterOpenParenEnum: Boolean; {: line feed after opening ( for enums }
+    FeedEachEnum: Boolean; {: line feed after each enum identifier }
+    FeedEachEnumBeforeComma: Boolean; {: inserts the feed before, not after the comma for enums }
     NoFeedBeforeThen: Boolean;
     FeedElseIf: Boolean; {: line feed between else and if }
     FillNewWords: TCapfileModeSet; {: how to use the capitalization file }
@@ -176,6 +179,9 @@ type
     property FeedAfterUses: Boolean read FSettings.FeedAfterUses;
     property FeedEachUnit: Boolean read FSettings.FeedEachUnit;
     property FeedEachUnitBeforeComma: Boolean read FSettings.FeedEachUnitBeforeComma;
+    property FeedAfterOpenParenEnum: Boolean read FSettings.FeedAfterOpenParenEnum;
+    property FeedEachEnum: Boolean read FSettings.FeedEachEnum;
+    property FeedEachEnumBeforeComma: Boolean read FSettings.FeedEachEnumBeforeComma;
     property NoFeedBeforeThen: Boolean read FSettings.NoFeedBeforeThen;
     property FeedElseIf: Boolean read FSettings.FeedElseIf;
     property FillNewWords: TCapfileModeSet read FSettings.FillNewWords;

@@ -56,6 +56,11 @@ type
 procedure AdjustSettings_IndentSections(var _cfg: TCodeFormatterEngineSettings);
 procedure AdjustSettings_NoIndentVarDecl(var _cfg: TCodeFormatterEngineSettings);
 procedure AdjustSettings_AlignAssign(var _cfg: TCodeFormatterEngineSettings);
+procedure AdjustSettings_FeedEachEnum(var _cfg: TCodeFormatterEngineSettings);
+procedure AdjustSettings_FeedEachEnumBeforeComma(var _cfg: TCodeFormatterEngineSettings);
+procedure AdjustSettings_FeedAfterOpenParenEnum(var _cfg: TCodeFormatterEngineSettings);
+procedure AdjustSettings_FeedEachEnumAfterOpenParen(var _cfg: TCodeFormatterEngineSettings);
+procedure AdjustSettings_FeedEachEnumBeforeCommaAfterOpenParen(var _cfg: TCodeFormatterEngineSettings);
 
 implementation
 
@@ -225,6 +230,35 @@ begin
   _cfg.AlignAssignPos := 30;
 end;
 
+procedure AdjustSettings_FeedEachEnum(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.FeedEachEnum := True;
+end;
+
+procedure AdjustSettings_FeedEachEnumBeforeComma(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.FeedEachEnum := True;
+  _cfg.FeedEachEnumBeforeComma := True;
+end;
+
+procedure AdjustSettings_FeedAfterOpenParenEnum(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.FeedAfterOpenParenEnum := True;
+end;
+
+procedure AdjustSettings_FeedEachEnumAfterOpenParen(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.FeedEachEnum := True;
+  _cfg.FeedAfterOpenParenEnum := True;
+end;
+
+procedure AdjustSettings_FeedEachEnumBeforeCommaAfterOpenParen(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.FeedEachEnum := True;
+  _cfg.FeedEachEnumBeforeComma := True;
+  _cfg.FeedAfterOpenParenEnum := True;
+end;
+
 { Registration }
 
 function CreateSpecialCasesSuite: ITestSuite;
@@ -240,6 +274,11 @@ begin
   suite.AddSuite(TSpecialCaseTestSuite.Create('indentsections', AdjustSettings_IndentSections));
   suite.AddSuite(TSpecialCaseTestSuite.Create('NoIndentVarDecl', AdjustSettings_NoIndentVarDecl));
   suite.AddSuite(TSpecialCaseTestSuite.Create('AlignAssign', AdjustSettings_AlignAssign));
+  suite.AddSuite(TSpecialCaseTestSuite.Create('FeedEachEnum', AdjustSettings_FeedEachEnum));
+  suite.AddSuite(TSpecialCaseTestSuite.Create('FeedEachEnumBeforeComma', AdjustSettings_FeedEachEnumBeforeComma));
+  suite.AddSuite(TSpecialCaseTestSuite.Create('FeedAfterOpenParenEnum', AdjustSettings_FeedAfterOpenParenEnum));
+  suite.AddSuite(TSpecialCaseTestSuite.Create('FeedEachEnumAfterOpenParen', AdjustSettings_FeedEachEnumAfterOpenParen));
+  suite.AddSuite(TSpecialCaseTestSuite.Create('FeedEachEnumBeforeCommaAfterOpenParen', AdjustSettings_FeedEachEnumBeforeCommaAfterOpenParen));
   Result := suite;
 end;
 

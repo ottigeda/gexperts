@@ -40,6 +40,9 @@ begin
   Result.FeedBeforeEnd := False;
   Result.FeedEachUnit := False;
   Result.FeedEachUnitBeforeComma := False;
+  Result.FeedAfterOpenParenEnum := False;
+  Result.FeedEachEnum := False;
+  Result.FeedEachEnumBeforeComma := False;
   Result.FeedElseIf := False;
   Result.FeedRoundBegin := Unchanged;
   Result.FeedRoundTry := Unchanged;
@@ -101,6 +104,9 @@ begin
   Result.FeedBeforeEnd := True;
   Result.FeedEachUnit := False;
   Result.FeedEachUnitBeforeComma := False;
+  Result.FeedAfterOpenParenEnum := False;
+  Result.FeedEachEnum := False;
+  Result.FeedEachEnumBeforeComma := False;
   Result.FeedElseIf := False;
   Result.FeedRoundBegin := NewLine;
   Result.FeedRoundTry := NewLine;

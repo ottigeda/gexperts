@@ -283,7 +283,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 8
           Top = 8
           Width = 217
-          Height = 314
+          Height = 386
           Caption = 'Always Break Line'
           TabOrder = 0
           object chk_FeedAfterVar: TCheckBox
@@ -376,13 +376,40 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             TabOrder = 10
             OnClick = UpdatePreview
           end
-          object chk_RemoveDoubleBlank: TCheckBox
+          object chk_FeedEachEnum: TCheckBox
             Left = 8
             Top = 288
             Width = 201
             Height = 17
-            Caption = 'Remove double blank lines'
+            Caption = 'Between every enum identifier'
             TabOrder = 11
+            OnClick = chk_FeedEachEnumClick
+          end
+          object chk_FeedEachEnumBeforeComma: TCheckBox
+            Left = 16
+            Top = 312
+            Width = 168
+            Height = 17
+            Caption = 'Before the comma'
+            TabOrder = 12
+            OnClick = UpdatePreview
+          end
+          object chk_FeedAfterOpenParenEnum: TCheckBox
+            Left = 8
+            Top = 336
+            Width = 201
+            Height = 17
+            Caption = 'After opening ( for enums'
+            TabOrder = 13
+            OnClick = UpdatePreview
+          end
+          object chk_RemoveDoubleBlank: TCheckBox
+            Left = 8
+            Top = 360
+            Width = 201
+            Height = 17
+            Caption = 'Remove double blank lines'
+            TabOrder = 14
             OnClick = UpdatePreview
           end
           object chk_FeedBeforeElse: TCheckBox

@@ -114,6 +114,9 @@ type
     chk_FeedAfterUses: TCheckBox;
     chk_FeedEachUnit: TCheckBox;
     chk_FeedEachUnitBeforeComma: TCheckBox;
+    chk_FeedEachEnum: TCheckBox;
+    chk_FeedEachEnumBeforeComma: TCheckBox;
+    chk_FeedAfterOpenParenEnum: TCheckBox;
     chk_ExceptSingle: TCheckBox;
     p_Botton: TPanel;
     b_Help: TButton;
@@ -155,6 +158,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure chk_FeedAfterThenClick(Sender: TObject);
     procedure chk_FeedEachUnitClick(Sender: TObject);
+    procedure chk_FeedEachEnumClick(Sender: TObject);
     procedure p_PreviewResize(Sender: TObject);
     procedure b_ToolsClick(Sender: TObject);
     procedure mi_ResetToDefaultClick(Sender: TObject);
@@ -575,6 +579,9 @@ begin
   _Settings.FeedAfterUses := chk_FeedAfterUses.Checked;
   _Settings.FeedEachUnit := chk_FeedEachUnit.Checked;
   _Settings.FeedEachUnitBeforeComma := chk_FeedEachUnitBeforeComma.Checked;
+  _Settings.FeedAfterOpenParenEnum := chk_FeedAfterOpenParenEnum.Checked;
+  _Settings.FeedEachEnum := chk_FeedEachEnum.Checked;
+  _Settings.FeedEachEnumBeforeComma := chk_FeedEachEnumBeforeComma.Checked;
   _Settings.NoFeedBeforeThen := chk_NoFeedBeforeThen.Checked;
   _Settings.FeedAfterVar := chk_FeedAfterVar.Checked;
   _Settings.FeedElseIf := chk_FeedElseIf.Checked;
@@ -665,6 +672,9 @@ begin
   chk_FeedAfterUses.Checked := _Settings.FeedAfterUses;
   chk_FeedEachUnit.Checked := _Settings.FeedEachUnit;
   chk_FeedEachUnitBeforeComma.Checked := _Settings.FeedEachUnitBeforeComma;
+  chk_FeedAfterOpenParenEnum.Checked := _Settings.FeedAfterOpenParenEnum;
+  chk_FeedEachEnum.Checked := _Settings.FeedEachEnum;
+  chk_FeedEachEnumBeforeComma.Checked := _Settings.FeedEachEnumBeforeComma;
   chk_FeedAfterThen.Checked := _Settings.FeedAfterThen;
   chk_ExceptSingle.Checked := _Settings.FeedAfterThenExceptSingle;
   chk_NoFeedBeforeThen.Checked := _Settings.NoFeedBeforeThen;
@@ -698,6 +708,7 @@ begin
   ud_AlignAssignPos.Associate := ed_AlignAssignPos;
   chk_FeedAfterThenClick(nil);
   chk_FeedEachUnitClick(nil);
+  chk_FeedEachEnumClick(nil);
 end;
 
 procedure TfmCodeFormatterConfig.SettingsToForm(const _Settings: TCodeFormatterSettings);
@@ -831,6 +842,12 @@ end;
 procedure TfmCodeFormatterConfig.chk_FeedEachUnitClick(Sender: TObject);
 begin
   chk_FeedEachUnitBeforeComma.Enabled := chk_FeedEachUnit.Checked;
+  UpdatePreview(Sender);
+end;
+
+procedure TfmCodeFormatterConfig.chk_FeedEachEnumClick(Sender: TObject);
+begin
+  chk_FeedEachEnumBeforeComma.Enabled := chk_FeedEachEnum.Checked;
   UpdatePreview(Sender);
 end;
 

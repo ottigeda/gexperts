@@ -65,6 +65,12 @@ type
     FWrapIndent: Boolean;
     // stores WrapIndent from before an opening bracket until the closing one
     FOldWrapIndent: Boolean;
+    // Column position (0-based) of the opening ( for enum types
+    // Used for column-aligned enum formatting when FeedAfterOpenParenEnum is off
+    FEnumOpenParenCol: Integer;
+    // Extra indent levels for the first enum member after (
+    // Used for FeedEachEnumBeforeComma + FeedAfterOpenParenEnum (Case C)
+    FEnumFirstMemberExtraIndent: Integer;
     procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
@@ -134,6 +140,7 @@ type
     function CheckIndentComma(): Boolean;
     procedure CheckIndentElse(_NTmp: Integer);
     procedure CheckIndentLeftBr;
+    function IsInEnumType: Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure CheckIndentProcedure(var _NTmp: Integer);
     ///<summary>
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
@@ -1443,6 +1450,59 @@ begin
           AssertLineFeedAfter(FTokenIdx, True);
       end;
     end;
+  end else if IsInEnumType and FSettings.FeedEachEnum then begin
+    if FSettings.FeedEachEnumBeforeComma then begin
+      // linefeed before comma
+      if (not (FPrevToken is TLineFeed)) then begin
+        IdxChanged := False;
+        Next := GetToken(FTokenIdx + 1);
+        if (Next <> nil) and (Next.ReservedType = rtComment)
+          and not (Next.WordType in [wtHalfComment, wtHalfStarComment]) then begin
+          // Move the Comma behind the comment so the comment stays with
+          // its identifier (skip multi-line block comments to avoid corruption)
+          FTokens.AtInsert(FTokenIdx + 1, FTokens.Extract(FTokenIdx));
+          FTokenIdx := FTokenIdx + 1;
+          IdxChanged := True;
+        end;
+
+        LFeed := AssertLineFeedAfter(FTokenIdx - 1);
+
+        // For column-aligned mode (no FeedAfterOpenParenEnum), set absolute indent
+        if not FSettings.FeedAfterOpenParenEnum and (FEnumOpenParenCol > 0) then
+          LFeed.NoOfSpaces := FEnumOpenParenCol - 1; // , at ( - 1 (0-based)
+
+        // If we have a break after the comma, remove that
+        while TryGetNextNoComment(FTokenIdx, Next, Offset)
+          and (Next.ReservedType = rtLineFeed) do begin
+          FTokens.Extract(FTokenIdx + Offset).Free;
+        end;
+
+        // We changed the code, we need to process the comment again
+        if IdxChanged then begin
+          FTokenIdx := FTokenIdx - 3;
+          Result := True;
+          Exit; //==>
+        end;
+      end else begin
+        // Linefeed already exists before comma — adjust indent for column alignment
+        if not FSettings.FeedAfterOpenParenEnum and (FEnumOpenParenCol > 0) then
+          TLineFeed(FPrevToken).NoOfSpaces := FEnumOpenParenCol - 1;
+      end;
+    end else begin
+      // not FeedEachEnumBeforeComma: linefeed after comma
+      if TryGetNextNoComment(FTokenIdx, True, Next) then begin
+        if Next.ReservedType <> rtLineFeed then begin
+          LFeed := AssertLineFeedAfter(FTokenIdx, True);
+          // For column-aligned mode (no FeedAfterOpenParenEnum), set absolute indent
+          if not FSettings.FeedAfterOpenParenEnum and (FEnumOpenParenCol > 0) then
+            LFeed.NoOfSpaces := FEnumOpenParenCol + 1; // member starts at ( + 1 (0-based)
+        end else begin
+          // Linefeed already exists after comma — adjust indent for column alignment
+          if not FSettings.FeedAfterOpenParenEnum and (FEnumOpenParenCol > 0) then
+            TLineFeed(Next).NoOfSpaces := FEnumOpenParenCol + 1;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -1594,6 +1654,35 @@ begin
     Assert(False, '.CheckIndentLeftBr');
     FWrapIndent := False;
   end;
+
+  // Insert line feed after opening ( for enums if configured
+  if IsInEnumType then begin
+    FEnumOpenParenCol := GetTokenColumn(FTokenIdx);
+    FEnumFirstMemberExtraIndent := 0;
+    if FSettings.FeedAfterOpenParenEnum then begin
+      // Always break after ( for enums (Cases A and C)
+      if TryGetNextNoComment(FTokenIdx, Next, Offset) then begin
+        if Next.ReservedType <> rtLineFeed then
+          InsertBlankLines(FTokenIdx + Offset, 1);
+        // In BeforeComma mode, first member needs extra indent (Case C)
+        // Set flag — the actual indent adjustment happens when the linefeed is processed
+        if FSettings.FeedEachEnum and FSettings.FeedEachEnumBeforeComma then
+          FEnumFirstMemberExtraIndent := 1;
+      end;
+    end else if FSettings.FeedEachEnum then begin
+      // No break after ( — column-aligned formatting (Cases B and D)
+      // Remove existing linefeed after ( if present
+      if TryGetNextNoComment(FTokenIdx, Next, Offset)
+        and (Next.ReservedType = rtLineFeed) then begin
+        FTokens.Extract(FTokenIdx + Offset).Free;
+      end;
+    end;
+  end;
+end;
+
+function TCodeFormatterFormatter.IsInEnumType: Boolean;
+begin
+  Result := (FStack.GetTopType = rtLeftBr) and (FStack.GetType(1) = rtType);
 end;
 
 function TCodeFormatterFormatter.CheckIndentSemicolon(): Boolean;
@@ -1948,6 +2037,7 @@ var
   PoppedPrevSection: Boolean;
   k: Integer;
   IsForLoop: Boolean;
+  LFeed: TLineFeed;
 begin
   if FCurrentToken = nil then
     Exit; //==>
@@ -2055,6 +2145,44 @@ begin
 
     rtRightBr: begin
         Assert(False, '.CheckIndent: RightBr');
+
+        // For enum types with FeedEachEnum or FeedAfterOpenParenEnum,
+        // ensure ) is on its own line (only if enum was expanded to multiple lines)
+        if IsInEnumType
+          and (FSettings.FeedAfterOpenParenEnum or FSettings.FeedEachEnum) then begin
+          if not (FPrevToken is TLineFeed) then begin
+            // Check if there's a linefeed between ( and ), i.e., the enum spans multiple lines
+            k := 1;
+            while (FTokenIdx >= k)
+              and TryGetToken(FTokenIdx - k, Next)
+              and (Next.ReservedType <> rtLeftBr) do begin
+              if Next.ReservedType = rtLineFeed then begin
+                LFeed := AssertLineFeedAfter(FTokenIdx - 1);
+                if FSettings.FeedAfterOpenParenEnum then begin
+                  // Case A: ) at type-name indent level (one less than member indent)
+                  // Case C: ) at normal indent level (same as , member lines)
+                  if not FSettings.FeedEachEnumBeforeComma then
+                    LFeed.IncIndent(-1);
+                end else begin
+                  // Cases B/D: ) at ( column (absolute positioning)
+                  if FEnumOpenParenCol > 0 then
+                    LFeed.NoOfSpaces := FEnumOpenParenCol;
+                end;
+                Break;
+              end;
+              Inc(k);
+            end;
+          end else begin
+            // FPrevToken is a linefeed — adjust its indent for )
+            LFeed := TLineFeed(FPrevToken);
+            if FSettings.FeedAfterOpenParenEnum then begin
+              if not FSettings.FeedEachEnumBeforeComma then
+                LFeed.IncIndent(-1);
+            end else if FEnumOpenParenCol > 0 then
+              LFeed.NoOfSpaces := FEnumOpenParenCol;
+          end;
+        end;
+
         repeat
           Assert(False, '.CheckIndent');
           FLastPopResType := FStack.Pop;
@@ -2287,6 +2415,19 @@ begin
         FPrevPrevLine := FPrevLine;
         FPrevLine := TLineFeed(FCurrentToken);
         AddToPrevLineIndent(_NTmp);
+        // Apply extra indent for first enum member after ( (Case C)
+        if FEnumFirstMemberExtraIndent > 0 then begin
+          FPrevLine.IncIndent(FEnumFirstMemberExtraIndent);
+          FEnumFirstMemberExtraIndent := 0;
+        end;
+        // Apply column-aligned indent for enum members (Cases B/D)
+        if IsInEnumType and FSettings.FeedEachEnum
+          and not FSettings.FeedAfterOpenParenEnum and (FEnumOpenParenCol > 0) then begin
+          if FSettings.FeedEachEnumBeforeComma then
+            FPrevLine.NoOfSpaces := FEnumOpenParenCol - 1 // , at ( - 1
+          else
+            FPrevLine.NoOfSpaces := FEnumOpenParenCol + 1; // member at ( + 1
+        end;
       end;
 
     rtAsm: begin
