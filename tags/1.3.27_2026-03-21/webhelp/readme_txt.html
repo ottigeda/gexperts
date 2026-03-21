@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>GExperts &gt; Readme.txt</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="readme">
+   <meta name="description" content="Readme.txt">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
+   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+   <link type="text/css" href="default.css" rel="stylesheet">
+   <link type="text/css" href="custom.css" rel="stylesheet">
+   <script type="text/javascript" src="nsh.js"></script>
+
+<script type="text/javascript">   
+// Toggle Toggler 
+
+var toggleCount=false;
+var switchState;
+
+function toggleToggles() {
+
+    if (!toggleCount) {
+     toggleCount = true;
+     HMToggleExpandAll(true);
+     switchState = true;
+     }
+   
+     else if (switchState) {
+        HMToggleExpandAll(false);
+        switchState = false;
+        }
+        
+     else  {
+        HMToggleExpandAll(true);
+        switchState = true;
+        } 
+    }
+</script>
+   
+<!-- non-scrolling headers for CHM and browser-based help, local styles-->
+<style TYPE="text/css" media="screen"> 
+   body {    
+      margin:0; 
+      padding:0; 
+      overflow: auto; 
+      background: #FFFFFF; 
+   } 
+   #idheader { 
+      width:100%; 
+      height:auto; 
+      padding: 0; 
+      margin: 0; 
+} 
+    #idheaderbg  {
+    background: #6F6F6F; 
+}
+
+   #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+   #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+   #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+   #callout-table a {text-decoration: none; color: blue;}
+   #callout-table a:visited {text-decoration: none; color: blue;}
+   #overview-table a {text-decoration: none; color: black;}
+   #overview-table a:visited {text-decoration: none; color: black;}
+   #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}
+   </style>
+   
+<style TYPE="text/css" MEDIA="print">
+<!--
+/* Hide navigation links and add space between header
+     and text in the printed version. Not valid for eBooks. */
+#idnav { display:none;	 }
+.topichead { padding: 5px 5px 20px 5px; }
+-->
+</style>   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "readme_txt.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+
+<div id="idheader">
+<div id="idheaderbg">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+       style="margin: 0px; background: url(header_bg.jpg);">
+
+  <tr valign="bottom">
+    <td align="left" valign="bottom" class="topichead"><!--
+   <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
+   
+   GExperts&nbsp;&gt;</p>-->
+   <h1 class="p_Heading1"><span class="f_Heading1">Readme.txt</span></h1>
+
+    </td>
+    <td align="right" width="120" valign="middle" class="topichead" id="idnav">
+    
+     <a href="introduction.html"
+        onmouseover="document.images.prev.src='btn_prev_h.gif'" 
+        onmouseout="document.images.prev.src='btn_prev_n.gif'"
+        ><img name=prev src="btn_prev_n.gif" border=0 alt="Previous page"
+        ></a><a href="introduction.html"
+        onmouseover="document.images.main.src='btn_home_h.gif'" 
+        onmouseout="document.images.main.src='btn_home_n.gif'"><img name=main src="btn_home_n.gif" border=0 alt="Return to chapter overview"
+        ></a><a href="license_agreement.html"
+        onmouseover="document.images.next.src='btn_next_h.gif'" 
+        onmouseout="document.images.next.src='btn_next_n.gif'"><img name=next src="btn_next_n.gif" border=0 alt="Next page"
+        ></a>
+    </td>
+  </tr>
+  <tr><td colspan="2" style="height: 3px; background: url(header_bg_shadow.gif)"></td></tr>
+</table>
+</div>
+
+<!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+
+</div>  
+
+
+
+<div id="idcontent"><div id="innerdiv"> 
+<!--ZOOMRESTART-->
+<p class="p_Normal"><span style="font-family: Consolas; font-weight: bold;">GExperts 1.3.25</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Open Source Programming Tools for Delphi and C++Builder</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Source code, the FAQ, and the latest news are available at:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;https://gexperts.dummzeuch.de/</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;https://sourceforge.net/projects/gexperts/</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Additional (older) information at</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;http://www.gexperts.org/</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Please send all bug reports and suggestions using the feedback wizard</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">available in the GExperts about box. &nbsp;</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">For other GExperts related queries use the GExperts subforum in Delphi Praxis at</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">https://en.delphipraxis.net/forum/31-gexperts/</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">INTRODUCTION</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts is a set of tools built to increase the productivity of</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Delphi and C++Builder programmers by adding several features to the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">IDE. &nbsp;GExperts is developed as Open Source software and is contributed</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">as freeware to the development community. &nbsp;Users are encouraged to</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">download the source code and submit bug fixes and patches as well as</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">new features for inclusion in the GExperts distribution.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">THE EXPERTS</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts contains numerous experts. &nbsp;See the online help</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">(GExperts.chm) for information on the usage of the experts.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">The source code formatter expert is based on DelForExp by Egbert van Nes</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">who contributed it to GExperts.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">http://web.archive.org/web/20121115141650/http://www.aew.wur.nl/UK/Delforexp</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">KNOWN LIMITATIONS/BUGS</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">-----------------------------------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- The following features are not supported under Delphi 8 - RAD Studio 10.2:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Inner classes, class helpers, anonymous methods, and generics in the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Class Browser, and some of the old editor tab enhancements, such as</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;multiline editor tabs. &nbsp;Note that the IDE converts some high ANSI and MBCS</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;characters to UTF-8 UNICODE when loaded in the code editor, so you may</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;experience problems with those files (especially in Delphi 2007 and earlier).</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- The compiler replacement option of the Code Proofreader is only partially</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;working under Delphi 7 - RAD Studio 10. &nbsp;It does not correct when an identifier is</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;terminated by pressing a symbol key such as a period or open parenthesis,</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;but works fine when the symbol is terminated by a space (IDE limitation).</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- Due to either native Open Tools API limitations or bugs, the following</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;items can not be supported:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Delphi 8 Only:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Rename Components (IDE bug setting the Name property)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Jumping to a form search match from Grep Results when the source is open</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; (IDE bug)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Delphi 2005 Only:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - The Project Option Sets environment options (IDE bug)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Set Tab Order: Selecting components in the desired tab order (IDE bug)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Delphi 8 - 2007:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Any interaction at all with the WinForms/.NET form designer/components</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; (no WinForms support for IOTAFormEditor/IOTAComponent)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Replace Components for VCL.NET (No direct access to components)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Components to Code for VCL.NET (No direct access to components)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Delphi 8 - RAD Studio 10:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - It is no longer possible for addins to override some built-in IDE</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; shortcuts. &nbsp;You may need to configure your GExperts shortcuts (Prev/Next</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; Identifier, Procedure List, etc.) to not conflict with your selected</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; keymapping. &nbsp;Also, the Macro Library can not always intercept the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; Shift+Ctrl+R keystroke to automatically grab keyboard macros, so you may</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; need to create macros using the recording functions in the toolbar.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Delphi 2009 - 2010 Update 1:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Record and playback in the Marco Library does not work. &nbsp;This is an IDE</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; bug handling editor macro streams (QC 78289).</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Delphi XE3 - 10.3 Update 3:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; - Replace Components fails for components that contain sub-components, e.g.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp; &nbsp; TTable with static fields. This is an IDE bug (RSP25645).</span></p>
+<p class="p_Normal"><span style="width:48px;display:inline-block">&nbsp;</span><span style="font-family: Consolas;"> Until this IDE bug has been fixed, this functionality has been disabled.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">INSTALLATION</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts is distributed as a self-installing executable that should</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">automatically install itself into the IDE. &nbsp;If you are installing under</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Vista as a non-administrator, you may need to manually register the GExperts</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">DLL with the IDE after installation. &nbsp;This is most easily done using the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Expert Manager tool in the GExperts start menu group. &nbsp;If you prefer, you</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">can also manually register the DLL with the IDE using the Windows registry</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">editor (RegEdit.exe). &nbsp;Create a key similar to the following (the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">version number appearing before &quot;\Experts\&quot; is IDE dependent):</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\23.0\Experts\ (RAD Studio 12)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\22.0\Experts\ (RAD Studio 11)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\21.0\Experts\ (RAD Studio 10.4)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\20.0\Experts\ (RAD Studio 10.3)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\19.0\Experts\ (RAD Studio 10.2)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\18.0\Experts\ (RAD Studio 10.1)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\17.0\Experts\ (RAD Studio 10)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\16.0\Experts\ (RAD Studio XE8)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\12.0\Experts\ (RAD Studio XE5)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Embarcadero\BDS\9.0\Experts\ &nbsp;(RAD Studio XE2)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\CodeGear\BDS\6.0\Experts\ &nbsp; &nbsp; (RAD Studio 2009)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Borland\BDS\5.0\Experts\ &nbsp; &nbsp; &nbsp;(RAD Studio 2007)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Borland\Delphi\7.0\Experts\ &nbsp; (Delphi 7)</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">HKEY_CURRENT_USER\Software\Borland\Delphi\6.0\Experts\ &nbsp; (Delphi 6)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Then add a new string value that points to your GExperts DLL (X is the IDE</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">version such as 6, 7, 8, 2005, 2006, 2007, 2009, 2010, XE1, XE8, 10, etc.):</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts=C:\Program Files\GExperts\GExpertsRSX.dll</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts=C:\Program Files\GExperts\GExpertsDelphiX.dll</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts=C:\Program Files\GExperts\GExpertsBDSX.dll or</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts=C:\Program Files\GExperts\GExpertsDX.dll or</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Before installing GExperts, it is strongly recommended that you install</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">the latest updates and patches for your IDE available from:</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;http://www.embarcadero.com/</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">UNINSTALLATION</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Uninstallation of GExperts can be done from the Control Panel's</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Add/Remove Programs or Programs [and Features] tool.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">CHANGE LOG</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Sorry, I have not maintained the change log since I took over from</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">Eric Berry. There were many. In particular of course support for the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">latest released versions of RAD Studio / Delphi.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">-- Thomas Mueller</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">You can see the changes from 2006 to 2015 in the file</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">changelog(2006-2015).txt</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">FUTURE ENHANCEMENTS?</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Persistent editor bookmarks</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Integrate file auto-save code</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Add compile date to version information and sync</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;FileVersion with ProductVersion</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Add GX_MessageBox warnings to the Pascal only experts</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;when used under C++Builder</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Replace SortGrid with a TListView and make the various</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;TListViews sortable</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Allow adding some common editor and object inspector</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;actions to the editor toolbar?</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Add support for hiding the toolbar on all dockable experts</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- [Unassigned] Add word wrapped printing to the To Do List, etc.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">MISCELLANEOUS NOTES</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- If a DFM is opened as text from the Grep Results (for example), you</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;may experience an IDE bug where it forgets the value of the Text DFM</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;flag on the form and converts it to a binary format.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- The Code Proofreader can only perform corrections when the editor caret</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;is directly after the word to correct following a change. &nbsp;As a result,</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;pressing enter will not trigger corrections.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- Changing the configured GExperts top-level menu item location requires</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;an IDE restart before the new setting is active.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- The editor toolbar does not support separators when aligned left/right.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- If a DFM is opened as text, a subsequent Grep Search can not scan the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;DFM's associated source files. &nbsp;Delphi does not provide access to the</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;source file buffer. &nbsp;Under C++Builder you might also see duplicated</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;matches for the DFM file when it is being viewed as text.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- Perfect Layout was designed for Delphi 3, and as such will probably</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;never support docking or undocking of windows in later version IDEs.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;Please use the desktop saving feature of your IDE instead.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- Nothing in GExperts is aware of or takes into account conditional</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;"> &nbsp;defines, so code that is defined out will still be parsed by GExperts.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">- Source Export only supports background colors when exporting to HTML.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">GEXPERTS LICENSE</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">----------------------</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">GExperts is copyright 1996-2015 by GExperts, Inc, Erik Berry, and several</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">other authors who have submitted their code for inclusion. This license</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">agreement only covers code written by GExperts, Inc. and Erik Berry. You</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">should contact the other authors concerning their respective copyrights</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">and conditions.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">The rules governing the use of GExperts and the GExperts source code are</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">derived from the official Open Source Definition, available at</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">http://opensource.org/osd</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">The conditions and limitations are as follows:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Usage of GExperts binary distributions is permitted for all developers.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">You may not use the GExperts source code to develop proprietary or</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">commercial products including plugins or libraries for those products.</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">You may use the GExperts source code in an Open Source project, under</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">the terms listed below.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">You may not use the GExperts source code to create and distribute custom</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">versions of GExperts under the &quot;GExperts&quot; name. &nbsp;If you do modify and</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">distribute custom versions of GExperts, the binary distribution must be</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">named differently and clearly marked so users can tell they are not using</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">the official GExperts distribution. &nbsp;A visible and unmodified version of</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">this license must appear in any modified distribution of GExperts.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Custom distributions of GExperts must include all of the custom changes</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">as a patch file that can be applied to the original source code. &nbsp;This</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">restriction is in place to protect the integrity of the original author's</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">source code. &nbsp;No support for modified versions of GExperts will be</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">provided by the original authors or on the GExperts mailing lists.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">All works derived from GExperts must be distributed under a license</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">compatible with this license and the official Open Source Definition,</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">which can be obtained from http://www.opensource.org/.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-family: Consolas;">Please note that GExperts, Inc. and the other contributing authors hereby</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">state that this package is provided &quot;as is&quot; and without any express or</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">implied warranties, including, but not without limitation, the implied</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">warranties of merchantability and fitness for a particular purpose. In</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">other words, we accept no liability for any damage that may result from</span></p>
+<p class="p_Normal"><span style="font-family: Consolas;">using GExperts or programs that use the GExperts source code.</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: -54px; margin: 12px 6px 30px 60px;"><span class="f_Comment"> </span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript"> 
+<!-- 
+var lastSlashPos = document.URL.lastIndexOf("/") >
+document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") :
+document.URL.lastIndexOf("\\");
+if( document.URL.substring( lastSlashPos + 1, lastSlashPos + 4
+).toLowerCase() != "~hh" )
+{
+    nsrInit();
+}
+--> 
+</script> 
+</body>
+</html>

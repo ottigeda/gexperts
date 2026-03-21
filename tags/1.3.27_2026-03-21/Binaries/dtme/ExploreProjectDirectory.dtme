@@ -1,0 +1,5 @@
+[Delphi Tool Menu Entry]
+Title=Explore &Project Directory
+Path=explorer.exe
+WorkingDir=
+Params=/e,/select, $PROJECT

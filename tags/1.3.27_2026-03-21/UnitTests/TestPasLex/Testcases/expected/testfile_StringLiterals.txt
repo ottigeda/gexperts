@@ -1,0 +1,88 @@
+1	tkUnit	unit
+1	tkSpace	 
+1	tkIdentifier	StringLiterals
+1	tkSemiColon	;
+2	tkCRLF	\r\n
+3	tkCRLF	\r\n
+3	tkInterface	interface
+4	tkCRLF	\r\n
+5	tkCRLF	\r\n
+5	tkImplementation	implementation
+6	tkCRLF	\r\n
+7	tkCRLF	\r\n
+7	tkProcedure	procedure
+7	tkSpace	 
+7	tkIdentifier	Test
+7	tkSemiColon	;
+8	tkCRLF	\r\n
+8	tkVar	var
+9	tkCRLF	\r\n
+9	tkSpace	  
+9	tkIdentifier	S
+9	tkColon	:
+9	tkSpace	 
+9	tkString	string
+9	tkSemiColon	;
+10	tkCRLF	\r\n
+10	tkBegin	begin
+11	tkCRLF	\r\n
+11	tkSpace	  
+11	tkIdentifier	S
+11	tkSpace	 
+11	tkAssign	:=
+11	tkSpace	 
+11	tkString	'hello'
+11	tkSemiColon	;
+12	tkCRLF	\r\n
+12	tkSpace	  
+12	tkIdentifier	S
+12	tkSpace	 
+12	tkAssign	:=
+12	tkSpace	 
+12	tkString	'it''s'
+12	tkSemiColon	;
+13	tkCRLF	\r\n
+13	tkSpace	  
+13	tkIdentifier	S
+13	tkSpace	 
+13	tkAssign	:=
+13	tkSpace	 
+13	tkString	''
+13	tkSemiColon	;
+14	tkCRLF	\r\n
+14	tkSpace	  
+14	tkIdentifier	S
+14	tkSpace	 
+14	tkAssign	:=
+14	tkSpace	 
+14	tkAsciiChar	#65
+14	tkSemiColon	;
+15	tkCRLF	\r\n
+15	tkSpace	  
+15	tkIdentifier	S
+15	tkSpace	 
+15	tkAssign	:=
+15	tkSpace	 
+15	tkAsciiChar	#13
+15	tkAsciiChar	#10
+15	tkString	'text'
+15	tkSemiColon	;
+16	tkCRLF	\r\n
+16	tkSpace	  
+16	tkIdentifier	S
+16	tkSpace	 
+16	tkAssign	:=
+16	tkSpace	 
+16	tkString	'line1'
+16	tkAsciiChar	#13
+16	tkAsciiChar	#10
+16	tkString	'line2'
+16	tkSemiColon	;
+17	tkCRLF	\r\n
+17	tkEnd	end
+17	tkSemiColon	;
+18	tkCRLF	\r\n
+19	tkCRLF	\r\n
+19	tkEnd	end
+19	tkPoint	.
+20	tkCRLF	\r\n

@@ -1,0 +1,668 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-01-01T17:40:57.693+01:00" lasteditedby="twm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Formatter</title>
+  <body>
+    <header>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">Formatter </text></para>
+      <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">General </text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+      <thead style="vertical-align:middle">
+        <td style="width:200px; height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
+        </td>
+        <td style="height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Introduction" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Introduction</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Limitations" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Limitations and known problems</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="OptionsDialog" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Options dialog</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="IndentTab" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Indent tab</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SpacingTab" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Spacing tab</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="LineBreaksTab" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Line breaks tab</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="CapitalizationTab" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Capitalization tab</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AlignTab" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Align tab</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"><anchor id="Introduction" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Introduction </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The GExperts code formatter is based on DelFor by Egbert van Nes. The following is from the original help file that came with DelFor (Nobody has yet found the time to update it, sorry. If you want to volunteer, contact the project lead.)</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Delfor is a customizable source code formatter. It can improve the indentation, spacing, capitalization and the use of blank lines of Delphi source code. To do so the source code is parsed and lots of special constructs are tested. At default, the style of the Borland source code is followed closely, since this is the most widely accepted style. But formatting of Pascal code is much a matter of taste and debate. Therefore, some alternative rules are included.</text></para>
+    <para styleclass="Normal"><anchor id="Limitations" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Limitations and known problems </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Compiler {$IFDEF} + {$ELSE} directives may be nested to 3 levels and break into blocks of code. After the third nested level the right indentation is not guaranteed.</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">After some options (aligning, adding line breaks) the indentation might be not correct. Rerunning DelFor can fix the problems.</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">It is tried to indent function directives after function declarations. In some cases this does not happen.</text></li>
+    </list>
+    <para styleclass="Normal"><anchor id="OptionsDialog" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Options dialog </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">In the options dialog some formatting rules can be deactivated or customized.</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The following tab sheets are included:</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Indent</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Spacing</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Line breaks</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Capitalization</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Align</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Miscellaneous</text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Preview</text></li>
+    </list>
+    <para styleclass="Normal"><anchor id="IndentTab" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Indent tab </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Spaces per indent</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; &#160; &#160; &#160; Defines the number of spaces per indent. In all situations the same amount of spaces is used.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Extra indent after begin or try:</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">If checked an extra indent is added after if-then-else, with-do, on-exception-do and while-do statements:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">1. with extra indent:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if i &gt; 10 then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;l := 3;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;end</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;l := 0;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Courier Fixed" translate="true">2. no extra indent (default):</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if i &gt; 10 then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> l := 3;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;l := 0;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Extra indent after else in try block:</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">If checked an extra indent is added after else in the following kind of try block:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">Without option:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">try</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;DoRun;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">except</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;on ESomeException do raise;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;on ESomeOtherException do raise;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;ShowMessage();</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">With option:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">try</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;DoRun;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">except</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;on ESomeException do raise;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;on ESomeOtherException do raise;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;ShowMessage();</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Extra indent after else in case block:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">If checked an extra indent is added after else in the do case statement:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">Without option:</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">case i of</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;someValue1:</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;DoSomething1;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;someValue2:</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;DoSomeThing2;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;DoSomeThingElse;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">With option:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">case i of</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;someValue1:</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;DoSomething1;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;someValue2:</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;DoSomeThing2;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;DoSomeThingElse;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Never indent else if</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">With this option checked, the indent never increases after else if . The default behavior is that the indent only increases if there is a line feed between if and else</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">Default:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;k</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;j</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;else if k then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;t;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">With option:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;k</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;j</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">else if k then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;t;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Indent comments</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">If this option is checked comments are aligned with the surrounding text, else comments remain unchanged.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">With indent comments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160;{this is</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;a comment</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; }</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160;j;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">becomes:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;{this is</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160; a comment</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;j;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Indent compiler directives</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">If this option is checked compiler directives are aligned with the surrounding text, else compiler directives are not indented.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">With indent compiler directives</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; {$IFDEF debug}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">j;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160; &#160; &#160;{$ENDIF}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">becomes:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;{$IFDEF debug}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;j;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;{$ENDIF}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">if this option is unchecked the result is:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">if t then</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">begin</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">{$IFDEF debug}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true"> &#160;j;</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">{$ENDIF}</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">end;</text></para>
+    <para styleclass="Normal"><anchor id="SpacingTab" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Spacing tab </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">In this tab sheet you can define the spacing of various operators.</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><table styleclass="Default" rowcount="14" colcount="3" style="width:100%; cell-padding:4px; page-break-inside:avoid; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td colspan="3" style="background-color:#c0c0c0;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The spacing of each operator has four values:</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">None</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Nospaces around the operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">1+1</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Before only</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Only spaces before the operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">1 +1</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">After only</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Only spaces after the operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">1+ 1</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Before and after</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Spaces around the operator</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">1 + 1</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td colspan="3" style="background-color:#c0c0c0;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The operators are grouped in the following way:</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Equals</text></para>
+        </td>
+        <td style="vertical-align:bottom;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">:=</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Math</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">+ - / * &lt; &gt; = and as div downto in is or shl shr xor</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Colon</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">:</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Comma</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">,</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Left parenthesis</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">(</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Right parenthesis</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">)</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Left bracket</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">[</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Right bracket</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">]</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><anchor id="LineBreaksTab" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Line breaks tab </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Always break lines</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Line breaks can be added:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">After var, type etc. :</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">procedure</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> Test(</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">var</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i: Integer; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">const</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> t: Byte);</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">var</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> t: Integer;</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">type</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> Pword = ^Word;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">becomes:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">procedure</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> Test(</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">var</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i: Integer; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">const</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> t: Byte);</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">var</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; t: Integer;</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">type</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">Pword = ^Word;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Before end :</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; l :=3; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">becomes:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; l :=3;</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">After semi colons (except directives):</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; l :=3; k := 3; s:=3;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">becomes:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; l :=3;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">k := 3;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">s:=3;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: no lines are added after directives like virtual, abstract, message. A construct like procedure test(k: integer; l: word); forward; remains unchanged.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Between else and if:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Add line between else and if. Note that this option is opposite to the After then option. Check the Never indent else if option to prevent indenting.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">After then, else(except else if), do, of :</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> l :=3 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">else</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> t=0 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> k := 3;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">for</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i:=0 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">to</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> count-1 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">do</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> inc(k);</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">becomes</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">l :=3</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">else</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> t=0 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">k := 3;</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">for</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i:=0 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">to</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> count-1 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">do</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">inc(k);</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use the Wrap long lines option to break large if then statements. (Wrap text breaks text on then or do if possible).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that the lines are not removed if this option in unchecked, therefore it is irreversible.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Except single lines:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If this option is selected in combination with the previous option (After then, else(except else if), do, of :) then single lines after if then, on : are NOT processed:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> l := 3;</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">case</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">of</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">1: t := 0;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">2: t := 3;</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Never before then and do :</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">l := 3;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">becomes</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">l := 3;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: if the Wrap Long lines option is checked then still might be moved to a single line.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Remove double blank lines</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Check this option to remove all double (or more) blank lines. At most one blank line is then allowed.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Blank lines</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Optionally blank lines can be added after</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">main procedures or</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">local procedures.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Wrap long lines</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">It is possible to let DelFor break long lines into smaller ones.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If a formatted line is longer than the Wrap position, it is tried to break it in smaller lines. If the long line contains then, else or do, the line is broken on that reserved word, otherwise a line feed added after the rightmost space. Lines without spaces and comments are not changed.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: the wrapped lines are not always indented correctly. Rerun DelFor to correct this.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Begin style:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">1. &#160; &#160; &#160; unchanged</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">1. &#160; &#160; &#160; hanging after then, else do :</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">1. &#160; &#160; &#160; breaks before and after</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The code:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> l :=3</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">stays the same if option 1 is selected. If option 2 is checked:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">2. hanging:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">l :=3</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">3. breaks before and after:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">if</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> i &gt; 10 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">then</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">begin</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">l :=3</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">end</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Normal"><anchor id="CapitalizationTab" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Capitalization tab </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Reserved words/Standard directives</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The reserved words and standard directives can be written in:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">1. lower case</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">2. UPPER CASE</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">3. First Character Uppercase</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">4. remain unchanged.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that after one of the first three options is chosen the forth option has no effect anymore. Use the File with user defined capitalization option if you want different capitalization for some reserved words.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If standard directives are used as identifier, in most cases the capitalization is unchanged (the program may fail to recognize the context).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiler directives</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler directives {$XXX} can optionally be placed in upper case. This option is irreversible.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Numbers</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The hexadecimal numbers and the exponent (E) of real numbers can optionally be placed in upper case. This option is irreversible.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">File with user defined capitalization</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This file contains identifiers and other word that are always written the same way.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The file is a text file with words on single lines. Example of the content of such file:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">False</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">OnClick</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using this file</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">i := TRUE;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">is always replaced with</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">i:= True;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The file can be created manual or automatically. If there are reserved words included in the file, the Capitalization of reserved words option is always overridden by this option.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The file can be used in different ways:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Do not use file: Nothing happens</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Add new words only: With the option Add new words only mode the file is filled automatically with all new identifiers that the program encounters. In this mode all words in the code remain unchanged.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use file: In this mode the capitalization of all words is changed according to the notation in the capitalization file. If there are reserved words or standard directives included in the file, the notation of the file is always used.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use file (except standard directivess: This option is the same as the previous one except that standard directives are only changed if these are used as identifiers: e.g.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">PriVate</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">property</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">PriVate</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">: Boolean; read FPrivate write FPrivate;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">changes in:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">private</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">property</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">Private</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">: Boolean; read FPrivate write FPrivate;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">if Private is included in the capitalization file and Standard directives are set to lower case</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Add and use: This mode is a combination of Add new words mode and the Use file mode. New words are added automatically.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Add and use (except standard directivess: This mode is a combination of Add new words mode and the Use file (except standard directives) mode.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">With the option Add new words modes the file is filled automatically with all new identifiers that the program encounters. In this mode all words remain unchanged. After editing the file, the Add new words mode should be unchecked to make it work.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Words that should not be changed in the text can best be commented out by adding * before them, e.g.:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">*i</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">*nI</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">False</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The words with a proceeding * are not changed in the text. In advantage over deleting is that the Add words mode doesnt add these outcommented words.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Edit button</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Use this button to view and edit the file with the identifiers, see: Edit file dialog.</text></para>
+    <para styleclass="Normal"><anchor id="AlignTab" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Align tab </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Align simple end of line comments</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Simple end of line comments are comments that are one line, with proceeding code. It can be aligned to a certain position (if possible). E.g.</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true">var</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> i:integer; //comm</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> j{comm.}:integer; {comm.}</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> toooooooooooooooo, long:integer; {comm.}</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> {comm.}</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">changes in (position = 30):</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true">var</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> i: integer; //comm</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> j: {comm.} integer; {comm.}</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> toooooooooooooooo, long: integer; {comm.}</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> {comm.}</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Align var/const</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Var and const declarations can be aligned in the same way: e.g.</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true">const</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> i =0;</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true">var</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> j:integer;</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> toooooooooooooooooooo, long:integer;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">changes in (position = 30):</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true">const</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> i = 0;</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true">var</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> j : integer;</text></para>
+    <para styleclass="Code Example" style="margin-left:6px;"><text styleclass="Code Example" translate="true"> toooooooooooooooooooooo, long: integer;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT_FORMATTER" width="300px" height="100px" modified="2026-01-01T01:00:00.000+01:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

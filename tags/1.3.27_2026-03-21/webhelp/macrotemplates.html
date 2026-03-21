@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Experts &gt; Macro Templates</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Expand Macro Template,Macro Templates,Procedure Header,Unit Header">
+   <meta name="description" content="Macro Templates">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
+   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+   <link type="text/css" href="default.css" rel="stylesheet">
+   <link type="text/css" href="custom.css" rel="stylesheet">
+   <script type="text/javascript" src="nsh.js"></script>
+
+<script type="text/javascript">   
+// Toggle Toggler 
+
+var toggleCount=false;
+var switchState;
+
+function toggleToggles() {
+
+    if (!toggleCount) {
+     toggleCount = true;
+     HMToggleExpandAll(true);
+     switchState = true;
+     }
+   
+     else if (switchState) {
+        HMToggleExpandAll(false);
+        switchState = false;
+        }
+        
+     else  {
+        HMToggleExpandAll(true);
+        switchState = true;
+        } 
+    }
+</script>
+   
+<!-- non-scrolling headers for CHM and browser-based help, local styles-->
+<style TYPE="text/css" media="screen"> 
+   body {    
+      margin:0; 
+      padding:0; 
+      overflow: auto; 
+      background: #FFFFFF; 
+   } 
+   #idheader { 
+      width:100%; 
+      height:auto; 
+      padding: 0; 
+      margin: 0; 
+} 
+    #idheaderbg  {
+    background: #6F6F6F; 
+}
+
+   #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+   #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+   #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+   #callout-table a {text-decoration: none; color: blue;}
+   #callout-table a:visited {text-decoration: none; color: blue;}
+   #overview-table a {text-decoration: none; color: black;}
+   #overview-table a:visited {text-decoration: none; color: black;}
+   #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}
+   </style>
+   
+<style TYPE="text/css" MEDIA="print">
+<!--
+/* Hide navigation links and add space between header
+     and text in the printed version. Not valid for eBooks. */
+#idnav { display:none;	 }
+.topichead { padding: 5px 5px 20px 5px; }
+-->
+</style>   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "macrotemplates.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+
+<div id="idheader">
+<div id="idheaderbg">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+       style="margin: 0px; background: url(header_bg.jpg);">
+
+  <tr valign="bottom">
+    <td align="left" valign="bottom" class="topichead"><!--
+   <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
+   
+   Experts&nbsp;&gt;</p>-->
+   <h1 class="p_Heading1"><span class="f_Heading1">Macro Templates</span></h1>
+
+    </td>
+    <td align="right" width="120" valign="middle" class="topichead" id="idnav">
+    
+     <a href="macrolibrary.html"
+        onmouseover="document.images.prev.src='btn_prev_h.gif'" 
+        onmouseout="document.images.prev.src='btn_prev_n.gif'"
+        ><img name=prev src="btn_prev_n.gif" border=0 alt="Previous page"
+        ></a><a href="introduction.html"
+        onmouseover="document.images.main.src='btn_home_h.gif'" 
+        onmouseout="document.images.main.src='btn_home_n.gif'"><img name=main src="btn_home_n.gif" border=0 alt="Return to chapter overview"
+        ></a><a href="message_dialog.html"
+        onmouseover="document.images.next.src='btn_next_h.gif'" 
+        onmouseout="document.images.next.src='btn_next_n.gif'"><img name=next src="btn_next_n.gif" border=0 alt="Next page"
+        ></a>
+    </td>
+  </tr>
+  <tr><td colspan="2" style="height: 3px; background: url(header_bg_shadow.gif)"></td></tr>
+</table>
+</div>
+
+<!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+
+</div>  
+
+
+
+<div id="idcontent"><div id="innerdiv"> 
+<!--ZOOMRESTART-->
+<p class="p_Normal">Macro Templates is an editor expert that allows text snippets to be quickly copied into the code editor and those snippets can contain any number of %-delimited <a href="macrotemplates.html" class="topiclink">macros</a> that can insert the current date/time, user name, procedure name, unit name, clipboard contents, etc. &nbsp;For a full list, see the <a href="substitutionmacros.html" class="topiclink">Substitution Macros</a> topic. &nbsp;Note that some of the macros are only supported for Delphi source code. &nbsp;As an example, the following template would produce a Delphi unit header comment:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CourierFixed">// Unit: &nbsp; &nbsp;%UNIT%</span></p>
+<p class="p_Normal"><span class="f_CourierFixed">// Purpose: |</span></p>
+<p class="p_Normal"><span class="f_CourierFixed">// Author: &nbsp;%USER%</span></p>
+<p class="p_Normal"><span class="f_CourierFixed">// Date: &nbsp; &nbsp;%DATETIME%</span></p>
+<p class="p_Normal"><span class="f_CourierFixed">// Version: 1.0</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For each macro template you define, you can configure the position where template will be inserted. It can be the current cursor position, the start of the unit, or the beginning of the current line in the editor. &nbsp;You can also configure a shortcut to activate your most frequently used templates. &nbsp;The &quot;|&quot; (pipe) character can be used inside your templates to define the desired cursor position after a template is inserted. &nbsp;The screenshot below shows the configuration interface for Macro Templates: </p>
+<p class="p_Normal" style="text-align: center; margin: 40px 0 40px 0;"><img alt="Macro Templates" width="647" height="453" style="margin:0 auto 0 auto;width:647px;height:453px;border:none" src="hmfile_hash_1a0a8aa9.png"/><span style="font-size: 8pt; font-family: 'MS Sans Serif',Geneva,sans-serif;"> </span></p>
+<p class="p_Normal">You can also define a list of units that should be present in the interface or implementation for each template to function. &nbsp;If the unit you define is not already used by the unit where the template is being inserted, the defined units are added to the appropriate uses clause. &nbsp;Right-click the implementation/interface list to add/delete items from the unit lists. &nbsp;Note that this feature is only supported in Delphi source code.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On the Configuration tab, you can enter your name, initials, and an auto-incremented sequence number to use in generated templates (you could use it to create unique error numbers, etc.). &nbsp;The values you type there can be substituted into your templates using the <a href="substitutionmacros.html" class="topiclink">Substitution Macros</a> (%PROGRAMMERNAME%, etc.). &nbsp;You can also configure your templates to be able to expand after pressing space and a short delay.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">One time-saving method of using the macro templates is to create macros using %SELECTION% that allow you to embed the selected lines inside a begin/end, try/finally, try/except, region, or any other type of block.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">There are several methods available to insert templates into the editor:</p>
+<p class="p_Normal">&nbsp;</p>
+<p style="text-indent: 0; padding-left: 13px; margin: 0 0 0 14px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Press the shortcut key you have assigned to the specific template you want to insert.</p>
+<p style="text-indent: 0; padding-left: 13px; margin: 0 0 0 14px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Type the template name in the editor and press the shortcut assigned to the Macro Templates expert. &nbsp;If your typed name matches a template name, the template is inserted. &nbsp;If there is not a match, or no name was typed, the dialog described below is shown. &nbsp;The template name you typed in the editor will only be deleted if it matches the inserted template name.</p>
+<p style="text-indent: 0; padding-left: 13px; margin: 0 0 0 14px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Press the shortcut assigned to the Macro Templates expert and choose the template from the list in the resulting dialog. &nbsp;The dialog supports incremental searching through your templates.</p>
+<p style="text-indent: 0; padding-left: 13px; margin: 0 0 0 14px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Enable the option to expand templates when pressing space in the Configuration tab. &nbsp;Type the template name and press space. &nbsp;After your configured delay, the template will be inserted into the editor and the template name you typed will be automatically deleted.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Note:</span> Starting with BDS 2006, you may prefer to use the IDE's built-in live templates, which have added features such as ordered code insert points and custom scripting within the templates.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Note</span>: Please see <a href="ccompatibility.html" class="topiclink">C++ and C# Compatibility</a> for some limitations with those file types.</p>
+<p class="p_Normal" style="text-align: justify; text-indent: -54px; margin: 12px 6px 30px 60px;"><span class="f_Comment"> </span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript"> 
+<!-- 
+var lastSlashPos = document.URL.lastIndexOf("/") >
+document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") :
+document.URL.lastIndexOf("\\");
+if( document.URL.substring( lastSlashPos + 1, lastSlashPos + 4
+).toLowerCase() != "~hh" )
+{
+    nsrInit();
+}
+--> 
+</script> 
+</body>
+</html>

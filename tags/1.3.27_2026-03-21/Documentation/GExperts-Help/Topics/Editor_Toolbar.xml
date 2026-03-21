@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-07-13T15:03:53.133+02:00" lasteditedby="twm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd" status="Out Of Date">
+  <title translate="true">Editor Toolbar</title>
+  <keywords>
+    <keyword translate="true">Editor Toolbar</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Editor Toolbar</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">GExperts includes the ability to place a user-defined toolbar in the IDE code editor windows. Enable it from the Editor Enhancements under the GExerpts Configuration.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Configuration Editor Toolbar.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"><title translate="true">Configuration Editor Toolbar</title></image><text styleclass="Image Caption" translate="true"> </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To select which buttons are visible on the toolbar, drag buttons from the list of Available Buttons to the Toolbar Buttons list.  Reordering buttons in the selected Buttons list is also possible using drag-and-drop or the Up and Down arrows. To remove a button from the toolbar, you can drag it from the Toolbar Buttons list and drop it back onto the Available Buttons list </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The majority of the available buttons are taken from IDE&apos;s main menu, but there are also several special buttons in the GExperts category that perform custom actions.  These custom actions can execute GExperts experts, execute editor experts, show a list dropdown list of forms or units in the current project, or allow you to select a component on the current form by class and name.  There is also a button to jump to specific positions in the current Delphi unit.  An example editor toolbar is shown here behind the toolbar configuration dialog:</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Editor Toolbar Example.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Image Caption" translate="true"> </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> Vertical toolbars do not support button separators.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:35:02.590+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true"> </text></para>
+  </body>
+</topic>

@@ -1,0 +1,124 @@
+<h2>GExperts UI Inspection Server &mdash; Phase 2: Action Commands</h2>
+
+<h3>Context</h3>
+
+<p>Phase 1 (r5144) implemented read-only inspection commands (FORMS, CONTROLS, SCREENSHOT, BOUNDS, CHECK, VERSION, PING). Phase 2 adds commands that <strong>do things</strong> &mdash; open expert dialogs, move forms between monitors (triggering DPI changes), click buttons, and close forms. The primary use case is remotely driving GExperts UI for DPI/layout debugging from a WSL bash session.</p>
+
+<h3>New Commands</h3>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Command</th><th>Description</th></tr>
+<tr><td><code>EXPERTS</code></td><td>List all registered experts (name, display name, active/inactive)</td></tr>
+<tr><td><code>EXECUTE &lt;expert-name&gt;</code></td><td>Execute an expert's main action (opens its dialog)</td></tr>
+<tr><td><code>CONFIGURE &lt;expert-name&gt;</code></td><td>Open an expert's configuration dialog</td></tr>
+<tr><td><code>SETBOUNDS &lt;form-id&gt; &lt;L&gt; &lt;T&gt; &lt;W&gt; &lt;H&gt;</code></td><td>Move/resize a form (triggers DPI change when crossing monitors)</td></tr>
+<tr><td><code>CLOSE &lt;form-id&gt;</code></td><td>Close a form</td></tr>
+<tr><td><code>CLICK &lt;form-id&gt; &lt;control-name&gt;</code></td><td>Simulate a click on a control</td></tr>
+<tr><td><code>GETPROP &lt;form-id&gt; &lt;control-name&gt; &lt;property&gt;</code></td><td>Read a control property via RTTI</td></tr>
+<tr><td><code>SETPROP &lt;form-id&gt; &lt;control-name&gt; &lt;property&gt; &lt;value&gt;</code></td><td>Set a control property via RTTI</td></tr>
+<tr><td><code>QUIT</code></td><td>Close the IDE gracefully</td></tr>
+</table>
+
+<p>All form-id and control-name arguments support quoted strings (e.g. <code>"Uses Clause Manager"</code>). Use <code>""</code> or <code>.</code> as control-name in GETPROP/SETPROP to target the form itself.</p>
+
+<h3>Response Format Examples</h3>
+
+<pre>
+&gt; EXPERTS
+TUsesClauseMgrExpert "Uses Clause Manager" Active
+TProcedureExpert "Procedure List" Active
+TGrepDlgExpert "Grep Search" Active
+TClipExpert "Clipboard History" Inactive
+[Editor] TAlignExpert "Align Lines" Active
+[Editor] TCommentExpert "Comment Code" Active
+END
+
+&gt; EXECUTE TUsesClauseMgrExpert
+OK TUsesClauseMgrExpert
+END
+
+&gt; CONFIGURE TGrepDlgExpert
+OK TGrepDlgExpert
+END
+
+&gt; SETBOUNDS "Uses Clause Manager" 2000 100 800 600
+OK TfmUsesManager [2000,100 800x600]
+END
+
+&gt; CLOSE "Uses Clause Manager"
+OK TfmUsesManager
+END
+
+&gt; CLICK "Grep Search" btnSearch
+OK btnSearch
+END
+
+&gt; GETPROP "Configuration" btnOK Caption
+Caption=OK
+END
+
+&gt; GETPROP "Configuration" . Width
+Width=640
+END
+
+&gt; SETPROP "Configuration" btnOK Caption Apply
+OK btnOK.Caption=Apply
+END
+
+&gt; EXECUTE NonExistentExpert
+ERROR Expert not found: NonExistentExpert
+END
+
+&gt; EXECUTE TClipExpert
+ERROR Expert is inactive: TClipExpert
+END
+</pre>
+
+<h3>Implementation Details</h3>
+
+<h4>Files Modified</h4>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>File</th><th>Changes</th></tr>
+<tr><td><code>Source/Framework/GX_InspectionServer.pas</code></td><td>9 new methods + 4 helper functions, 4 new units in implementation uses</td></tr>
+<tr><td><code>Projects/StandAlone/GxInspect/src/GxInspect.dpr</code></td><td>Updated help text with Phase 2 commands</td></tr>
+</table>
+
+<h4>Deferred Execution</h4>
+
+<p>Commands that may open modal dialogs (EXECUTE, CONFIGURE, QUIT) use deferred execution via <code>PostMessage</code>. The command handler stores the action in <code>FDeferredAction</code>/<code>FDeferredExpert</code> fields and posts a <code>WM_GX_INSPECT_DEFERRED</code> message. This ensures the &ldquo;OK&rdquo; response is sent to the client <em>before</em> the modal dialog blocks the main VCL thread. The deferred message is processed by the message loop after the command handler returns.</p>
+
+<h4>Expert Lookup</h4>
+
+<p>Both EXECUTE and CONFIGURE search standard experts first via <code>GExpertsInst.FindExpert(Name, Expert)</code>, then fall back to editor experts via <code>EditorExpertManager.FindExpert(Name, Idx)</code>. The expert name matches the value returned by <code>GetName</code> (typically the class name).</p>
+
+<h4>Control Search</h4>
+
+<p><code>FindControlByName</code> recursively searches all child controls of a form, matching by <code>Name</code> property (case-insensitive). An empty name or <code>&quot;.&quot;</code> returns the form itself.</p>
+
+<h4>CLICK Command</h4>
+
+<p>Uses the <code>TControlCracker</code> pattern (already in the unit) to access the protected <code>Click</code> method on <code>TControl</code>. Since <code>Click</code> is virtual, it dispatches correctly to overridden implementations (e.g., <code>TButton.Click</code> sets <code>ModalResult</code> before calling inherited).</p>
+
+<h4>Property Access (GETPROP / SETPROP)</h4>
+
+<p>Uses classic TypInfo RTTI for Delphi 6 compatibility. Supported property kinds:</p>
+
+<ul>
+<li><code>tkInteger</code>, <code>tkChar</code>, <code>tkWChar</code> &mdash; <code>GetOrdProp</code>/<code>SetOrdProp</code></li>
+<li><code>tkEnumeration</code> &mdash; <code>GetEnumName</code>/<code>GetEnumValue</code> (includes Boolean)</li>
+<li><code>tkFloat</code> &mdash; <code>GetFloatProp</code>/<code>SetFloatProp</code></li>
+<li><code>tkString</code>, <code>tkLString</code>, <code>tkWString</code>, <code>tkUString</code> &mdash; <code>GetStrProp</code>/<code>SetStrProp</code></li>
+<li><code>tkSet</code> &mdash; <code>GetSetProp</code>/<code>SetSetProp</code></li>
+<li><code>tkInt64</code> &mdash; <code>GetInt64Prop</code>/<code>SetInt64Prop</code></li>
+</ul>
+
+<p><code>tkUString</code> is conditionally compiled under <code>{$IFDEF GX_DELPHI2009_UP}</code>.</p>
+
+<h4>Argument Parsing</h4>
+
+<p>A new <code>SplitNextArg</code> helper extracts one token at a time from the argument string, supporting double-quoted tokens (for form captions with spaces). Multi-argument commands (SETBOUNDS, CLICK, GETPROP, SETPROP) parse their own arguments internally using repeated calls to <code>SplitNextArg</code>. For SETPROP, the value (4th argument) is everything remaining after extracting the property name, allowing values with spaces.</p>
+
+<h3>Delphi Compatibility</h3>
+
+<p>Verified to compile with Delphi 6, 2007, and 13 (both with and without <code>GX_INSPECT_ENABLED</code>). The dummy class path (without the define) does not reference any of the new units.</p>

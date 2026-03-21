@@ -1,0 +1,2 @@
+7	Procedure		Foo	3
+11	Function		Bar	4
