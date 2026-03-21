@@ -339,7 +339,9 @@ CHANGES_HTML=$(tr -d '\r' < "$CHANGES_FILE" | awk '
   <tr><th>Delphi Version</th><th>Installer</th></tr>
 __HTML_HEAD__
 
-  for prefix in "${EXPECTED_PREFIXES[@]}"; do
+  # List newest Delphi version first
+  for (( i=${#EXPECTED_PREFIXES[@]}-1; i>=0; i-- )); do
+    prefix="${EXPECTED_PREFIXES[$i]}"
     filename="GExperts_${prefix}_${VERSION}_${TODAY}.exe"
     label="${PREFIX_LABEL[$prefix]:-$prefix}"
     url="${HTTPS_BASE_URL}/${SUBDIR}/${filename}"
