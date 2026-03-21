@@ -278,6 +278,7 @@ var
   Offset: Integer;
   exp: TGXUnicodeString;
   rType: TReservedType;
+  Depth: Integer;
 begin
   Result := False;
 
@@ -311,16 +312,26 @@ begin
   if not (Next.ReservedType in [rtNothing, rtReserved]) or (Next.WordType <> wtWord) then
     Exit; //==>
 
+  Depth := 0;
   Idx := _TokenIdx + Offset;
   while TryGetNextNoComment(Idx, Next, Offset) do begin
     case Next.ReservedType of
       rtLogOper: begin
-          if Next.TryGetExpression(exp) and (exp = '>') then begin
-            Result := True;
+          if not Next.TryGetExpression(exp) then
+            Exit; //==>
+          if exp = '>' then begin
+            if Depth = 0 then begin
+              Result := True;
+              Exit; //==>
+            end;
+            Dec(Depth);
+          end else if exp = '<' then begin
+            // Nested generic, e.g. TJSONReport<TPrintData> inside Foo<TJSONReport<TPrintData>>
+            Inc(Depth);
+          end else begin
+            // Other logical operator (<>, <=, >=, and, or, xor) -> not a generic
             Exit; //==>
           end;
-          // no '>' ? -> no Generic
-          Exit; //==>
         end;
       // also allowed:
       rtNothing: begin
@@ -335,7 +346,7 @@ begin
     else
       Exit; //==>
     end;
-    Inc(Idx, Offset + 1);
+    Inc(Idx, Offset);
   end;
 end;
 
