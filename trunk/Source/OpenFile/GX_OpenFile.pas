@@ -281,10 +281,9 @@ begin
     SetFormIcon(Form);
     if (Form.ShowModal = mrOk) or (Form.chkDefault.Checked) then begin
       SaveSettings;
-      Form.SaveSettings;
-
       IncCallCount;
     end;
+    Form.SaveSettings;
   finally
     FreeAndNil(Form);
   end;
