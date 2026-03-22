@@ -23,7 +23,7 @@ type
 
 implementation
 
-uses Windows, Dialogs, ExtCtrls,
+uses Windows, Dialogs, ExtCtrls, StdCtrls,
   ActnList, Menus, ComCtrls,
   GX_GenericUtils, GX_IdeFormChangeManager, GX_IdeManagedFormHandler,
   GX_IdeManagedForm;
@@ -221,6 +221,26 @@ begin
   inherited;
 end;
 
+procedure SetMessageFormOKButtonCancel(_Form: TCustomForm);
+var
+  i: Integer;
+  Btn: TButton;
+  OKButton: TButton;
+begin
+  OKButton := nil;
+  for i := 0 to _Form.ComponentCount - 1 do begin
+    if _Form.Components[i] is TButton then begin
+      Btn := TButton(_Form.Components[i]);
+      if Btn.Cancel then
+        Exit; // already has a cancel button
+      if Btn.Name = 'OK' then
+        OKButton := Btn;
+    end;
+  end;
+  if Assigned(OKButton) then
+    OKButton.Cancel := True;
+end;
+
 procedure TIDEFormEnhancer.HandleFormChanged(_Sender: TObject; _Form: TCustomForm);
 var
   i: Integer;
@@ -237,7 +257,11 @@ begin
     Exit; //==>
 
   ClsName := _Form.ClassName;
-  if StringInArray(ClsName, ['TAppBuilder', 'TMessageForm', 'TPropertyInspector', 'TObjectTreeView', 'TEditWindow']) then
+  if ClsName = 'TMessageForm' then begin
+    SetMessageFormOKButtonCancel(_Form);
+    Exit;
+  end;
+  if StringInArray(ClsName, ['TAppBuilder', 'TPropertyInspector', 'TObjectTreeView', 'TEditWindow']) then
     Exit;
 
   Handlers := TList.Create;

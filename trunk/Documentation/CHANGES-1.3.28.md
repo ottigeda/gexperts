@@ -9,6 +9,7 @@ Changes since version 1.3.27 (released 2026-03-21)
 - Comment Code expert: When the configured block comment style (`{ }`, `(* *)`, or `/* */`) would produce broken nested comments, the expert now offers to fall back to `//` line comments instead. The "Don't show again" checkbox remembers the choice. The Uncomment expert auto-detects `//`-commented blocks when a block style is configured (feature #178)
 - Message box framework: `DoPermanentlySuppress` and `IsPermanentlySuppressed` are now virtual, enabling per-result suppression in subclasses
 - Open File expert: New "Project Group" tab shows files from all projects in the project group. The tab is hidden when only a single project is loaded. The Project tab's content has been extracted into a reusable frame (feature #175)
+- IDE Form Enhancer: The debugger's Exception dialog (and other IDE message dialogs with only an OK button) can now be closed with Esc (feature #206)
 
 ## Bug Fixes
 
