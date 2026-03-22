@@ -125,7 +125,7 @@ type
   end;
 
 type
-  TCommentStyleConflictMessage = class(TGxQuestionBoxAdaptor)
+  TCommentStyleConflict = class(TGxQuestionBoxAdaptor)
   private
     FStoredButton: TMsgDlgBtn;
     FIsStored: Boolean;
@@ -162,14 +162,14 @@ begin
   end;
 end;
 
-{ TCommentStyleConflictMessage }
+{ TCommentStyleConflict }
 
-function TCommentStyleConflictMessage.GetCaption: string;
+function TCommentStyleConflict.GetCaption: string;
 begin
   Result := 'GExperts - Comment Code';
 end;
 
-function TCommentStyleConflictMessage.GetMessage: string;
+function TCommentStyleConflict.GetMessage: string;
 begin
   Result := 'The selected code already contains ' + FData + ' comments'
     + ' which would result in broken comments when using this comment style.'
@@ -180,7 +180,7 @@ begin
     + 'You can revert this on the "Suppressed Messages" tab of the GExperts configuration dialog.';
 end;
 
-function TCommentStyleConflictMessage.GetDefaultButton: TMsgDlgBtn;
+function TCommentStyleConflict.GetDefaultButton: TMsgDlgBtn;
 begin
   if FIsStored then
     Result := FStoredButton
@@ -188,7 +188,7 @@ begin
     Result := mbYes;
 end;
 
-function TCommentStyleConflictMessage.IsPermanentlySuppressed: Boolean;
+function TCommentStyleConflict.IsPermanentlySuppressed: Boolean;
 var
   Settings: IExpertSettings;
   StoredValue: Integer;
@@ -205,7 +205,7 @@ begin
   end;
 end;
 
-procedure TCommentStyleConflictMessage.DoPermanentlySuppress;
+procedure TCommentStyleConflict.DoPermanentlySuppress;
 var
   Settings: IExpertSettings;
 begin
@@ -357,7 +357,7 @@ begin
   // Check for block comment style conflicts (feature #178)
   if AStyle.CommentType in [ctPascal, ctC, ctCpp] then
     if SelectionConflictsWithBlockComment(Lines, AStyle.CommentType, ConflictChars) then begin
-      if ShowGxMessageBox(TCommentStyleConflictMessage, ConflictChars) = mrYes then begin
+      if ShowGxMessageBox(TCommentStyleConflict, ConflictChars) = mrYes then begin
         CommentPrefix := '//' + IfThen(AStyle.InsertRemoveSpace, ' ');
         for i := 0 to Lines.Count - 1 do
           Lines[i] := CommentPrefix + Lines[i];
