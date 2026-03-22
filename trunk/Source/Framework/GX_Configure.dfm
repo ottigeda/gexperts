@@ -421,6 +421,14 @@ object fmConfiguration: TfmConfiguration
             Caption = 'Turn off Progress Form transparency'
             TabOrder = 15
           end
+          object chkDisableLicenseNotification: TCheckBox
+            Left = 8
+            Top = 380
+            Width = 729
+            Height = 24
+            Caption = 'Disable IDE license notification'
+            TabOrder = 16
+          end
         end
         object gbxObjectInspector: TGroupBox
           Left = 448

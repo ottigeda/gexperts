@@ -10,6 +10,7 @@ Changes since version 1.3.27 (released 2026-03-21)
 - Message box framework: `DoPermanentlySuppress` and `IsPermanentlySuppressed` are now virtual, enabling per-result suppression in subclasses
 - Open File expert: New "Project Group" tab shows files from all projects in the project group. The tab is hidden when only a single project is loaded. The Project tab's content has been extracted into a reusable frame (feature #175)
 - IDE Form Enhancer: The debugger's Exception dialog (and other IDE message dialogs with only an OK button) can now be closed with Esc (feature #206)
+- Configuration: New "Disable IDE license notification" checkbox on the IDE tab writes the `LicenseNotificationEnabled` registry value to suppress the IDE's license notification popup (feature #202)
 
 ## Bug Fixes
 

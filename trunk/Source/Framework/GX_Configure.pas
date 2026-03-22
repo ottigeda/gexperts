@@ -109,6 +109,7 @@ type
     chkAutoCloseIgnoreWarnings: TCheckBox;
     chkSplitterVisibility: TCheckBox;
     chkProgressTransparency: TCheckBox;
+    chkDisableLicenseNotification: TCheckBox;
     chkIsThemingEnabled: TCheckBox;
     lblShortcutWarning: TLabel;
     procedure btnEnumerateModulesClick(Sender: TObject);
@@ -162,6 +163,8 @@ type
     procedure edConfigPathDropFiles(_Sender: TObject; _Files: TStrings);
     procedure edHelpFileDropFiles(_Sender: TObject; _Files: TStrings);
     procedure UpdateIdeDialogCheckboxes;
+    procedure LoadLicenseNotificationSetting;
+    procedure SaveLicenseNotificationSetting;
     procedure SaveAllSettings;
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
     procedure InitDesktopList;
@@ -182,7 +185,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, UITypes,
+  SysUtils, UITypes, Registry,
 {$IFDEF GX_DELPHI2007_UP}
   GX_SizeGripHWND,
 {$ENDIF}
@@ -609,6 +612,8 @@ begin
 
   chkSplitterVisibility.Checked := IdeEnhancements.SplitterVisibilty;
   chkProgressTransparency.Checked := IdeEnhancements.ProgressTransparencyDisabled;
+
+  LoadLicenseNotificationSetting;
 end;
 
 procedure TfmConfiguration.LoadSuppressedMessages;
@@ -698,7 +703,48 @@ begin
   IdeEnhancements.SplitterVisibilty := chkSplitterVisibility.Checked;
   IdeEnhancements.ProgressTransparencyDisabled := chkProgressTransparency.Checked;
 
+  SaveLicenseNotificationSetting;
+
   IdeEnhancements.SaveSettings;
+end;
+
+procedure TfmConfiguration.LoadLicenseNotificationSetting;
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create(KEY_READ);
+  try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKeyReadOnly(Ota.GetIdeBaseRegistryKey + '\Globals') then begin
+      if Reg.ValueExists('LicenseNotificationEnabled') then
+        chkDisableLicenseNotification.Checked := Reg.ReadInteger('LicenseNotificationEnabled') = 0
+      else
+        chkDisableLicenseNotification.Checked := False;
+      Reg.CloseKey;
+    end else
+      chkDisableLicenseNotification.Checked := False;
+  finally
+    FreeAndNil(Reg);
+  end;
+end;
+
+procedure TfmConfiguration.SaveLicenseNotificationSetting;
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create(KEY_WRITE);
+  try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + '\Globals', True) then begin
+      if chkDisableLicenseNotification.Checked then
+        Reg.WriteInteger('LicenseNotificationEnabled', 0)
+      else if Reg.ValueExists('LicenseNotificationEnabled') then
+        Reg.DeleteValue('LicenseNotificationEnabled');
+      Reg.CloseKey;
+    end;
+  finally
+    FreeAndNil(Reg);
+  end;
 end;
 
 procedure TfmConfiguration.HideUnsupportedIdeItems;
@@ -737,6 +783,10 @@ begin
 
 {$IFNDEF GX_FORM_HAS_ALPHABLEND}
   chkProgressTransparency.Visible := False;
+{$ENDIF}
+
+{$IFNDEF GX_VER160_up} // pre-BDS: no license notification
+  chkDisableLicenseNotification.Visible := False;
 {$ENDIF}
 
 {$IFNDEF GX_SUPPORTS_THEMING}
