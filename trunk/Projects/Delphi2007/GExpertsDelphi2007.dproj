@@ -558,6 +558,11 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\OpenFile\GX_OpenFile.pas">
             <Form>fmOpenFile</Form>
         </DCCReference>
+        <DCCReference Include="..\..\source\OpenFile\GX_OpenFileList.pas">
+            <Form>frOpenFileList</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="..\..\source\OpenFile\GX_OpenFileConfig.pas">
             <Form>fmOpenFileConfig</Form>
         </DCCReference>

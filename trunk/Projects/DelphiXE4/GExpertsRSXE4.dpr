@@ -218,6 +218,7 @@ uses
   GX_MultiLinePalette in '..\..\source\IDE\GX_MultiLinePalette.pas',
   GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas',
   GX_OpenFile in '..\..\source\OpenFile\GX_OpenFile.pas' {fmOpenFile},
+  GX_OpenFileList in '..\..\source\OpenFile\GX_OpenFileList.pas' {frOpenFileList: TFrame},
   GX_OpenFileConfig in '..\..\source\OpenFile\GX_OpenFileConfig.pas' {fmOpenFileConfig},
   GX_OtaUtils in '..\..\source\Utils\GX_OtaUtils.pas',
   GX_PasteAs in '..\..\source\Framework\GX_PasteAs.pas',

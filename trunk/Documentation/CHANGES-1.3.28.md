@@ -8,6 +8,7 @@ Changes since version 1.3.27 (released 2026-03-21)
 - Message box framework: `TGxMsgBoxAdaptor` now supports a `GetDetails` method to show detail text behind a Details button
 - Comment Code expert: When the configured block comment style (`{ }`, `(* *)`, or `/* */`) would produce broken nested comments, the expert now offers to fall back to `//` line comments instead. The "Don't show again" checkbox remembers the choice. The Uncomment expert auto-detects `//`-commented blocks when a block style is configured (feature #178)
 - Message box framework: `DoPermanentlySuppress` and `IsPermanentlySuppressed` are now virtual, enabling per-result suppression in subclasses
+- Open File expert: New "Project Group" tab shows files from all projects in the project group. The tab is hidden when only a single project is loaded. The Project tab's content has been extracted into a reusable frame (feature #175)
 
 ## Bug Fixes
 

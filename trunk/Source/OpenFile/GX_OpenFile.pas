@@ -7,7 +7,8 @@ interface
 uses
   Windows, SysUtils, Classes, Types, Controls, Forms, Actions, ActnList, Dialogs, StdCtrls,
   ToolWin, Messages, UITypes, ComCtrls, ExtCtrls,
-  GX_SharedImages, GX_GenericUtils, GX_OpenFileConfig, GX_BaseForm, GX_ReadMapFileThread;
+  GX_SharedImages, GX_GenericUtils, GX_OpenFileConfig, GX_OpenFileList, GX_BaseForm,
+  GX_ReadMapFileThread;
 
 const
   UM_REFRESHLIST = WM_USER + 746;
@@ -33,6 +34,7 @@ type
     FRecursiveDirSearch: Boolean;
     FCommonSearchDone: Boolean;
     FSearchPathDone: Boolean;
+    FProjectGroupFiles: TStringList;
     FMapFiles: TStringList;
     FMapFileSearch: boolean;
     FMapSearchDone: Boolean;
@@ -40,6 +42,7 @@ type
     procedure CommonSearchComplete;
     procedure GetCommonDCUFiles;
     procedure AddCurrentProjectFiles(PathUnits: TStringList);
+    procedure AddProjectGroupFiles(PathUnits: TStringList);
     procedure MapSearchComplete;
     procedure CheckOnFindComplete;
   protected
@@ -49,6 +52,7 @@ type
     constructor Create;
     destructor Destroy; override;
     property ProjectFiles: TStringList read FProjectFiles write FProjectFiles;
+    property ProjectGroupFiles: TStringList read FProjectGroupFiles write FProjectGroupFiles;
     property MapFiles: TStringList read FMapFiles;
     procedure Terminate;
     property CommonFiles: TStringList read FCommonFiles write FCommonFiles;
@@ -69,8 +73,7 @@ type
     pnlSearchPathFooter: TPanel;
     pnlSearchPath: TPanel;
     tabProject: TTabSheet;
-    pnlProject: TPanel;
-    pnlProjFooter: TPanel;
+    frProject: TfrOpenFileList;
     tabCommon: TTabSheet;
     pnlCommon: TPanel;
     pnlCommonFooter: TPanel;
@@ -83,7 +86,6 @@ type
     edtFilter: TEdit;
     pnlOKCancel: TPanel;
     btnCommonAddToFavorites: TButton;
-    btnProjectAddToFavorites: TButton;
     btnSearchAddToFavorites: TButton;
     ToolBar: TToolBar;
     tbnMatchFromStart: TToolButton;
@@ -93,7 +95,6 @@ type
     lvSearchPath: TListView;
     lvFavorite: TListView;
     lvCommon: TListView;
-    lvProjects: TListView;
     lblExtension: TLabel;
     cbxType: TComboBox;
     tabRecent: TTabSheet;
@@ -123,6 +124,8 @@ type
     pnlButtonsRight: TPanel;
     btnOK: TButton;
     btnCancel: TButton;
+    tabProjectGroup: TTabSheet;
+    frProjectGroup: TfrOpenFileList;
     tabMap: TTabSheet;
     pnlMap: TPanel;
     lvMap: TListView;
@@ -143,6 +146,7 @@ type
     procedure actConfigExecute(Sender: TObject);
     procedure tabSearchPathShow(Sender: TObject);
     procedure tabProjectShow(Sender: TObject);
+    procedure tabProjectGroupShow(Sender: TObject);
     procedure tabCommonShow(Sender: TObject);
     procedure tabFavoriteShow(Sender: TObject);
     procedure tabRecentShow(Sender: TObject);
@@ -404,6 +408,9 @@ begin
   FCommonFiles := TStringList.Create;
   FCommonDCUFiles := TStringList.Create;
   FProjectFiles := TStringList.Create;
+  FProjectGroupFiles := TStringList.Create;
+  FProjectGroupFiles.Sorted := True;
+  FProjectGroupFiles.Duplicates := dupIgnore;
   FSearchPathFiles := TStringList.Create;
   FMapFiles := TStringList.Create;
 end;
@@ -417,6 +424,7 @@ begin
   FreeAndNil(FCommonFiles);
   FreeAndNil(FCommonDCUFiles);
   FreeAndNil(FProjectFiles);
+  FreeAndNil(FProjectGroupFiles);
   FreeAndNil(FSearchPathFiles);
   inherited;
 end;
@@ -431,6 +439,7 @@ begin
   FCommonFiles.Clear;
   FCommonDCUFiles.Clear;
   FProjectFiles.Clear;
+  FProjectGroupFiles.Clear;
   FMapFiles.Clear;
   FSearchPathFiles.Clear;
   FSearchPathDone := False;
@@ -443,9 +452,8 @@ begin
 
     FSearchPathThread := TFileFindThread.Create;
 
-    // This will allow semi-colon separated lists at the user GUI level
-    // D5 has no way to separate ; using TStrings.
-    FSearchPathThread.FileMasks.CommaText := StringReplace(FFileExtensions, ';', ',', [rfReplaceAll]);
+    FSearchPathThread.FileMasks.Delimiter := ';';
+    FSearchPathThread.FileMasks.DelimitedText := FFileExtensions;
 
     if FRecursiveDirSearch then
       PathsToUse := FSearchPathThread.RecursiveSearchDirs
@@ -460,9 +468,8 @@ begin
     if MapFileSearch then begin
       FMapFileThread := TReadMapFileThread.Create;
       FMapFileThread.SearchPath.Assign(SearchPath);
-      // This will allow semi-colon separated lists at the user GUI level
-      // D5 has no way to separate ; using TStrings.
-      FMapFileThread.FileExtensions.CommaText := StringReplace(FFileExtensions, ';', ',', [rfReplaceAll]);
+      FMapFileThread.FileExtensions.Delimiter := ';';
+      FMapFileThread.FileExtensions.DelimitedText := FFileExtensions;
       FMapFileThread.OnFindComplete := MapSearchComplete;
       FMapFileThread.StartFind;
     end else
@@ -481,6 +488,7 @@ begin
   if False then // Not needed yet (only needed for uses clause manager?)
     GetCommonDCUFiles;
   AddCurrentProjectFiles(FProjectFiles);
+  AddProjectGroupFiles(FProjectGroupFiles);
 end;
 
 procedure TAvailableFiles.PathSearchComplete;
@@ -574,37 +582,51 @@ begin
   end;
 end;
 
-procedure TAvailableFiles.AddCurrentProjectFiles(PathUnits: TStringList);
+procedure AddFilesFromProject(Project: IOTAProject; const _FileExtensions: string;
+  PathUnits: TStringList);
 var
   ExtensionIndex: Integer;
-  Project: IOTAProject;
   i: Integer;
-  CurrentProjectFiles, FileExtensions: TStringList;
+  ProjectFiles, FileExtensions: TStringList;
   FileName: string;
 begin
-  Project := Ota.GetCurrentProject;
-  if Assigned(Project) then
-  begin
-    FileExtensions := nil;
-    CurrentProjectFiles := TStringList.Create;
-    try
-      FileExtensions := TStringList.Create;
-      // This will allow semi-colon separated lists at the user GUI level
-      // D5 has no way to separate ; into TStrings.
-      FileExtensions.CommaText := StringReplace(FFileExtensions, ';', ',', [rfReplaceAll]);
-      Ota.GetProjectFileNames(Project, CurrentProjectFiles);
-      for i := 0 to CurrentProjectFiles.Count - 1 do
-        for ExtensionIndex := 0 to FileExtensions.Count - 1 do
-        begin
-          FileName := ChangeFileExt(CurrentProjectFiles[i], ExtractFileExt(FileExtensions[ExtensionIndex]));
-          if FileExists(FileName) then
-            PathUnits.Add(ExpandFileName(FileName));
-        end;
-    finally
-      FreeAndNil(CurrentProjectFiles);
-      FreeAndNil(FileExtensions);
-    end;
+  if not Assigned(Project) then
+    Exit;
+  FileExtensions := nil;
+  ProjectFiles := TStringList.Create;
+  try
+    FileExtensions := TStringList.Create;
+    FileExtensions.Delimiter := ';';
+    FileExtensions.DelimitedText := _FileExtensions;
+    Ota.GetProjectFileNames(Project, ProjectFiles);
+    for i := 0 to ProjectFiles.Count - 1 do
+      for ExtensionIndex := 0 to FileExtensions.Count - 1 do
+      begin
+        FileName := ChangeFileExt(ProjectFiles[i], ExtractFileExt(FileExtensions[ExtensionIndex]));
+        if FileExists(FileName) then
+          PathUnits.Add(ExpandFileName(FileName));
+      end;
+  finally
+    FreeAndNil(ProjectFiles);
+    FreeAndNil(FileExtensions);
   end;
+end;
+
+procedure TAvailableFiles.AddCurrentProjectFiles(PathUnits: TStringList);
+begin
+  AddFilesFromProject(Ota.GetCurrentProject, FFileExtensions, PathUnits);
+end;
+
+procedure TAvailableFiles.AddProjectGroupFiles(PathUnits: TStringList);
+var
+  ProjectGroup: IOTAProjectGroup;
+  i: Integer;
+begin
+  ProjectGroup := Ota.GetProjectGroup;
+  if not Assigned(ProjectGroup) then
+    Exit;
+  for i := 0 to ProjectGroup.ProjectCount - 1 do
+    AddFilesFromProject(ProjectGroup.Projects[i], FFileExtensions, PathUnits);
 end;
 
 procedure TAvailableFiles.GetSearchPath(Paths: TStrings);
@@ -690,7 +712,8 @@ begin
   lvSearchPath.DoubleBuffered := True;
   lvFavorite.DoubleBuffered := True;
   lvCommon.DoubleBuffered := True;
-  lvProjects.DoubleBuffered := True;
+  frProject.Init(actAddToFavorites, FileListDoubleClick);
+  frProjectGroup.Init(actAddToFavorites, FileListDoubleClick);
   lvRecent.DoubleBuffered := True;
 
   TWinControl_ActivateDropFiles(lvFavorite, lvFavoriteFilesDropped);
@@ -996,6 +1019,7 @@ procedure TfmOpenFile.FormShow(Sender: TObject);
 var
   R : TRect;
   LTextWidth: Integer;
+  ProjectGroup: IOTAProjectGroup;
 begin
   R := Self.BoundsRect;
   inherited;             // will call ApplyDpi(), which resets the size.
@@ -1013,6 +1037,8 @@ begin
   end;
   CopyColumns(lvSearchPath);
   ResizeListViewColumns;
+  ProjectGroup := Ota.GetProjectGroup;
+  tabProjectGroup.TabVisible := Assigned(ProjectGroup) and (ProjectGroup.ProjectCount > 1);
   tabSearchPathShow(tabSearchPath);
   InitializeFileTypes(FInitialFileType);
   PostMessage(Handle, UM_REFRESHLIST, 0, 0);
@@ -1067,8 +1093,14 @@ end;
 
 procedure TfmOpenFile.tabProjectShow(Sender: TObject);
 begin
-  CurrentListView := lvProjects;
+  CurrentListView := frProject.ListView;
   FCurrentFilePaths := AvailableFiles.ProjectFiles;
+end;
+
+procedure TfmOpenFile.tabProjectGroupShow(Sender: TObject);
+begin
+  CurrentListView := frProjectGroup.ListView;
+  FCurrentFilePaths := AvailableFiles.ProjectGroupFiles;
 end;
 
 procedure TfmOpenFile.tabCommonShow(Sender: TObject);
@@ -1139,8 +1171,10 @@ begin
     lvFavorite.Columns.Assign(Source.Columns);
   if Source <> lvCommon then
     lvCommon.Columns.Assign(Source.Columns);
-  if Source <> lvProjects then
-    lvProjects.Columns.Assign(Source.Columns);
+  if Source <> frProject.ListView then
+    frProject.ListView.Columns.Assign(Source.Columns);
+  if Source <> frProjectGroup.ListView then
+    frProjectGroup.ListView.Columns.Assign(Source.Columns);
   if Source <> lvMap then
     lvMap.Columns.Assign(Source.Columns);
   if Source <> lvRecent then
