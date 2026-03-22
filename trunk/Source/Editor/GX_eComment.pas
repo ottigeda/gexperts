@@ -80,9 +80,9 @@ implementation
 {$R *.dfm}
 
 uses
-  StrUtils, Math,
+  StrUtils, Math, Dialogs,
   u_dzStringUtils, u_dzVclUtils,
-  GX_EditorExpert, GX_OtaUtils;
+  GX_EditorExpert, GX_OtaUtils, GX_MessageBox;
 
 var
   // This is *local* and used by both the comment
@@ -123,6 +123,98 @@ type
     function GetHelpString: string; override;
     function HasConfigOptions: Boolean; override;
   end;
+
+type
+  TCommentStyleConflictMessage = class(TGxQuestionBoxAdaptor)
+  private
+    FStoredButton: TMsgDlgBtn;
+    FIsStored: Boolean;
+  protected
+    function GetMessage: string; override;
+    function GetCaption: string; override;
+    function GetDefaultButton: TMsgDlgBtn; override;
+    procedure DoPermanentlySuppress; override;
+    function IsPermanentlySuppressed: Boolean; override;
+  end;
+
+function SelectionConflictsWithBlockComment(Lines: TStrings;
+  CommentType: TCommentType; out ConflictChars: string): Boolean;
+var
+  Text: string;
+begin
+  Text := Lines.Text;
+  case CommentType of
+    ctPascal: begin
+      ConflictChars := '{ }';
+      Result := (Pos('{', Text) > 0) or (Pos('}', Text) > 0);
+    end;
+    ctC: begin
+      ConflictChars := '(* *)';
+      Result := (Pos('(*', Text) > 0) or (Pos('*)', Text) > 0);
+    end;
+    ctCpp: begin
+      ConflictChars := '/* */';
+      Result := (Pos('/*', Text) > 0) or (Pos('*/', Text) > 0);
+    end;
+  else
+    ConflictChars := '';
+    Result := False;
+  end;
+end;
+
+{ TCommentStyleConflictMessage }
+
+function TCommentStyleConflictMessage.GetCaption: string;
+begin
+  Result := 'GExperts - Comment Code';
+end;
+
+function TCommentStyleConflictMessage.GetMessage: string;
+begin
+  Result := 'The selected code already contains ' + FData + ' comments'
+    + ' which would result in broken comments when using this comment style.'
+    + sLineBreak + sLineBreak
+    + 'Click "Yes" to comment using // line comments instead.' + sLineBreak
+    + 'Click "No" to leave the code unchanged.' + sLineBreak + sLineBreak
+    + 'If you check "Do not show again", your choice will be remembered.' + sLineBreak
+    + 'You can revert this on the "Suppressed Messages" tab of the GExperts configuration dialog.';
+end;
+
+function TCommentStyleConflictMessage.GetDefaultButton: TMsgDlgBtn;
+begin
+  if FIsStored then
+    Result := FStoredButton
+  else
+    Result := mbYes;
+end;
+
+function TCommentStyleConflictMessage.IsPermanentlySuppressed: Boolean;
+var
+  Settings: IExpertSettings;
+  StoredValue: Integer;
+begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  StoredValue := Settings.ReadInteger(Self.ClassName, 0);
+  Result := StoredValue <> 0;
+  if Result then begin
+    FIsStored := True;
+    if StoredValue = 1 then
+      FStoredButton := mbYes
+    else
+      FStoredButton := mbNo;
+  end;
+end;
+
+procedure TCommentStyleConflictMessage.DoPermanentlySuppress;
+var
+  Settings: IExpertSettings;
+begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  if FLastModalResult = mrYes then
+    Settings.WriteInteger(Self.ClassName, 1)
+  else
+    Settings.WriteInteger(Self.ClassName, 2);
+end;
 
 { TCommentExpert }
 
@@ -240,6 +332,7 @@ function TCommentExpert.ProcessSelected(Lines: TStrings): Boolean;
 var
   i: Integer;
   CommentPrefix: string;
+  ConflictChars: string;
   AStyle: TExtensionStyle;
 
   procedure AddBracketing(const CodeList: TStrings; const LeftBracket, RightBracket: string);
@@ -260,6 +353,19 @@ begin
   Assert(Assigned(Lines));
 
   AStyle := Styles.GetStyle(Ota.GetTopMostEditBufferFileName);
+
+  // Check for block comment style conflicts (feature #178)
+  if AStyle.CommentType in [ctPascal, ctC, ctCpp] then
+    if SelectionConflictsWithBlockComment(Lines, AStyle.CommentType, ConflictChars) then begin
+      if ShowGxMessageBox(TCommentStyleConflictMessage, ConflictChars) = mrYes then begin
+        CommentPrefix := '//' + IfThen(AStyle.InsertRemoveSpace, ' ');
+        for i := 0 to Lines.Count - 1 do
+          Lines[i] := CommentPrefix + Lines[i];
+        Result := True;
+      end else
+        Result := False;
+      Exit;
+    end;
 
   // Do not localize any of the below lines.
   case AStyle.CommentType of
@@ -417,14 +523,34 @@ var
     Result := RemoveLastInternal(SubString, InString);
   end;
 
+  function AllLinesStartWithSlash: Boolean;
+  var
+    j: Integer;
+  begin
+    Result := False;
+    for j := 0 to Lines.Count - 1 do
+      if StrLComp(PChar(TrimLeft(Lines[j])), '//', 2) <> 0 then
+        Exit;
+    Result := True;
+  end;
+
 var
   i: Integer;
+  EffectiveType: TCommentType;
 begin
   Assert(Assigned(Lines));
 
   AStyle := Styles.GetStyle(Ota.GetTopMostEditBufferFileName);
 
-  case AStyle.CommentType of
+  // If the configured style is a block comment but all lines start with //,
+  // the Comment expert must have fallen back to // (feature #178).
+  // Uncomment as // in that case.
+  EffectiveType := AStyle.CommentType;
+  if EffectiveType in [ctPascal, ctC, ctCpp] then
+    if AllLinesStartWithSlash then
+      EffectiveType := ctSlash;
+
+  case EffectiveType of
     ctSlash:
       for i := 0 to Lines.Count - 1 do
         Lines[i] := RemoveFirstString('//', Lines[i]);

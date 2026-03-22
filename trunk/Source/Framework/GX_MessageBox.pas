@@ -15,6 +15,9 @@ type
     // General optional data passed into ShowGxMessageBox that can be
     // used to customize the error message, etc.
     FData: string;
+    // Set by ShowGxMessageBox to the modal result before calling
+    // DoPermanentlySuppress, so overrides can store per-result suppression.
+    FLastModalResult: TModalResult;
     // Returns the message text shown in the message text
     function GetMessage: string; virtual; abstract;
     // Returns caption of the message box
@@ -30,10 +33,10 @@ type
     function GetUniqueIdentifier: string;
     // Mark this message box as suppressed; by default,
     // state is stored in the registry.
-    procedure DoPermanentlySuppress;
+    procedure DoPermanentlySuppress; virtual;
     // Returns whether this message box is permanently
     // suppressed.
-    function IsPermanentlySuppressed: Boolean;
+    function IsPermanentlySuppressed: Boolean; virtual;
     // Returns whether the message box should be shown.
     function ShouldShow: Boolean; virtual;
     function AllowSuppress: Boolean; virtual;
@@ -132,10 +135,12 @@ begin
   Adaptor := AdaptorClass.Create;
   try
     Adaptor.FData := Data;
-    Result := MsgDlgResults[Adaptor.GetDefaultButton];
-    if Adaptor.IsPermanentlySuppressed then
+    if Adaptor.IsPermanentlySuppressed then begin
+      Result := MsgDlgResults[Adaptor.GetDefaultButton];
       Exit; //==>
+    end;
 
+    Result := MsgDlgResults[Adaptor.GetDefaultButton];
     if Adaptor.ShouldShow then begin
       frm := TfmGxMessageBox.Create(_Owner);
       try
@@ -157,6 +162,7 @@ begin
         frm.GenerateControls;
         TForm_CenterOn(frm, _Owner);
         Result := frm.ShowModal;
+        Adaptor.FLastModalResult := Result;
         if Adaptor.AllowSuppress and frm.DontShowAgainValue then
           Adaptor.DoPermanentlySuppress;
       finally
