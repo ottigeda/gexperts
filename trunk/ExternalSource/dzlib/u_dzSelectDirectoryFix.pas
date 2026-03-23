@@ -157,8 +157,8 @@ begin
     SetDialogPosition;
     _Msg.Result := CallWindowProc(FWndProcPrevious, FWnd, _Msg.Msg, _Msg.WParam, _Msg.lParam);
     UnsubClass;
-  end;
-  _Msg.Result := CallWindowProc(FWndProcPrevious, FWnd, _Msg.Msg, _Msg.WParam, _Msg.lParam);
+  end else
+    _Msg.Result := CallWindowProc(FWndProcPrevious, FWnd, _Msg.Msg, _Msg.WParam, _Msg.lParam);
 end;
 
 procedure TSelectDirCallback.SetDialogPosition;

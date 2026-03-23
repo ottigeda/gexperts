@@ -309,7 +309,7 @@ var
       // center image and text on the button
       RequiredWidth := _Glyph.Width + FOrigSpacing + TextSize.cx;
       X := (_w - RequiredWidth) div 2;
-      cnv.Draw(X, (_h - _Glyph.Width) div 2, _Glyph);
+      cnv.Draw(X, (_h - _Glyph.Height) div 2, _Glyph);
       r.Left := X + FOrigMargin + FOrigSpacing + _Glyph.Width;
       r.Top := (_h - TextSize.cy) div 2;
       r.Right := r.Left + TextSize.cx;
@@ -356,10 +356,10 @@ var
       TextWidth := r.Right - r.Left;
       TextHeight := r.Bottom - r.Top;
 
-      cnv.Draw(FOrigMargin, (_h - _Glyph.Width) div 2, _Glyph);
+      cnv.Draw(FOrigMargin, (_h - _Glyph.Height) div 2, _Glyph);
 
       r.Left := FOrigMargin + _Glyph.Width + FOrigSpacing;
-      r.Top := (_h - TextWidth) div 2;
+      r.Top := (_h - TextHeight) div 2;
       r.Right := r.Left + TextWidth;
       r.Bottom := r.Top + TextHeight;
       TCanvas_DrawText(cnv, FCaption, r, [dtfCenter, dtfWordBreak]);

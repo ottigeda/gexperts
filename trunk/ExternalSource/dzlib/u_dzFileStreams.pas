@@ -407,9 +407,11 @@ begin
     ApiHandle := Windows.CreateFile(PChar(FFilename), Access,
       TheShareMode, FSecurityAttributes, Disposition, FFileAttributes or FFileFlags, 0);
     Result := (ApiHandle <> THandle(INVALID_HANDLE_VALUE));
-    if not Result and ResetReadOnly and not TriedResetReadonly then
+    if not Result and ResetReadOnly and not TriedResetReadonly then begin
       TFileSystem.SetReadOnly(FFilename, False, ehReturnFalse);
-  until Result or TriedResetReadonly or not ResetReadOnly or not (faWrite in AccessMode) and ResetReadOnly;
+      TriedResetReadonly := True;
+    end;
+  until Result or TriedResetReadonly or not ResetReadOnly or not (faWrite in AccessMode);
   if Result then
     THandleStreamHack(Self).FHandle := THandleCast(ApiHandle)
   else

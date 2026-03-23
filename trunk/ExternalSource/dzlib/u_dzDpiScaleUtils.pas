@@ -79,7 +79,6 @@ type
     FFormDesignFontSize: Integer;
     FFrm: TForm;
     FCtrlParams: array of TCtrlDpiScaler;
-    FDesigDpi: Integer;
     FPnlMaster: TPanel;
     procedure AddControls(_Ctrl: TWinControl);
     function FindCtrlScaler(_ctrl: TControl): PCtrlDpiScaler;
@@ -90,7 +89,7 @@ type
     function Calc(_Value: Integer): Integer;
     procedure DisableControlFontScaling(_ctrl: TControl);
     procedure ControlHasSplitter(_ctrl: TControl);
-    property DesignDPI: Integer read FDesigDpi;
+    property DesignDPI: Integer read FDesignDpi;
   end;
 
 implementation

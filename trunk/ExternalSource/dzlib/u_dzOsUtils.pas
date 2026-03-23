@@ -862,12 +862,12 @@ begin
     AdministratorsGroup) then
     Exit; //=>
   try
-    if Assigned(CheckTokenMembership) then begin
+    if not Assigned(CheckTokenMembership) then begin
       Hdl := LoadLibrary(advapi32);
       if Hdl = 0 then
         Exit; //=>
       @CheckTokenMembership := GetProcAddress(Hdl, 'CheckTokenMembership');
-      if Assigned(CheckTokenMembership) then begin
+      if not Assigned(CheckTokenMembership) then begin
         FreeLibrary(Hdl);
         Exit; //=>
       end;

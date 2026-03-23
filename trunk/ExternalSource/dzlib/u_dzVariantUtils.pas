@@ -293,7 +293,7 @@ begin
           end;
         end else if VarArrayDimCount(_v) = 2 then begin
           for i := VarArrayLowBound(_v, 1) to VarArrayHighBound(_v, 1) do
-            for j := VarArrayLowBound(_v, 1) to VarArrayHighBound(_v, 1) do
+            for j := VarArrayLowBound(_v, 2) to VarArrayHighBound(_v, 2) do
               Result := Result + DumpVariant(_v[i, j]);
         end else
           Result := '3dim-array not supported'; // do not translate

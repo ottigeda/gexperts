@@ -119,7 +119,7 @@ function TErrorThread.Kill_YesIHaveReadTheTerminateThreadApiDocumentation(_ExitC
 begin
   Result := not FHasFinished and (Handle <> 0);
   if Result then begin
-    Win32Check(Windows.TerminateThread(Handle, 5));
+    Win32Check(Windows.TerminateThread(Handle, _ExitCode));
   end;
 end;
 

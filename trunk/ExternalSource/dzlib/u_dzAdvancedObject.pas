@@ -663,7 +663,7 @@ end;
 
 function TAdvancedObject.HasStringProperty(const _Name: string): Boolean;
 begin
-  Result := HasStringProperty(_Name);
+  Result := HasStringProperty(Self, _Name);
 end;
 
 class function TAdvancedObject.SetStringProperty(_Instance: TObject; const _Name, _Value: string): Boolean;

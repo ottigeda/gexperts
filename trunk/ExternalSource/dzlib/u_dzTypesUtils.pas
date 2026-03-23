@@ -10,55 +10,39 @@ uses
 
 ///<summary> Returns the Rect's width </summary>
 function TRect_Width(const _Rect: TRect): Integer;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 procedure TRect_SetWidth(var _Rect: TRect; _Value: Integer);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary> Returns the Rect's height </summary>
 function TRect_Height(const _Rect: TRect): Integer;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 procedure TRect_SetHeight(var _Rect: TRect; _Value: Integer);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary>
 /// @returns a TRect generated from Left, Top, Width and Height </summary>
 function TRect_FromLTWH(_l, _t, _w, _h: Integer): TRect;
 
 procedure TRect_SetOffset(var _Rect: TRect; const _x, _y: Integer);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary> returns the center point of the Rect </summary>
 function TRect_Center(const _Rect: TRect): TPoint;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary>
 /// Check whether a TRect contains a TPoint </summary>
 function TRect_Contains(const _Rect: TRect; const _Pnt: TPoint): Boolean;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 overload;
 
 ///<summary>
 /// Check whether a TRect contains a point with the given coordinates </summary>
 function TRect_Contains(const _Rect: TRect; _x, _y: Integer): Boolean;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 overload;
 
 ///<summary>
@@ -153,7 +137,7 @@ end;
 procedure TDoubleDynArray_Sort(var _Arr: TDoubleDynArray; _Lo, _Hi: Integer);
 var
   Lo, Hi: Integer;
-  Pivot, t: Single;
+  Pivot, t: Double;
 begin
   Lo := _Lo;
   Hi := _Hi;

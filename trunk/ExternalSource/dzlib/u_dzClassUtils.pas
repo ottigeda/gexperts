@@ -941,9 +941,10 @@ end;
 function TStrings_TryGetObject(_sl: TStrings; _Idx: Integer; out _Obj: TObject; _AllowNil: Boolean = True): Boolean;
 begin
   Result := (_Idx >= 0) and (_sl.Count > _Idx);
-  if Result then
+  if Result then begin
     _Obj := _sl.Objects[_Idx];
-  Result := _AllowNil or Assigned(_Obj);
+    Result := _AllowNil or Assigned(_Obj);
+  end;
 end;
 
 procedure TStrings_RemoveEmptyLines(_Strings: TStrings; _TrimFirst: Boolean = True);
@@ -2581,7 +2582,9 @@ var
   IntValue: Integer;
 begin
   s := FIni.ReadString(FSection, _Ident, '');
-  if TryStrToInt(s, IntValue) then
+  if s = '' then
+    Result := _Default
+  else if TryStrToInt(s, IntValue) then
     Result := (IntValue <> 0)
   else begin
     Result := SameText(s, 'TRUE') or SameText(s, 'T') or SameText(s, 'Yes') or SameText(s, 'Y');

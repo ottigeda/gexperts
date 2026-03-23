@@ -156,10 +156,12 @@ var
 begin
   for i := Low(_arr) to High(_arr) do begin
     if _arr[i] = _s then begin
+      _Idx := i;
       Result := True;
       Exit; //==>
     end;
   end;
+  _Idx := -1;
   Result := False;
 end;
 

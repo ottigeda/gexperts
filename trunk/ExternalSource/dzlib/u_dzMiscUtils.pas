@@ -559,7 +559,7 @@ function IntToHex(_Value: UInt64): string; overload;
 var
   Buf: PUInt32;
 begin
-  Buf := PUInt32(UIntPtr(@_Value) + 8);
+  Buf := PUInt32(UIntPtr(@_Value) + 4);
   Result := IntToHex(Buf^, 8);
   Buf := PUInt32(@_Value);
   Result := Result + IntToHex(Buf^, 8);

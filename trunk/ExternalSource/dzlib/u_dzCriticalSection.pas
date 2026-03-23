@@ -191,13 +191,13 @@ end;
 class function TdzRTLCriticalSection.AllocAndInit(_SpinCount: DWORD;
   _WithDebugInfo: Boolean): PdzRTLCriticalSection;
 begin
-  GetMem(Result, SizeOf(TdzCriticalSection));
+  GetMem(Result, SizeOf(TdzRTLCriticalSection));
   Result.Init(_SpinCount, _WithDebugInfo);
 end;
 
 class function TdzRTLCriticalSection.AllocAndInit(_SpinCount: DWORD): PdzRTLCriticalSection;
 begin
-  GetMem(Result, SizeOf(TdzCriticalSection));
+  GetMem(Result, SizeOf(TdzRTLCriticalSection));
   Result.Init(_SpinCount);
 end;
 
