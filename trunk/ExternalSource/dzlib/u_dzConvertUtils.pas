@@ -1505,6 +1505,12 @@ asm
 end;
 {$ENDIF}
 
+{$IFDEF CPU64}
+function Swap64(_Value: UInt64): UInt64;
+begin
+  Result := (UInt64(Swap32(UInt32(_Value))) shl 32) or Swap32(UInt32(_Value shr 32));
+end;
+{$ELSE}
 function Swap64(_Value: UInt64): UInt64;
 asm
   MOV     EDX,_Value.Int64Rec.Lo
@@ -1512,6 +1518,7 @@ asm
   MOV     EAX,_Value.Int64Rec.Hi
   BSWAP   EAX
 end;
+{$ENDIF}
 
 function BitReverse32(v: UInt32): UInt32;
 // source (C code):

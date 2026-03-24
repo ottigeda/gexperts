@@ -584,7 +584,7 @@ var
   desc: PStringDescriptor;
 begin
   if _s <> nil then begin
-    desc := Pointer(Integer(_s) - 8);
+    desc := AddToPtr(_s, -SizeOf(TStringDescriptor));
     Result := desc.RefCount;
   end else
     Result := 0;

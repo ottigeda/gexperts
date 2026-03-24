@@ -191,6 +191,8 @@ begin
   SysDecimalSep := SysUtils.DecimalSeparator;
   SysThousandSep := SysUtils.ThousandSeparator;
   try
+    SysUtils.DecimalSeparator := FDecimalSeparator;
+    SysUtils.ThousandSeparator := #0;
     Add(FloatToStrF(_FloatValue, fffixed, 18, _Decimals));
   finally
     SysUtils.DecimalSeparator := SysDecimalSep;
@@ -212,6 +214,8 @@ begin
   SysDecimalSep := SysUtils.DecimalSeparator;
   SysThousandSep := SysUtils.ThousandSeparator;
   try
+    SysUtils.DecimalSeparator := FDecimalSeparator;
+    SysUtils.ThousandSeparator := #0;
     Add(FloatToStr(_FloatValue));
   finally
     SysUtils.DecimalSeparator := SysDecimalSep;
