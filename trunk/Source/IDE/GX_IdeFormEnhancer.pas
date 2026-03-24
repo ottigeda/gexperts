@@ -221,23 +221,35 @@ begin
   inherited;
 end;
 
+// If the form has exactly one button and it is named 'OK', set its Cancel
+// property to True so pressing Esc closes the dialog.  This re-enables the
+// Esc key for the debugger's Exception dialog which Embarcadero broke in
+// recent Delphi versions.
 procedure SetMessageFormOKButtonCancel(_Form: TCustomForm);
+
+  function CountButtons(_Control: TWinControl; var _OKButton: TButton): Integer;
+  var
+    i: Integer;
+    Child: TControl;
+  begin
+    Result := 0;
+    for i := 0 to _Control.ControlCount - 1 do begin
+      Child := _Control.Controls[i];
+      if Child is TButton then begin
+        Inc(Result);
+        if Child.Name = 'OK' then
+          _OKButton := TButton(Child);
+      end else if Child is TWinControl then begin
+        Inc(Result, CountButtons(TWinControl(Child), _OKButton));
+      end;
+    end;
+  end;
+
 var
-  i: Integer;
-  Btn: TButton;
   OKButton: TButton;
 begin
   OKButton := nil;
-  for i := 0 to _Form.ComponentCount - 1 do begin
-    if _Form.Components[i] is TButton then begin
-      Btn := TButton(_Form.Components[i]);
-      if Btn.Cancel then
-        Exit; // already has a cancel button
-      if Btn.Name = 'OK' then
-        OKButton := Btn;
-    end;
-  end;
-  if Assigned(OKButton) then
+  if (CountButtons(_Form, OKButton) = 1) and Assigned(OKButton) then
     OKButton.Cancel := True;
 end;
 
