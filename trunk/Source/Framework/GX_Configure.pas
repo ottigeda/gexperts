@@ -717,7 +717,7 @@ begin
     Reg.RootKey := HKEY_CURRENT_USER;
     if Reg.OpenKeyReadOnly(Ota.GetIdeBaseRegistryKey + '\Globals') then begin
       if Reg.ValueExists('LicenseNotificationEnabled') then
-        chkDisableLicenseNotification.Checked := Reg.ReadInteger('LicenseNotificationEnabled') = 0
+        chkDisableLicenseNotification.Checked := Reg.ReadString('LicenseNotificationEnabled') = '0'
       else
         chkDisableLicenseNotification.Checked := False;
       Reg.CloseKey;
@@ -737,7 +737,7 @@ begin
     Reg.RootKey := HKEY_CURRENT_USER;
     if Reg.OpenKey(Ota.GetIdeBaseRegistryKey + '\Globals', True) then begin
       if chkDisableLicenseNotification.Checked then
-        Reg.WriteInteger('LicenseNotificationEnabled', 0)
+        Reg.WriteString('LicenseNotificationEnabled', '0')
       else if Reg.ValueExists('LicenseNotificationEnabled') then
         Reg.DeleteValue('LicenseNotificationEnabled');
       Reg.CloseKey;
