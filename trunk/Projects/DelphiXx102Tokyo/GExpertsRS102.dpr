@@ -273,6 +273,7 @@ uses
   GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
   GX_ToDo in '..\..\source\ToDoList\GX_ToDo.pas' {fmToDo},
   GX_ToDoOptions in '..\..\source\ToDoList\GX_ToDoOptions.pas' {fmToDoOptions},
+  GX_VerticalTabs in '..\..\source\VerticalTabs\GX_VerticalTabs.pas' {fmVerticalTabs},
   GX_Toolbar in '..\..\source\EditorToolbar\GX_Toolbar.pas',
   GX_ToolbarConfig in '..\..\source\EditorToolbar\GX_ToolbarConfig.pas' {fmToolbarConfig},
   GX_ToolBarDropDown in '..\..\source\EditorToolbar\GX_ToolBarDropDown.pas',

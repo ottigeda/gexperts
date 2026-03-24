@@ -554,6 +554,10 @@
         <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
             <Form>fmToDoOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\source\VerticalTabs\GX_VerticalTabs.pas">
+            <Form>fmVerticalTabs</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\source\EditorToolbar\GX_Toolbar.pas"/>
         <DCCReference Include="..\..\source\EditorToolbar\GX_ToolbarConfig.pas">
             <Form>fmToolbarConfig</Form>

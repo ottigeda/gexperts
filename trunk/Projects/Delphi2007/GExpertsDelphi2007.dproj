@@ -653,6 +653,10 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
             <Form>fmToDoOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\source\VerticalTabs\GX_VerticalTabs.pas">
+            <Form>fmVerticalTabs</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UnitExportList.pas"/>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
             <Form>fmUsesManager</Form>
