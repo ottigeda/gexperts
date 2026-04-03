@@ -13,6 +13,10 @@ Changes since version 1.3.27 (released 2026-03-21)
 - Configuration: New "Disable IDE license notification" checkbox on the IDE tab writes the `LicenseNotificationEnabled` registry value to suppress the IDE's license notification popup (feature #202)
 - Vertical Tabs: New dockable panel showing open editor files as a vertical list. Single-click to switch files. Supports alphabetical or tab-order sorting, and a context menu with Close File, Close All Other, Copy Path, and Open Containing Folder (feature #224)
 
+## Enhancements
+
+- Grep: The match context preview now uses a syntax-highlighted code editor (SynEdit) with IDE editor colors instead of a plain RichEdit. Highlighting adapts automatically to the file type (Pascal, C++, HTML, SQL, XML). Match highlighting (line background + matched text color/bold) is preserved on top of syntax colors.
+
 ## Bug Fixes
 
 - Code Formatter: Nested generic types like `TJSON.JsonToObject<TJSONReport<TPrintData>>` are now recognized correctly instead of being treated as comparison operators (bug #219)

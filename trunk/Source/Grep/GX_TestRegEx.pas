@@ -40,7 +40,7 @@ type
     FCurrentCode: TGxUnicodeStringList;
     procedure UpdateOutput;
   public
-    class function Execute(_Owner: TComponent; _MatchFont: TFont; _MatchColor: TColor;
+    class function Execute(_Owner: TComponent; _MatchColor: TColor;
       var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -57,7 +57,7 @@ uses
 
 { TfmTestRegEx }
 
-class function TfmTestRegEx.Execute(_Owner: TComponent; _MatchFont: TFont; _MatchColor: TColor;
+class function TfmTestRegEx.Execute(_Owner: TComponent; _MatchColor: TColor;
   var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
 var
   frm: TfmTestRegEx;
@@ -65,7 +65,6 @@ begin
   frm := TfmTestRegEx.Create(_Owner);
   try
     frm.FMatchColor := _MatchColor;
-    frm.ed_RegEx.Font.Assign(_MatchFont);
     frm.ed_RegEx.Text := _RegEx;
     frm.chk_CaseSensitive.Checked := _CaseSensitive;
     Result := (frm.ShowModal = mrOk);

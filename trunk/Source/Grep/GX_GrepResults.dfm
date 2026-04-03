@@ -282,25 +282,6 @@ inherited fmGrepResults: TfmGrepResults
         SimplePanel = False
         UseSystemFont = False
       end
-      object reContext: TRichEdit
-        Left = 0
-        Top = 0
-        Width = 396
-        Height = 78
-        Align = alClient
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        PopupMenu = pmContextMenu
-        ReadOnly = True
-        ScrollBars = ssBoth
-        TabOrder = 1
-        WordWrap = False
-        OnContextPopup = reContextContextPopup
-      end
     end
   end
   object MainMenu: TMainMenu

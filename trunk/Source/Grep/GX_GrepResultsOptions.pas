@@ -42,6 +42,7 @@ type
     chkDefaultListColors: TCheckBox;
     pnlListMatchBackgroundColor: TPanel;
     pnlContextMatchLineFontColor: TPanel;
+    btnResetContextColors: TButton;
     chkGrepAutoHide: TCheckBox;
     chkGrepSaveHistoryListItems: TCheckBox;
     chkGrepExpandIf: TCheckBox;
@@ -73,12 +74,12 @@ type
     lblHistoryPagesTabWidth: TLabel;
     chkMouseWheelMoveItemIndex: TCheckBox;
     lblWhenIDEClosing: TLabel;
-    procedure pnlContextFontClick(Sender: TObject);
     procedure pnlContextMatchFontColorClick(Sender: TObject);
     procedure pnlListFontClick(Sender: TObject);
     procedure pnlListMatchTextColorClick(Sender: TObject);
     procedure pnlListMatchBackgroundColorClick(Sender: TObject);
     procedure pnlContextMatchLineFontColorClick(Sender: TObject);
+    procedure btnResetContextColorsClick(Sender: TObject);
     procedure chkDefaultListColorsClick(Sender: TObject);
     procedure chkGrepExpandClick(Sender: TObject);
     procedure chkGrepSaveHistoryListItemsClick(Sender: TObject);
@@ -103,7 +104,6 @@ type
       _ListFont: TFont;
       _ListMatchTextColor: TColor;
       _ListMatchBrushColor: TColor;
-      _ContextFont: TFont;
       _ContextMatchLineColor: TColor;
       _ContextMatchColor: TColor;
       _NumContextLines: Integer;
@@ -132,7 +132,6 @@ type
       _ListFont: TFont;
       out _ListMatchTextColor: TColor;
       out _ListMatchBrushColor: TColor;
-      _ContextFont: TFont;
       out _ContextMatchLineColor: TColor;
       out _ContextMatchColor: TColor;
       out _NumContextLines: Integer;
@@ -165,7 +164,6 @@ type
       _ListFont: TFont;
       var _ListMatchTextColor: TColor;
       var _ListMatchBrushColor: TColor;
-      _ContextFont: TFont;
       var _ContextMatchLineColor: TColor;
       var _ContextMatchColor: TColor;
       var _NumContextLines: Integer;
@@ -204,7 +202,6 @@ class function TfmGrepResultsOptions.Execute(_Owner: TWinControl;
   _ListFont: TFont;
   var _ListMatchTextColor: TColor;
   var _ListMatchBrushColor: TColor;
-  _ContextFont: TFont;
   var _ContextMatchLineColor: TColor;
   var _ContextMatchColor: TColor;
   var _NumContextLines: Integer;
@@ -230,7 +227,7 @@ begin
     frm.SetData(_AdvancedOptions, _Middle,
       _ExpandAll, _ExpandIf, _ExpandIfFiles, _ExpandIfMatches, _ExpandFew, _ExpandFewLines,
       _ListUseDefaultColors, _ListFont, _ListMatchTextColor, _ListMatchBrushColor,
-      _ContextFont, _ContextMatchLineColor, _ContextMatchColor, _NumContextLines,
+      _ContextMatchLineColor, _ContextMatchColor, _NumContextLines,
       _SaveHistoryListItems,
       _AutoHide, _FileListDeleteAfterDays, _DeleteAfterDays,
       _EmptyMoveToOnlySaveParams, _SaveOptionDefaultValue, _OpenSaveOptionDefaultValue,
@@ -241,7 +238,7 @@ begin
       frm.GetData(_AdvancedOptions, _Middle,
         _ExpandAll, _ExpandIf, _ExpandIfFiles, _ExpandIfMatches, _ExpandFew, _ExpandFewLines,
         _ListUseDefaultColors, _ListFont, _ListMatchTextColor, _ListMatchBrushColor,
-        _ContextFont, _ContextMatchLineColor, _ContextMatchColor, _NumContextLines,
+        _ContextMatchLineColor, _ContextMatchColor, _NumContextLines,
         _SaveHistoryListItems,
         _AutoHide, _FileListDeleteAfterDays, _DeleteAfterDays,
         _EmptyMoveToOnlySaveParams, _SaveOptionDefaultValue, _OpenSaveOptionDefaultValue,
@@ -282,7 +279,6 @@ procedure TfmGrepResultsOptions.SetData(
   _ListFont: TFont;
   _ListMatchTextColor: TColor;
   _ListMatchBrushColor: TColor;
-  _ContextFont: TFont;
   _ContextMatchLineColor: TColor;
   _ContextMatchColor: TColor;
   _NumContextLines: Integer;
@@ -320,7 +316,6 @@ begin
   pnlListMatchBackgroundColor.Font.Color := BestForegroundForColor(_ListMatchBrushColor);
   chkDefaultListColors.Checked := _UseDefaultColors;
 
-  pnlContextFont.Font.Assign(_ContextFont);
   pnlContextMatchLineFontColor.Color := _ContextMatchLineColor;
   pnlContextMatchLineFontColor.Font.Color := BestForegroundForColor(_ContextMatchLineColor);
   pnlContextMatchFontColor.Color := _ContextMatchColor;
@@ -359,7 +354,6 @@ procedure TfmGrepResultsOptions.GetData(out _AdvancedOptions: Boolean;
   _ListFont: TFont;
   out _ListMatchTextColor: TColor;
   out _ListMatchBrushColor: TColor;
-  _ContextFont: TFont;
   out _ContextMatchLineColor: TColor;
   out _ContextMatchColor: TColor;
   out _NumContextLines: Integer;
@@ -397,7 +391,6 @@ begin
     _ListMatchBrushColor := pnlListMatchBackgroundColor.Color;
   end;
 
-  _ContextFont.Assign(pnlContextFont.Font);
   _ContextMatchLineColor := pnlContextMatchLineFontColor.Color;
   _ContextMatchColor := pnlContextMatchFontColor.Color;
 
@@ -513,11 +506,6 @@ begin
   SelectColor(pnlListMatchBackgroundColor);
 end;
 
-procedure TfmGrepResultsOptions.pnlContextFontClick(Sender: TObject);
-begin
-  SelectFont(pnlContextFont);
-end;
-
 procedure TfmGrepResultsOptions.pnlContextMatchLineFontColorClick(Sender: TObject);
 begin
   SelectColor(pnlContextMatchLineFontColor);
@@ -526,6 +514,14 @@ end;
 procedure TfmGrepResultsOptions.pnlContextMatchFontColorClick(Sender: TObject);
 begin
   SelectColor(pnlContextMatchFontColor);
+end;
+
+procedure TfmGrepResultsOptions.btnResetContextColorsClick(Sender: TObject);
+begin
+  pnlContextMatchLineFontColor.Color := clHighlight;
+  pnlContextMatchLineFontColor.Font.Color := BestForegroundForColor(clHighlight);
+  pnlContextMatchFontColor.Color := clHighlightText;
+  pnlContextMatchFontColor.Font.Color := BestForegroundForColor(clHighlightText);
 end;
 
 procedure TfmGrepResultsOptions.chkDefaultListColorsClick(Sender: TObject);

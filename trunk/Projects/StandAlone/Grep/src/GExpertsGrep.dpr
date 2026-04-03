@@ -3,6 +3,17 @@ program GExpertsGrep;
 uses
   ToolsAPI in '..\..\common\ToolsAPI.pas',
   DropSource in '..\..\..\..\ExternalSource\DropSource.pas',
+  SynEdit in '..\..\..\..\ExternalSource\UniSynEdit\SynEdit.pas',
+  SynMemo in '..\..\..\..\ExternalSource\UniSynEdit\SynMemo.pas',
+  SynEditTypes in '..\..\..\..\ExternalSource\UniSynEdit\SynEditTypes.pas',
+  SynEditHighlighter in '..\..\..\..\ExternalSource\UniSynEdit\SynEditHighlighter.pas',
+  SynHighlighterPas in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterPas.pas',
+  SynHighlighterCpp in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterCpp.pas',
+  SynHighlighterHtml in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterHtml.pas',
+  SynHighlighterSql in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterSql.pas',
+  SynHighlighterCS in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterCS.pas',
+  SynHighlighterXML in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterXML.pas',
+  SynHighlighterGeneral in '..\..\..\..\ExternalSource\UniSynEdit\SynHighlighterGeneral.pas',
   GrepMain in 'GrepMain.pas',
   GX_Logging in '..\..\..\..\Source\Framework\GX_Logging.pas',
   GX_About in '..\..\..\..\Source\Framework\GX_About.pas' {fmAbout},
@@ -48,7 +59,8 @@ uses
   GX_VerDepConst in '..\..\..\..\Source\Framework\GX_VerDepConst.pas',
   GX_IndexTypes in '..\..\..\..\Source\Utils\GX_IndexTypes.pas',
   GX_Splitter in '..\..\..\..\Source\Utils\GX_Splitter.pas',
-  GX_SplitterPainter in '..\..\..\..\Source\Utils\GX_SplitterPainter.pas';
+  GX_SplitterPainter in '..\..\..\..\Source\Utils\GX_SplitterPainter.pas',
+  GX_SynMemoUtils in '..\..\..\..\Source\Framework\GX_SynMemoUtils.pas';
 
 {$R *_icon.res}
 {$R *_version.res}

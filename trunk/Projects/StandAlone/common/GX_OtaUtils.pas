@@ -14,6 +14,7 @@ uses
   Graphics,
   Forms,
   ToolsAPI,
+  GX_GenericUtils,
   GX_StringList;
 
 type
@@ -58,6 +59,14 @@ type
     class function HaveCPPSupport: Boolean;
     class function HaveCSharpSupport: Boolean;
     class function GetIDEProductIdentifier: string;
+    // always returns False
+    class function ThemingEnabled: Boolean;
+    // always returns False
+    class function TryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+    // always returns gxpNone
+    class function GetCurrentSyntaxHighlighter(SourceEditor: IOTASourceEditor = nil): TGXSyntaxHighlighter;
+    // always returns an empty string
+    class function GetCurrentProjectFileName(NormalizeBdsProj: Boolean = False): string;
   end;
 
 ///<summary>
@@ -172,7 +181,6 @@ type
 implementation
 
 uses
-  GX_GenericUtils,
   GX_VerDepConst;
 
 function IsStandAlone: Boolean;
@@ -547,6 +555,27 @@ end;
 function TThemeChangedNotifier.AddNotifierToIDE: Boolean;
 begin
   Result := True;
+end;
+
+class function Ota.ThemingEnabled: Boolean;
+begin
+  Result := False;
+end;
+
+class function Ota.TryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+begin
+  SourceEditor := nil;
+  Result := False;
+end;
+
+class function Ota.GetCurrentSyntaxHighlighter(SourceEditor: IOTASourceEditor): TGXSyntaxHighlighter;
+begin
+  Result := gxpNone;
+end;
+
+class function Ota.GetCurrentProjectFileName(NormalizeBdsProj: Boolean): string;
+begin
+  Result := '';
 end;
 
 end.

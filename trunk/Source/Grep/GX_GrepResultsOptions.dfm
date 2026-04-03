@@ -171,7 +171,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       Caption = 'Context Font...'
       Color = clWindow
       TabOrder = 0
-      OnClick = pnlContextFontClick
+      Visible = False
     end
     object pnlContextMatchFontColor: TPanel
       Left = 48
@@ -212,6 +212,15 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       Color = clWindow
       TabOrder = 1
       OnClick = pnlContextMatchLineFontColorClick
+    end
+    object btnResetContextColors: TButton
+      Left = 252
+      Top = 80
+      Width = 75
+      Height = 25
+      Caption = 'Reset'
+      TabOrder = 5
+      OnClick = btnResetContextColorsClick
     end
   end
   object btnOK: TButton

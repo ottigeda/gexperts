@@ -51,7 +51,6 @@ type
     FListUseDefaultColors: Boolean;
     FListMatchTextColor: TColor;
     FListMatchBrushColor: TColor;
-    FContextFont: TFont;
     FContextMatchColor: TColor;
     FAutoHide: Boolean;
     FContextMatchLineColor: TColor;
@@ -171,7 +170,6 @@ type
     property ListUseDefaultColors: Boolean read FListUseDefaultColors write FListUseDefaultColors;
     property ListMatchTextColor: TColor read FListMatchTextColor write FListMatchTextColor;
     property ListMatchBrushColor: TColor read FListMatchBrushColor write FListMatchBrushColor;
-    property ContextFont: TFont read FContextFont write FContextFont;
     property ContextMatchColor: TColor read FContextMatchColor write FContextMatchColor;
     property ContextMatchLineColor: TColor read FContextMatchLineColor write FContextMatchLineColor;
     property AutoHide: Boolean read FAutoHide write FAutoHide;
@@ -235,8 +233,7 @@ begin
   FListUseDefaultColors := True;
   FListMatchTextColor := clHighlightText;
   FListMatchBrushColor := clHighlight;
-  FContextFont := TFont.Create;
-  FContextMatchColor := clHighlight;
+  FContextMatchColor := clHighlightText;
   FContextMatchLineColor := clHighlight;
 
   FNumContextLines := 2;
@@ -309,7 +306,6 @@ begin
   FreeAndNil(FDirList);
   FreeAndNil(FExcludedDirsList);
   FreeAndNil(FListFont);
-  FreeAndNil(FContextFont);
 
   inherited Destroy;
 end;
@@ -368,7 +364,7 @@ begin
     FGrepExpandAll, FGrepExpandIf, FGrepExpandIfFiles, FGrepExpandIfMatches,
     FGrepExpandFew, FGrepExpandFewLines,
     FListUseDefaultColors, FListFont, FListMatchTextColor, FListMatchBrushColor,
-    FContextFont, FContextMatchLineColor, FContextMatchColor, FNumContextLines,
+    FContextMatchLineColor, FContextMatchColor, FNumContextLines,
     FGrepSaveHistoryListItems,
     FAutoHide, FGrepFileListDeleteAfterDays, FGrepDeleteAfterDays,
     FGrepEmptyMoveToOnlySaveParams, FGrepSaveOptionDefaultValue, FGrepOpenSaveOptionDefaultValue,
@@ -430,9 +426,14 @@ begin
   _Settings.SaveFont('ListFont', ListFont, [ffColor]);
   _Settings.WriteInteger('ListMatchTextColor', ListMatchTextColor);
   _Settings.WriteInteger('ListMatchBrushColor', ListMatchBrushColor);
-  _Settings.SaveFont('ContextFont', ContextFont, [ffColor]);
-  _Settings.WriteInteger('ContextMatchColor', ContextMatchColor);
-  _Settings.WriteInteger('ContextMatchLineColor', ContextMatchLineColor);
+  if ColorToRGB(ContextMatchColor) = ColorToRGB(clHighlightText) then
+    _Settings.DeleteKey('ContextMatchColor')
+  else
+    _Settings.WriteInteger('ContextMatchColor', ContextMatchColor);
+  if ColorToRGB(ContextMatchLineColor) = ColorToRGB(clHighlight) then
+    _Settings.DeleteKey('ContextMatchLineColor')
+  else
+    _Settings.WriteInteger('ContextMatchLineColor', ContextMatchLineColor);
 
   _Settings.WriteInteger('NumContextLines', NumContextLines);
   _Settings.WriteInteger('SaveHistoryListItems', FGrepSaveHistoryListItems);
@@ -699,11 +700,11 @@ begin
   _Settings.LoadFont('ListFont', ListFont, [ffColor]);
   FListMatchTextColor :=  _Settings.ReadInteger('ListMatchTextColor', FListMatchTextColor);
   FListMatchBrushColor :=  _Settings.ReadInteger('ListMatchBrushColor', FListMatchBrushColor);
-  _Settings.LoadFont('ContextFont', ContextFont, [ffColor]);
   FContextMatchColor :=  _Settings.ReadInteger('ContextMatchColor', FContextMatchColor);
   if _Settings.ValueExists('ContextMatchLineColor') then
     FContextMatchLineColor := _Settings.ReadInteger('ContextMatchLineColor', FContextMatchLineColor)
-  else
+  else if _Settings.ValueExists('ContextMatchColor') then
+    // Upgrade from old version that only had ContextMatchColor: use same color for line BG
     FContextMatchLineColor := FContextMatchColor;
 
   FNumContextLines :=  _Settings.ReadInteger('NumContextLines', FNumContextLines);

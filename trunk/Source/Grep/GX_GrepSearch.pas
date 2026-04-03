@@ -196,7 +196,7 @@ var
 begin
   s := cbText.Text;
   b := cbCaseSensitive.Checked;
-  if TfmTestRegEx.Execute(Self, gblGrepExpert.ContextFont, gblGrepExpert.ContextMatchColor, s, b) then begin
+  if TfmTestRegEx.Execute(Self, gblGrepExpert.ContextMatchColor, s, b) then begin
     cbText.Text := s;
     cbCaseSensitive.Checked := b;
   end;

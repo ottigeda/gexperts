@@ -43,6 +43,10 @@ procedure RemoveStyleElements(AControl: TWinControl; IncludeSubComponents: Boole
 /// @returns AColor </summary>
 function GetThemedColor(AColor: TColor): TColor;
 
+///<summary>
+/// @returns an empty string </summary>
+function GetIDEVersionID: string;
+
 implementation
 
 uses
@@ -104,6 +108,11 @@ end;
 function GetThemedColor(AColor: TColor): TColor;
 begin
   Result := AColor;
+end;
+
+function GetIDEVersionID: string;
+begin
+  Result := '';
 end;
 
 end.

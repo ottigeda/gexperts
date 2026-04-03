@@ -10,8 +10,9 @@ uses
   Windows, Classes, Graphics, Controls, Forms, ActnList, Dialogs, StdCtrls, ExtCtrls, ToolWin,
   Types, // for inlining
   ComCtrls, Menus, Actions, UITypes,
+  SynEdit, SynEditTypes,
   DropSource,
-  GX_Splitter,
+  GX_Splitter, GX_GenericUtils,
   GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
 
 type
@@ -19,6 +20,12 @@ type
   TPageSavedIndexType = Low(TPageIndexType)..pitTopKeyIndex;
   TPageIndexes = array[TPageIndexType] of Integer;
   TExpandMode = (emExpand, emContract, emToggle);
+
+  TContextMatchRange = record
+    Line: Integer;  // 1-based SynEdit line number
+    SPos: Integer;  // 1-based start column
+    EPos: Integer;  // 1-based end column (inclusive)
+  end;
 
   TfmGrepResults = class(TfmIdeDockForm)
     StatusBar: TStatusBar;
@@ -72,7 +79,6 @@ type
     mitListSep1: TMenuItem;
     mitFileSep1: TMenuItem;
     pnlBottom: TPanel;
-    reContext: TRichEdit;
     SplitterContext: TSplitter;
     mitViewSep1: TMenuItem;
     actViewShowContext: TAction;
@@ -318,7 +324,6 @@ type
     procedure lbHistoryListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure actHistorySearchInHistoryExecute(Sender: TObject);
     procedure SplitterHistoryListMoved(Sender: TObject);
-    procedure reContextContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure actListSelectNextExecute(Sender: TObject);
     procedure actListSelectPreviousExecute(Sender: TObject);
     procedure actHamburgerMenuExecute(Sender: TObject);
@@ -362,10 +367,20 @@ type
     FSaveSortCaption: string;
     FSavedFormCaption: string;
     FlbHistoryListIndexForHistoryMenuActions: Integer;
+    FContextEditor: TSynEdit;
+    FContextHighlighter: TGXSyntaxHighlighter;
+    FContextMatchLines: array of Integer;     // 1-based SynEdit line numbers that contain matches
+    FContextMatches: array of TContextMatchRange;
     procedure SetStayOnTop(Value: Boolean);
     procedure RefreshContextLines;
     procedure SetShowContext(Value: Boolean);
-    procedure HighlightMemo(FileMatches: TFileResult; StartLine, MatchLineNo: Integer);
+    procedure BuildMatchArrays(FileMatches: TFileResult; StartLine, LineCount: Integer);
+    procedure ContextEditorSpecialLineColors(Sender: TObject; Line: Integer;
+      var Special: Boolean; var FG, BG: TColor);
+    procedure ContextEditorSpecialTokenAttributes(Sender: TObject;
+      ALine, APos: Integer; const AToken: string;
+      var ASpecial: Boolean; var FG, BG: TColor; var AStyle: TFontStyles);
+    procedure ContextMenuPopup(Sender: TObject);
     procedure ReportProgress(const PathName: string);
     procedure StartDirectorySearch(Sender: TObject; const DirectoryName: string);
     procedure StartFileSearch(Sender: TObject; const FileName: string);
@@ -457,8 +472,8 @@ uses
 {$IFDEF GX_SUPPORTS_THEMING}
   UxTheme,
 {$ENDIF}
-  GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_SplitterPainter,
+  GX_GExperts, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
+  GX_SplitterPainter, GX_SynMemoUtils,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
 resourcestring
@@ -641,7 +656,7 @@ begin
   end;
 
   FLastRepaintTick := GetTickCount;
-  reContext.Clear;
+  FContextEditor.Lines.Clear;
 
   ResultFiles := TStringList.Create;
   try
@@ -942,15 +957,12 @@ begin
     pnlBottom.Color := LBackColor;
     lbResults.Color := LBackColor;
     lbHistoryList.Color := LBackColor;
-    reContext.Color := LBackColor;
+    FContextEditor.Color := LBackColor;
 
     SplitterHistoryList.Color := LSplitterColor;
     SplitterContext.Color := LSplitterColor;
 
-    if Ota.IdeStyleIsDark then begin
-      if reContext.HandleAllocated then
-        SetWindowTheme(reContext.Handle, 'DarkMode_Explorer', nil);
-    end;
+    // todo: Set the SynMemo (FContextEditor) to dark mode
   end;
 end { InitThemedColors };
 {$ELSE GX_SUPPORTS_THEMING}
@@ -1151,7 +1163,7 @@ begin
     SetLoadedContextHeight(pnlBottom.Height);
 
   FShowContext := Value;
-  reContext.Visible := Value;
+  FContextEditor.Visible := Value;
   SplitterContext.Visible := Value;
 
   UpdateContextPanelHeight;
@@ -1177,14 +1189,18 @@ var
   MatchLineNo, BeginLineNo, EndLineNo, REMatchLineNo: Integer;
   FileLines: TGXUnicodeStringList;
   FileName: string;
+  NewHL: TGXSyntaxHighlighter;
   i: Integer;
 begin
   if not ShowContext then
     Exit;
 
-  reContext.Lines.BeginUpdate;
+  FContextEditor.Lines.BeginUpdate;
   try
-    reContext.Clear;
+    FContextEditor.Lines.Clear;
+    SetLength(FContextMatchLines, 0);
+    SetLength(FContextMatches, 0);
+
     if (lbResults.ItemIndex < 0) then
       Exit;
     if (ShowContext) and (gblGrepExpert.NumContextLines > 0) then
@@ -1196,6 +1212,12 @@ begin
         FileName := CurrentFile.FileName;
         SetStatusString(CurrentFile.RelativeFileName);
 
+        NewHL := GetHighlighterFromFileName(FileName);
+        if NewHL <> FContextHighlighter then begin
+          FContextHighlighter := NewHL;
+          SetSynEditHighlighter(FContextEditor, NewHL);
+        end;
+
         MatchLineNo := CurrentLine.LineNo - 1;
 
         FileLines := TGXUnicodeStringList.Create;
@@ -1205,13 +1227,13 @@ begin
           except
             on E: EGXFileNotFound do
             begin
-              reContext.Lines.Text := E.Message;
+              FContextEditor.Lines.Text := E.Message;
               Exit;
             end;
           end;
           if FileLines.Count < 1 then
           begin
-            reContext.Lines.Text := SMatchContextNotAvail;
+            FContextEditor.Lines.Text := SMatchContextNotAvail;
             Exit;
           end;
 
@@ -1220,59 +1242,103 @@ begin
           EndLineNo := MatchLineNo + gblGrepExpert.NumContextLines;
           EndLineNo := Min(EndLineNo, FileLines.Count - 1);
 
-          REMatchLineNo := 0;
-          reContext.SelStart := reContext.GetTextLen;
+          REMatchLineNo := MatchLineNo - BeginLineNo + 1;  // 1-based SynEdit line
           for i := BeginLineNo to EndLineNo do
-          begin
-            reContext.SelText := FileLines[i] + IfThen(i <> EndLineNo, sLineBreak);
-            if i = MatchLineNo then
-              REMatchLineNo := reContext.Lines.Count - 1;
-          end;
+            FContextEditor.Lines.Add(FileLines[i]);
         finally
           FreeAndNil(FileLines);
         end;
-        HighlightMemo(TFileResult(CurrentLine.Collection), BeginLineNo, REMatchLineNo);
-        CenterLineInEdit(reContext, REMatchLineNo)
+
+        BuildMatchArrays(CurrentFile, BeginLineNo, EndLineNo - BeginLineNo + 1);
+
+        // Center the matched line in the context editor
+        FContextEditor.TopLine := Max(1, REMatchLineNo - (FContextEditor.LinesInWindow div 2));
+        FContextEditor.CaretXY := BufferCoord(1, REMatchLineNo);
       end;
     end;
   finally
-    reContext.Lines.EndUpdate;
+    FContextEditor.Lines.EndUpdate;
   end;
+  FContextEditor.Invalidate;
 end;
 
-// Make any matches found in the context lines bold
-// Also highlight the current match line using clHighlightText
-procedure TfmGrepResults.HighlightMemo(FileMatches: TFileResult; StartLine, MatchLineNo: Integer);
+procedure TfmGrepResults.BuildMatchArrays(FileMatches: TFileResult; StartLine, LineCount: Integer);
 var
   Matches: TMatchArray;
   i, j: Integer;
+  MatchLineCount: Integer;
+  MatchCount: Integer;
+  SynLine: Integer;
 begin
-  reContext.SelStart := 0;
-  reContext.SelLength := Length(reContext.Lines.Text);
-  reContext.SelAttributes.Name := reContext.DefAttributes.Name;
-  reContext.SelAttributes.Size := reContext.DefAttributes.Size;
-  reContext.SelAttributes.Style := [];
+  MatchLineCount := 0;
+  MatchCount := 0;
+  SetLength(FContextMatchLines, LineCount);
+  SetLength(FContextMatches, LineCount * 4);  // pre-allocate, will trim
 
-  // Highlight the matched line
-  reContext.SelStart := reContext.Perform(EM_LINEINDEX, MatchLineNo, 0);
-  reContext.SelLength := Length(reContext.Lines[MatchLineNo]);
-  reContext.SelAttributes.Color := gblGrepExpert.ContextMatchLineColor;
-
-  for i := StartLine + 1 to StartLine + reContext.Lines.Count + 1 do
-  begin
+  for i := StartLine + 1 to StartLine + LineCount do begin
+    SynLine := i - StartLine;  // 1-based
     FileMatches.GetMatchesOnLine(i, Matches);
-    for j := 0 to Length(Matches) - 1 do
-    begin
-      if Matches[j].ShowBold then
-      begin
-        reContext.SelStart := reContext.Perform(EM_LINEINDEX, i - StartLine - 1, 0) + Matches[j].SPos - 1;
-        reContext.SelLength := Matches[j].EPos - Matches[j].SPos + 1;
-        reContext.SelAttributes.Color := gblGrepExpert.ContextMatchColor;
-        reContext.SelAttributes.Style := [fsBold];
+    if Length(Matches) > 0 then begin
+      FContextMatchLines[MatchLineCount] := SynLine;
+      Inc(MatchLineCount);
+      for j := 0 to Length(Matches) - 1 do begin
+        if Matches[j].ShowBold then begin
+          if MatchCount >= Length(FContextMatches) then
+            SetLength(FContextMatches, MatchCount + 16);
+          FContextMatches[MatchCount].Line := SynLine;
+          FContextMatches[MatchCount].SPos := Matches[j].SPos;
+          FContextMatches[MatchCount].EPos := Matches[j].EPos;
+          Inc(MatchCount);
+        end;
       end;
     end;
   end;
-  reContext.SelStart := 0;
+  SetLength(FContextMatchLines, MatchLineCount);
+  SetLength(FContextMatches, MatchCount);
+end;
+
+procedure TfmGrepResults.ContextEditorSpecialLineColors(Sender: TObject; Line: Integer;
+  var Special: Boolean; var FG, BG: TColor);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(FContextMatchLines) - 1 do begin
+    if FContextMatchLines[i] = Line then begin
+      Special := True;
+      BG := gblGrepExpert.ContextMatchLineColor;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfmGrepResults.ContextEditorSpecialTokenAttributes(Sender: TObject;
+  ALine, APos: Integer; const AToken: string;
+  var ASpecial: Boolean; var FG, BG: TColor; var AStyle: TFontStyles);
+var
+  i: Integer;
+  TokenStart1: Integer;  // 1-based start column
+  TokenEnd1: Integer;    // 1-based end column
+begin
+  // APos is 0-based (from SynEdit's GetExpandedTokenPos), SPos/EPos are 1-based
+  TokenStart1 := APos + 1;
+  TokenEnd1 := APos + Length(AToken);
+  for i := 0 to Length(FContextMatches) - 1 do begin
+    if FContextMatches[i].Line <> ALine then
+      Continue;
+    // Check if token overlaps with this match range
+    if (TokenEnd1 >= FContextMatches[i].SPos) and (TokenStart1 <= FContextMatches[i].EPos) then begin
+      ASpecial := True;
+      FG := gblGrepExpert.ContextMatchColor;
+      BG := gblGrepExpert.ContextMatchLineColor;
+      AStyle := AStyle + [fsBold];
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfmGrepResults.ContextMenuPopup(Sender: TObject);
+begin
+  actContextSelSearch.Enabled := FContextEditor.SelText <> '';
 end;
 
 procedure TfmGrepResults.lbResultsMouseUp(Sender: TObject;
@@ -1618,11 +1684,11 @@ procedure TfmGrepResults.actListCopyExecute(Sender: TObject);
 var
   AItem: TGrepHistoryListItem;
 begin
-  if reContext.Focused then begin
-    if reContext.SelLength > 0 then begin
-      reContext.CopyToClipboard;
+  if FContextEditor.Focused then begin
+    if FContextEditor.SelLength > 0 then begin
+      FContextEditor.CopyToClipboard;
     end else begin
-      Clipboard.AsText := reContext.Lines.Text;
+      Clipboard.AsText := FContextEditor.Lines.Text;
     end;
     Exit; //==>
   end;
@@ -1908,6 +1974,22 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  FContextEditor := TSynEdit.Create(Self);
+  FContextEditor.Parent := pnlBottom;
+  FContextEditor.Align := alClient;
+  FContextEditor.ReadOnly := True;
+  FContextEditor.Gutter.Width := 0;
+  FContextEditor.ScrollBars := ssBoth;
+  FContextEditor.WordWrap := False;
+  FContextEditor.Options := FContextEditor.Options + [eoSpecialLineDefaultFg];
+  FContextEditor.PopupMenu := pmContextMenu;
+  pmContextMenu.OnPopup := ContextMenuPopup;
+  FContextEditor.OnSpecialLineColors := ContextEditorSpecialLineColors;
+  FContextEditor.OnSpecialTokenAttributes := ContextEditorSpecialTokenAttributes;
+  Ota.GetEditorFont(FContextEditor.Font);
+  FContextHighlighter := gxpNone;
+  SetSynEditHighlighter(FContextEditor, gxpNone);
 
   TSplitterPainter.Create(SplitterContext);
   TSplitterPainter.Create(SplitterHistoryList);
@@ -2209,8 +2291,7 @@ end;
 procedure TfmGrepResults.AssignSettingsToForm;
 begin
   Assert(Assigned(gblGrepExpert));
-  reContext.Font.Assign(gblGrepExpert.ContextFont);
-  reContext.Font.Color := GetThemedColor(gblGrepExpert.ContextFont.Color);
+  Ota.GetEditorFont(FContextEditor.Font);
   lbResults.Font.Assign(gblGrepExpert.ListFont);
   lbResults.Font.Color := GetThemedColor(gblGrepExpert.ListFont.Color);
   lbHistoryList.ParentFont := True;
@@ -2878,7 +2959,7 @@ procedure TfmGrepResults.ClearResultsData;
 begin
   if Assigned(FEmbeddedGrepSearch) then
     FEmbeddedGrepSearch.Hide;
-  reContext.Clear;
+  FContextEditor.Lines.Clear;
   ContractList(False);
   SetStatusString('');
   SetMatchString('');
@@ -3042,14 +3123,9 @@ begin
   end ;
 end;
 
-procedure TfmGrepResults.reContextContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-begin
-  actContextSelSearch.Enabled := reContext.SelText <> '';
-end;
-
 procedure TfmGrepResults.actContextSelSearchExecute(Sender: TObject);
 begin
-  FContextSearchText := reContext.SelText;
+  FContextSearchText := FContextEditor.SelText;
   Execute(gssNormal);
   FContextSearchText := '';
 end;

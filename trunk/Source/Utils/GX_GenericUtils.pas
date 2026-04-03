@@ -618,6 +618,10 @@ function GetCurrentUser: string;
 // Extract the file extension from FileName and return it in all UPPERCASE.
 function ExtractUpperFileExt(const FileName: string): string;
 
+// Return the syntax highlighter type that matches the file extension of FileName.
+// Uses the GXSyntaxInfo table.  Returns gxpNone when no extension matches.
+function GetHighlighterFromFileName(const FileName: string): TGXSyntaxHighlighter;
+
 // Extract the pure file name and return it.
 // The "pure" file name is the file name without path information
 // and without a file extension.
@@ -3729,6 +3733,40 @@ end;
 function ExtractUpperFileExt(const FileName: string): string;
 begin
   Result := AnsiUpperCase(ExtractFileExt(FileName));
+end;
+
+function GetHighlighterFromFileName(const FileName: string): TGXSyntaxHighlighter;
+var
+  Ext: string;
+  hl: TGXSyntaxHighlighter;
+  ExtList: string;
+  p: Integer;
+  Pattern: string;
+begin
+  Result := gxpNone;
+  Ext := ExtractUpperFileExt(FileName);  // e.g. '.PAS'
+  if Ext = '' then
+    Exit;
+  for hl := Low(TGXSyntaxHighlighter) to High(TGXSyntaxHighlighter) do begin
+    ExtList := AnsiUpperCase(GXSyntaxInfo[hl].Extensions);  // e.g. '*.PAS;*.DPR;*.INC'
+    while ExtList <> '' do begin
+      p := Pos(';', ExtList);
+      if p > 0 then begin
+        Pattern := Copy(ExtList, 1, p - 1);
+        ExtList := Copy(ExtList, p + 1, MaxInt);
+      end else begin
+        Pattern := ExtList;
+        ExtList := '';
+      end;
+      // Pattern is e.g. '*.PAS' -> strip the '*' to get '.PAS'
+      if (Length(Pattern) > 1) and (Pattern[1] = '*') then
+        Pattern := Copy(Pattern, 2, MaxInt);
+      if Pattern = Ext then begin
+        Result := GXSyntaxInfo[hl].Highlighter;
+        Exit;
+      end;
+    end;
+  end;
 end;
 
 function ExtractPureFileName(const FileName: string): string;
