@@ -162,17 +162,6 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       Caption = 'Number of context lines'
       FocusControl = edtContextLines
     end
-    object pnlContextFont: TPanel
-      Left = 48
-      Top = 24
-      Width = 197
-      Height = 33
-      BevelWidth = 2
-      Caption = 'Context Font...'
-      Color = clWindow
-      TabOrder = 0
-      Visible = False
-    end
     object pnlContextMatchFontColor: TPanel
       Left = 48
       Top = 104
@@ -208,19 +197,20 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       Width = 197
       Height = 33
       BevelWidth = 2
-      Caption = 'Match Line Font Color...'
+      Caption = 'Match Line Background Color...'
       Color = clWindow
       TabOrder = 1
       OnClick = pnlContextMatchLineFontColorClick
     end
-    object btnResetContextColors: TButton
-      Left = 252
-      Top = 80
-      Width = 75
-      Height = 25
-      Caption = 'Reset'
-      TabOrder = 5
-      OnClick = btnResetContextColorsClick
+    object chk_UseDefaultContextColors: TCheckBox
+      Left = 8
+      Top = 32
+      Width = 321
+      Height = 17
+      Anchors = [akLeft, akTop, akRight]
+      Caption = 'Use default colors'
+      TabOrder = 0
+      OnClick = chk_UseDefaultContextColorsClick
     end
   end
   object btnOK: TButton

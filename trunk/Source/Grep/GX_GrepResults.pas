@@ -1305,7 +1305,10 @@ begin
   for i := 0 to Length(FContextMatchLines) - 1 do begin
     if FContextMatchLines[i] = Line then begin
       Special := True;
-      BG := gblGrepExpert.ContextMatchLineColor;
+      if gblGrepExpert.UseDefaultContextColors then
+        BG := clHighlight
+      else
+        BG := gblGrepExpert.ContextMatchLineColor;
       Exit;
     end;
   end;
@@ -1328,8 +1331,13 @@ begin
     // Check if token overlaps with this match range
     if (TokenEnd1 >= FContextMatches[i].SPos) and (TokenStart1 <= FContextMatches[i].EPos) then begin
       ASpecial := True;
-      FG := gblGrepExpert.ContextMatchColor;
-      BG := gblGrepExpert.ContextMatchLineColor;
+      if gblGrepExpert.UseDefaultContextColors then begin
+        FG := clHighlightText;
+        BG := clHighlight;
+      end else begin
+        FG := gblGrepExpert.ContextMatchColor;
+        BG := gblGrepExpert.ContextMatchLineColor;
+      end;
       AStyle := AStyle + [fsBold];
       Exit;
     end;
