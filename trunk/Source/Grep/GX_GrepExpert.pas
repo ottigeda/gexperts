@@ -343,6 +343,7 @@ begin
   SetFormIcon(fmGrepResults);
   IdeDockManager.ShowForm(fmGrepResults);
   EnsureFormVisible(fmGrepResults);
+  fmGrepResults.ForceRedraw;
 
   IncCallCount;
 end;

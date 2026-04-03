@@ -420,7 +420,6 @@ type
     procedure DoEmbeddedSearch(Sender: TObject);
     procedure UpdateHistoryPagesOptions;
     procedure GoToMatchLine(MatchLine: TLineResult);
-    procedure ForceRedraw;
     procedure GetEnabledFlags(out _IsOnlySaveSettings, _HaveItems, _Processing: Boolean);
     ///<summary>
     /// Gets and sets the value of FLoadedContextHeightRelative taking the current height and
@@ -440,6 +439,7 @@ public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure ForceRedraw;
     procedure InitThemedColors;
     procedure InitGrepSettings(AGrepSettings: TGrepSettings);
     function  Execute(AState: TGrepSearchState): Boolean;
@@ -669,6 +669,7 @@ begin
     BringToFront;
     IdeDockManager.ShowForm(Self);
     EnsureFormVisible(Self);
+    ForceRedraw;
 
     TimeStart := Now;
     TCursor_TempHourglass;
