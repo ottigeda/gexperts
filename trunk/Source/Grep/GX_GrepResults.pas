@@ -959,11 +959,10 @@ begin
     lbResults.Color := LBackColor;
     lbHistoryList.Color := LBackColor;
     FContextEditor.Color := LBackColor;
+    SetSynEditHighlighter(FContextEditor, FContextHighlighter);
 
     SplitterHistoryList.Color := LSplitterColor;
     SplitterContext.Color := LSplitterColor;
-
-    // todo: Set the SynMemo (FContextEditor) to dark mode
   end;
 end { InitThemedColors };
 {$ELSE GX_SUPPORTS_THEMING}
