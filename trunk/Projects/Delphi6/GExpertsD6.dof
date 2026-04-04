@@ -1,6 +1,5 @@
 [FileVersion]
 Version=6.0
-
 [Compiler]
 A=8
 B=0
@@ -26,7 +25,7 @@ U=0
 V=1
 W=0
 X=1
-Y=1
+Y=0
 Z=1
 ShowHints=1
 ShowWarnings=1
