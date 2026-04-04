@@ -17,6 +17,7 @@ Changes since version 1.3.27 (released 2026-03-21)
 
 - Grep: The match context preview now uses a syntax-highlighted code editor (SynEdit) with IDE editor colors instead of a plain RichEdit. Highlighting adapts automatically to the file type (Pascal, C++, HTML, SQL, XML). Match highlighting (line background + matched text color/bold) is preserved on top of syntax colors.
 - Grep: Context match colors configuration now uses a "Use default colors" checkbox instead of a Reset button, matching the pattern used for list colors.
+- Grep: Context preview syntax colors now update when switching between light and dark mode (feature #222)
 
 ## Bug Fixes
 
