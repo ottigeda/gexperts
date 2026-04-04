@@ -51,11 +51,11 @@ type
     FEditNotifierIndex: Integer;
 {$ELSE}
     FTimer: TTimer;
+    procedure TimerTick(Sender: TObject);
+    procedure ResumeTimerTick(Sender: TObject);
+    procedure PausePolling;
 {$ENDIF}
     function GetSelectedFilePath: string;
-{$IFNDEF GX_VER160_up}
-    procedure TimerTick(Sender: TObject);
-{$ENDIF}
     procedure RefreshFileList;
     procedure AddFile(const _FileName: string);
     procedure RemoveFile(const _FileName: string);
@@ -262,6 +262,9 @@ begin
       fn := SourceEditor.FileName;
       if fn = '' then
         Continue;
+      // Skip project and project group files
+      if IsBdsProjectFile(fn) then
+        Continue;
       if FFilePaths.IndexOf(fn) >= 0 then
         Continue;
       FFilePaths.Add(fn);
@@ -282,6 +285,10 @@ var
   SourceEditor: IOTASourceEditor;
 begin
   if _FileName = '' then
+    Exit;
+
+  // Skip project and project group files
+  if IsBdsProjectFile(_FileName) then
     Exit;
 
   // Only add files that have a source editor
@@ -377,8 +384,12 @@ begin
   if FUpdatingSelection then
     Exit;
   fn := GetSelectedFilePath;
-  if fn <> '' then
+  if fn <> '' then begin
+{$IFNDEF GX_VER160_up}
+    PausePolling;
+{$ENDIF}
     Ota.MakeSourceVisible(fn);
+  end;
 end;
 
 procedure TfmVerticalTabs.lbFilesMouseMove(Sender: TObject; Shift: TShiftState;
@@ -410,8 +421,12 @@ var
   fn: string;
 begin
   fn := GetSelectedFilePath;
-  if fn <> '' then
+  if fn <> '' then begin
+{$IFNDEF GX_VER160_up}
+    PausePolling;
+{$ENDIF}
     Ota.MakeSourceVisible(fn);
+  end;
 end;
 
 procedure TfmVerticalTabs.actCloseFileExecute(Sender: TObject);
@@ -482,6 +497,23 @@ begin
   fn := Ota.GetCurrentSourceFile;
   if fn <> '' then
     UpdateSelection(fn);
+end;
+
+procedure TfmVerticalTabs.ResumeTimerTick(Sender: TObject);
+begin
+  FTimer.Interval := 500;
+  FTimer.OnTimer := TimerTick;
+end;
+
+procedure TfmVerticalTabs.PausePolling;
+begin
+  // Temporarily stop polling so the timer doesn't reselect the previous
+  // file before the IDE has finished switching. The timer fires once
+  // after 1500ms to resume normal polling.
+  FTimer.Enabled := False;
+  FTimer.Interval := 1500;
+  FTimer.OnTimer := ResumeTimerTick;
+  FTimer.Enabled := True;
 end;
 {$ENDIF}
 
