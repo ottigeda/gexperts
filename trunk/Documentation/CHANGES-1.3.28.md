@@ -23,6 +23,7 @@ Changes since version 1.3.27 (released 2026-03-21)
 - Code Formatter: Nested generic types like `TJSON.JsonToObject<TJSONReport<TPrintData>>` are now recognized correctly instead of being treated as comparison operators (bug #219)
 - Open File expert: Dialog position and size are now saved even when the dialog is cancelled (bug #480)
 - Grep: Work around blank docked Grep Results window by calling ForceRedraw after ShowForm
+- Auto Switch Desktop: Fixed crash in Debug builds when pressing F12 — `GetAsyncKeyState` with `SmallInt` caused a range check error; replaced with `GetKeyState` and `< 0` test (bug #481)
 
 ## Contributors
 
