@@ -159,8 +159,8 @@ var
   Ptr: TMethod;
 begin
   if not Assigned(_Hook) then begin
-   // Just in case somebody did not check whether TSecureNotifyEventHook.Install actually returned
-   // a valid object or simply didn't call it.
+    // Just in case somebody did not check whether TSecureNotifyEventHook.Install actually returned
+    // a valid object or simply didn't call it.
     Exit; //==>
   end;
 
