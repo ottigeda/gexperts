@@ -25,6 +25,7 @@ Changes since version 1.3.27 (released 2026-03-21)
 - Open File expert: Dialog position and size are now saved even when the dialog is cancelled (bug #480)
 - Grep: Work around blank docked Grep Results window by calling ForceRedraw after ShowForm
 - Auto Switch Desktop: Fixed crash in Debug builds when pressing F12 — `GetAsyncKeyState` with `SmallInt` caused a range check error; replaced with `GetKeyState` and `< 0` test (bug #481)
+- Vertical Tabs: Fixed file switching not working in Delphi 6/7 by pausing the polling timer during switch. Project and project group files are now filtered from the list (feature #226)
 
 ## Contributors
 
