@@ -82,19 +82,14 @@ const
 {$IFEND}
 
 function GetShiftState: TShiftState;
-var
-  LState: SmallInt;
 begin
   Result := [];
-
-  LState := GetAsyncKeyState(VK_CONTROL) and $8000;
-  if LState <> 0 then Include(Result, ssCtrl);
-
-  LState := GetAsyncKeyState(VK_SHIFT) and $8000;
-  if LState <> 0 then Include(Result, ssShift);
-
-  LState := GetAsyncKeyState(VK_MENU) and $8000;
-  if LState <> 0 then Include(Result, ssAlt);
+  // GetKeyState sets the high order bit if a key is pressed. The return value is
+  // a signed 16 bit integer (SmallInt), so the high order bit is the sign
+  // -> if the key is pressed the return value is negative.
+  if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
+  if GetKeyState(VK_SHIFT) < 0 then Include(Result, ssShift);
+  if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
 end;
 
 function KeyboardHookProc(Code: Integer; wparam: wparam; lparam: lparam): LRESULT; stdcall;
