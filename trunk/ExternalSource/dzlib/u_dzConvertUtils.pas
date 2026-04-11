@@ -2261,6 +2261,8 @@ begin
   Result := True;
 end;
 
+  {$IFDEF SUPPORTS_ENHANCED_RECORDS}
+
 procedure AssertBitsDump;
 var
   bits64: TBits64;
@@ -2273,6 +2275,7 @@ begin
   bits16.Dump;
   bits8.Dump;
 end;
+  {$ENDIF SUPPORTS_ENHANCED_RECORDS}
 {$ENDIF DEBUG}
 
 initialization
@@ -2286,6 +2289,8 @@ initialization
   Assert(AssertSwap32);
   Assert(AssertBitReverse32);
 
+  {$IFDEF SUPPORTS_ENHANCED_RECORDS}
   AssertBitsDump;
+  {$ENDIF SUPPORTS_ENHANCED_RECORDS}
 {$ENDIF DEBUG}
 end.

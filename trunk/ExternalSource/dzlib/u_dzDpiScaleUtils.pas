@@ -1,6 +1,9 @@
 unit u_dzDpiScaleUtils;
 
 {$INCLUDE dzlib.inc}
+{$IFNDEF SUPPORTS_PER_MONITOR_DPI}
+{$MESSAGE WARN 'u_dzDpiScaleUtils works only for Delphi 11 and newer, for building GExperts with older version, use a unit alias to u_dzDpiScaleUtilsDummy'}
+{$ENDIF}
 
 {.$DEFINE DPI_SCALER_LOGGING}
 
@@ -10,6 +13,8 @@ unit u_dzDpiScaleUtils;
 {$ENDIF}
 
 interface
+
+{$IFDEF SUPPORTS_PER_MONITOR_DPI}
 
 uses
   Windows,
@@ -92,7 +97,11 @@ type
     property DesignDPI: Integer read FDesignDpi;
   end;
 
+{$ENDIF SUPPORTS_PER_MONITOR_DPI}
+
 implementation
+
+{$IFDEF SUPPORTS_PER_MONITOR_DPI}
 
 uses
   StdCtrls,
@@ -737,4 +746,5 @@ finalization
     CloseFile(LogFile);
 {$ENDIF}
   DoneApiCalls;
+{$ENDIF SUPPORTS_PER_MONITOR_DPI}
 end.

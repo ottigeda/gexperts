@@ -24,6 +24,7 @@
   // Delphi 6 and 7 understood deprecated, but not for types
   {$DEFINE SUPPORTS_DEPRECATED_TYPES}
   {$DEFINE HAS_UNIT_WIDESTRINGS}
+  {$DEFINE HAS_UNIT_THEMES}
   {$DEFINE OPENDIALOG_EXCUTE_HAS_HANDLE}
   {$DEFINE ENUM_NAMES_ARE_UTF8}
 {$ENDIF}
@@ -76,6 +77,9 @@
 
 {$IFDEF DELPHIXE3_UP}
   {$DEFINE SUPPORTS_RECORD_HELPERS_FOR_SIMPLE_TYPES}
+  // For now I assume the BDE is not installed for Delphi XE3 and later, but that
+  // largely depends on what the user selected for installation.
+  {$DEFINE BDE_IS_DEPRECATED}
 {$ENDIF}
 
 {$IFDEF DELPHIXE6_UP}
@@ -84,9 +88,6 @@
 
 {$IFDEF DELPHIXE7_UP}
   {$DEFINE HAS_UNIT_NETENCODING}
-  // For now I assume the BDE is not installed for Delphi XE7 and later, but that
-  // largely depends on what the user selected for installation.
-  {$DEFINE BDE_IS_DEPRECATED}
 {$ENDIF}
 
 {$IFDEF DELPHIX_SEATTLE_UP}

@@ -59,7 +59,7 @@ type
 {$IF not declared(PUInt64)}
   PUInt64 = ^UInt64;
 {$IFEND}
-{$IF SizeOf(Pointer) <> SizeOf(NativeInt)}
+{$IF not Declared(NativeInt) or (SizeOf(Pointer) <> SizeOf(NativeInt))}
 // In Delphi 2007 and older, the NativeInt declaration is wrong. It should always have the same size
 // as a pointer.
 type
@@ -266,9 +266,11 @@ type
     /// Gets and sets the bottom left coordinates keeping the size </summary>
     property BottomLeft: TPoint read GetBottomLeft write SetBottomLeft;
     function GetCenter: TPoint;
+    function Dump: string;
     function Right: Integer;
     function Bottom: Integer;
     class operator Implicit(_a: TRect): TRectLTWH;
+    class operator Equal(const _a, _b: TRectLTWH): Boolean;
     class operator Implicit(_a: TRectLTWH): TRect;
     class function FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH; static;
 {$ENDIF}
@@ -365,6 +367,19 @@ end;
 class operator TRectLTWH.Implicit(_a: TRect): TRectLTWH;
 begin
   Result.Assign(_a);
+end;
+
+function TRectLTWH.Dump: string;
+begin
+  Result := Format('Left: %d Top: %d Width: %d Height: %d', [Left, Top, Width, Height]);
+end;
+
+class operator TRectLTWH.Equal(const _a, _b: TRectLTWH): Boolean;
+begin
+  Result := (_a.Left = _b.Left)
+    and (_a.Top = _b.Top)
+    and (_a.Width = _b.Width)
+    and (_a.Height = _b.Height);
 end;
 {$ENDIF}
 

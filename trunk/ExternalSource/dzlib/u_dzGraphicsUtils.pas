@@ -128,6 +128,9 @@ type
 {$ENDIF}
   end;
 
+procedure TdzRgbTriple_SetGray(var _Triple: TdzRgbTriple; _Value: Byte);
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
 function GetRgbBrightness(_Red, _Green, _Blue: Byte; _Channel: TRgbBrightnessChannelEnum): Byte;
 
 function CalcBytesPerPixel(_PixelFormat: TPixelFormat): Integer;
@@ -179,6 +182,9 @@ type
 type
   TdzRgbQuadArray = packed array[0..MaxInt div SizeOf(TdzRgbQuad) - 1] of TdzRgbQuad;
   PdzRgbQuadArray = ^TdzRgbQuadArray;
+
+procedure TdzRgbQuad_SetGray(var _Quad: TdzRgbQuad; _Value: Byte);
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary> Returns the bounding box of the active clipping region </summary>
 function TCanvas_GetClipRect(_Canvas: TCanvas): TRect;
@@ -1274,6 +1280,13 @@ begin
   _Triple.Blue := GetBValue(_Color);
 end;
 
+procedure TdzRgbTriple_SetGray(var _Triple: TdzRgbTriple; _Value: Byte);
+begin
+  _Triple.Red := _Value;
+  _Triple.Green := _Value;
+  _Triple.Blue := _Value;
+end;
+
 procedure GetRgbHls(_Red, _Green, _Blue: Byte; out _Hls: THlsRec);
 begin
 {$IFDEF dzUseGraphics32}
@@ -1628,6 +1641,16 @@ begin
   SetColor(ColorHLSToRGB(_Hue, _Luminance, _Saturation));
 end;
 {$ENDIF}
+
+procedure TdzRgbQuad_SetGray(var _Quad: TdzRgbQuad; _Value: Byte);
+begin
+  _Quad.Red := _Value;
+  _Quad.Green := _Value;
+  _Quad.Blue := _Value;
+  // According to the Win32 API documenation this member is reserved and must be zero,
+  // but apparently it can be non-zero and contain an alpha value.
+  _Quad.Reserved := 0;
+end;
 
 procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: Integer);
 begin

@@ -35,7 +35,9 @@ uses
 {$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
   Buttons,
   Menus,
+{$IFDEF HAS_UNIT_THEMES}
   Themes,
+{$ENDIF HAS_UNIT_THEMES}
   MultiMon, // this unit doesn't exist in older Delphi versions, use a unit alias like Multimon=Windows in that case
 {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
   Actions,
