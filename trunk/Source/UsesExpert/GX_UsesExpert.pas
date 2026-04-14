@@ -38,11 +38,9 @@ type
 type
   TStringGrid = class(Grids.TStringGrid)
   private
-    function GetAssociatedList: TStringList;
-    procedure SetAssociatedList(const Value: TStringList);
-  published
+    FAssociatedList: TStringList;
   public
-    property AssociatedList: TStringList read GetAssociatedList write SetAssociatedList;
+    property AssociatedList: TStringList read FAssociatedList write FAssociatedList;
   end;
 
 type
@@ -3643,16 +3641,6 @@ begin
 end;
 
 { TStringGrid }
-
-function TStringGrid.GetAssociatedList: TStringList;
-begin
-  Result := TStringList(Tag);
-end;
-
-procedure TStringGrid.SetAssociatedList(const Value: TStringList);
-begin
-  Tag := Integer(Value);
-end;
 
 procedure TfmUsesManager.pnlIdentifiersResize(Sender: TObject);
 begin
