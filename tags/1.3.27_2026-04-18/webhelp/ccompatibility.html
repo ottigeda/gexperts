@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>GExperts &gt; C++ and C# Compatibility</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="C# Compatibility,C++ Compatibility">
+   <meta name="description" content="C++ and C# Compatibility">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
+   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+   <link type="text/css" href="default.css" rel="stylesheet">
+   <link type="text/css" href="custom.css" rel="stylesheet">
+   <script type="text/javascript" src="nsh.js"></script>
+
+<script type="text/javascript">   
+// Toggle Toggler 
+
+var toggleCount=false;
+var switchState;
+
+function toggleToggles() {
+
+    if (!toggleCount) {
+     toggleCount = true;
+     HMToggleExpandAll(true);
+     switchState = true;
+     }
+   
+     else if (switchState) {
+        HMToggleExpandAll(false);
+        switchState = false;
+        }
+        
+     else  {
+        HMToggleExpandAll(true);
+        switchState = true;
+        } 
+    }
+</script>
+   
+<!-- non-scrolling headers for CHM and browser-based help, local styles-->
+<style TYPE="text/css" media="screen"> 
+   body {    
+      margin:0; 
+      padding:0; 
+      overflow: auto; 
+      background: #FFFFFF; 
+   } 
+   #idheader { 
+      width:100%; 
+      height:auto; 
+      padding: 0; 
+      margin: 0; 
+} 
+    #idheaderbg  {
+    background: #6F6F6F; 
+}
+
+   #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+   #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+   #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+   #callout-table a {text-decoration: none; color: blue;}
+   #callout-table a:visited {text-decoration: none; color: blue;}
+   #overview-table a {text-decoration: none; color: black;}
+   #overview-table a:visited {text-decoration: none; color: black;}
+   #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}
+   </style>
+   
+<style TYPE="text/css" MEDIA="print">
+<!--
+/* Hide navigation links and add space between header
+     and text in the printed version. Not valid for eBooks. */
+#idnav { display:none;	 }
+.topichead { padding: 5px 5px 20px 5px; }
+-->
+</style>   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "ccompatibility.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+
+<div id="idheader">
+<div id="idheaderbg">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+       style="margin: 0px; background: url(header_bg.jpg);">
+
+  <tr valign="bottom">
+    <td align="left" valign="bottom" class="topichead"><!--
+   <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
+   
+   GExperts&nbsp;&gt;</p>-->
+   <h1 class="p_Heading1"><span class="f_Heading1">C++ and C# Compatibility</span></h1>
+
+    </td>
+    <td align="right" width="120" valign="middle" class="topichead" id="idnav">
+    
+     <a href="license_agreement.html"
+        onmouseover="document.images.prev.src='btn_prev_h.gif'" 
+        onmouseout="document.images.prev.src='btn_prev_n.gif'"
+        ><img name=prev src="btn_prev_n.gif" border=0 alt="Previous page"
+        ></a><a href="introduction.html"
+        onmouseover="document.images.main.src='btn_home_h.gif'" 
+        onmouseout="document.images.main.src='btn_home_n.gif'"><img name=main src="btn_home_n.gif" border=0 alt="Return to chapter overview"
+        ></a><a href="debug_window.html"
+        onmouseover="document.images.next.src='btn_next_h.gif'" 
+        onmouseout="document.images.next.src='btn_next_n.gif'"><img name=next src="btn_next_n.gif" border=0 alt="Next page"
+        ></a>
+    </td>
+  </tr>
+  <tr><td colspan="2" style="height: 3px; background: url(header_bg_shadow.gif)"></td></tr>
+</table>
+</div>
+
+<!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+
+</div>  
+
+
+
+<div id="idcontent"><div id="innerdiv"> 
+<!--ZOOMRESTART-->
+<p class="p_Normal"><span style="font-weight: bold;">The following tools should work with C++ code:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> - IDE Menu Shortcuts</p>
+<p class="p_Normal"> - PE Information</p>
+<p class="p_Normal"> - Grep Search / Grep Results</p>
+<p class="p_Normal"> - Procedure List (no support for old C-style parameter lists)</p>
+<p class="p_Normal"> - Message Dialog</p>
+<p class="p_Normal"> - Expert Manager</p>
+<p class="p_Normal"> - ASCII Chart</p>
+<p class="p_Normal"> - Clipboard History</p>
+<p class="p_Normal"> - Perfect Layout (deprecated)</p>
+<p class="p_Normal"> - Replace Components</p>
+<p class="p_Normal"> - Set Tab Order</p>
+<p class="p_Normal"> - Clean Directories</p>
+<p class="p_Normal"> - Favorite Files (although one icon shows Delphi)</p>
+<p class="p_Normal"> - Code Librarian (although two icons show Delphi)</p>
+<p class="p_Normal"> - Source Export</p>
+<p class="p_Normal"> - Code Proofreader (except compiler-assisted replacement)</p>
+<p class="p_Normal"> - Components to Code</p>
+<p class="p_Normal"> - Backup Project (it only includes C++ source files in the project file)</p>
+<p class="p_Normal"> - To Do List</p>
+<p class="p_Normal"> - Rename Components</p>
+<p class="p_Normal"> - Copy Component Names</p>
+<p class="p_Normal"> - Editor Experts</p>
+<p class="p_Normal"> &nbsp; - Insert Date/Time</p>
+<p class="p_Normal"> &nbsp; - Comment Code</p>
+<p class="p_Normal"> &nbsp; - Uncomment Code</p>
+<p class="p_Normal"> &nbsp; - Locate/Move to Matching Delimiter</p>
+<p class="p_Normal"> &nbsp; - Macro Templates (except for many %MACROS% that require source parsing)</p>
+<p class="p_Normal"> &nbsp; - Sort Selected Lines</p>
+<p class="p_Normal"> &nbsp; - Previous/Next Identifier Reference</p>
+<p class="p_Normal"> &nbsp; - Reverse Statement</p>
+<p class="p_Normal"> &nbsp; - Change Case</p>
+<p class="p_Normal"> &nbsp; - Select Identifier</p>
+<p class="p_Normal"> &nbsp; - Align Lines</p>
+<p class="p_Normal"> &nbsp; - Change Case</p>
+<p class="p_Normal"> - IDE Enhancements</p>
+<p class="p_Normal"> &nbsp; - Multi-line Tabs</p>
+<p class="p_Normal"> &nbsp; - Show Tabs as Buttons</p>
+<p class="p_Normal"> &nbsp; - Component Palette Tab Names in Popup Menu</p>
+<p class="p_Normal"> &nbsp; - Add a Windows Menu</p>
+<p class="p_Normal"> - Code editor enhancements and the editor toolbar</p>
+<p class="p_Normal"> - Macro Library</p>
+<p class="p_Normal"> - Open File</p>
+<p class="p_Normal"> - Find Component Reference</p>
+<p class="p_Normal"> - Set Component Properties</p>
+<p class="p_Normal"> - Hide/Show Non-Visual Components</p>
+<p class="p_Normal"> - Set FocusControl</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">The following tools will only work with Delphi source code:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> - Class Browser</p>
+<p class="p_Normal"> - Project Dependencies (only Pascal dependencies in the project file are found)</p>
+<p class="p_Normal"> - Several of the editor toolbar buttons, such as Used Units, Unit Positions, etc.</p>
+<p class="p_Normal"> - Uses Clause Manager</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">C# Compatibility</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">None of the tools that require source code parsing will work with C# code, because GExperts does not contain a C# code parser. &nbsp;The state of the other tools with respect to C# is that they may work, but there has been only limited testing to verify correct results, since RAD Studio no longer supports C# projects.</p>
+<p class="p_Normal" style="text-align: justify; text-indent: -54px; margin: 12px 6px 30px 60px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript"> 
+<!-- 
+var lastSlashPos = document.URL.lastIndexOf("/") >
+document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") :
+document.URL.lastIndexOf("\\");
+if( document.URL.substring( lastSlashPos + 1, lastSlashPos + 4
+).toLowerCase() != "~hh" )
+{
+    nsrInit();
+}
+--> 
+</script> 
+</body>
+</html>

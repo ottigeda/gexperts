@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ToDoGridFltrSub</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+   <meta name="description" content="ToDo Grid Column filter, set check mask">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
+   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+   <link type="text/css" href="default.css" rel="stylesheet">
+   <link type="text/css" href="custom.css" rel="stylesheet">
+   <script type="text/javascript" src="nsh.js"></script>
+
+<script type="text/javascript">   
+// Toggle Toggler 
+
+var toggleCount=false;
+var switchState;
+
+function toggleToggles() {
+
+    if (!toggleCount) {
+     toggleCount = true;
+     HMToggleExpandAll(true);
+     switchState = true;
+     }
+   
+     else if (switchState) {
+        HMToggleExpandAll(false);
+        switchState = false;
+        }
+        
+     else  {
+        HMToggleExpandAll(true);
+        switchState = true;
+        } 
+    }
+</script>
+   
+<!-- non-scrolling headers for CHM and browser-based help, local styles-->
+<style TYPE="text/css" media="screen"> 
+   body {    
+      margin:0; 
+      padding:0; 
+      overflow: auto; 
+      background: #FFFFFF; 
+   } 
+   #idheader { 
+      width:100%; 
+      height:auto; 
+      padding: 0; 
+      margin: 0; 
+} 
+    #idheaderbg  {
+    background: #6F6F6F; 
+}
+
+   #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+   #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+   #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+   #callout-table a {text-decoration: none; color: blue;}
+   #callout-table a:visited {text-decoration: none; color: blue;}
+   #overview-table a {text-decoration: none; color: black;}
+   #overview-table a:visited {text-decoration: none; color: black;}
+   #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}
+   </style>
+   
+<style TYPE="text/css" MEDIA="print">
+<!--
+/* Hide navigation links and add space between header
+     and text in the printed version. Not valid for eBooks. */
+#idnav { display:none;	 }
+.topichead { padding: 5px 5px 20px 5px; }
+-->
+</style>   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "todogrid60fltrsub.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+
+<div id="idheader">
+<div id="idheaderbg">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+       style="margin: 0px; background: url(header_bg.jpg);">
+
+  <tr valign="bottom">
+    <td align="left" valign="bottom" class="topichead"><!--
+   <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
+   &raquo;No topics above this level&laquo;
+   </p>-->
+   <h1 class="p_Heading1" style="margin: 4px 0 0 6px;"><span class="f_Heading1" style="font-size: 14pt; font-family: Verdana,Geneva,Arial,sans-serif;">ToDo Grid </span></h1>
+<h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span class="f_Heading1" style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #efa175;">Column filter, set check mask </span></h1>
+
+    </td>
+    <td align="right" width="120" valign="middle" class="topichead" id="idnav">
+    
+     <img src="btn_prev_d.gif" border="0"
+        ><a href="introduction.html"
+        onmouseover="document.images.main.src='btn_home_h.gif'" 
+        onmouseout="document.images.main.src='btn_home_n.gif'"><img name=main src="btn_home_n.gif" border=0 alt="Return to chapter overview"
+        ></a><img src="btn_next_d.gif" border="0">
+    </td>
+  </tr>
+  <tr><td colspan="2" style="height: 3px; background: url(header_bg_shadow.gif)"></td></tr>
+</table>
+</div>
+
+<!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+
+</div>  
+
+
+
+<div id="idcontent"><div id="innerdiv"> 
+<!--ZOOMRESTART-->
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#ebfafa; border:none; border-spacing:0;">
+<thead>
+<tr>
+<th style="vertical-align:middle; width:200px; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">this page .. </span></p>
+</th>
+<th style="vertical-align:middle; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">see also .. </span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid60fltrsub.html#overview" class="topiclink">Overview</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid50fltrmain.html" class="topiclink">Column filter</a> </span></h1>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #efa175;">Column filter, set check mask</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></h1>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 2px 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 2px 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 2px 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; border:none; border-spacing:0;" role="presentation">
+<tr>
+<td style="vertical-align:middle; background-color:#FFCCFF; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 2px 0 3px 0;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #ff0000;">ToDo Grid Expert is not yet available in GExperts </span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal"><a id="overview" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Overview </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="todogrid60fltrsub.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In this window you define masks for automatically selecting list elements of the parent filter window. The selection of the mask type to be applied in the combo box is fixed, but adapts to different list contents. The mask window cannot be moved. </span></p>
+<div style="text-align: center; text-indent: 0; padding: 0 0 0 0; margin: 24px 6px 12px 6px;"><table style="width:100%; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; height:124px; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 12px 0 0 20px;"><img alt="ToDoGrid60_Pic00" width="196" height="116" style="margin:0 auto 0 auto;width:196px;height:116px;border:none" src="todogrid60_pic00.png"/></p>
+<p class="p_Normal" style="text-align: center; margin: 12px 0 0 20px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">Mask for lists with text</span><br />
+<span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">or text and numeric values</span><br />
+<span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">Character input is not restricted </span></p>
+</td>
+<td style="vertical-align:top; height:124px; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 12px 0 0 20px;"><img alt="ToDoGrid60_Pic10" width="196" height="135" style="margin:0 auto 0 auto;width:196px;height:135px;border:none" src="todogrid60_pic10.png"/></p>
+<p class="p_Normal" style="text-align: center; margin: 12px 0 0 20px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">Mask for lists with exclusively numeric values</span><br />
+<span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">Displays minimum and maximum values;</span><br />
+<span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">input is restricted to numeric values ​​within the limits</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">After selecting the mask type to be used, the mask text can be defined in the input field below. The maximum length is 24 characters. The number of matches in the list to be filtered is displayed in the status bar as you type</span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">.</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 12px 6px 0 6px;"> </p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript"> 
+<!-- 
+var lastSlashPos = document.URL.lastIndexOf("/") >
+document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") :
+document.URL.lastIndexOf("\\");
+if( document.URL.substring( lastSlashPos + 1, lastSlashPos + 4
+).toLowerCase() != "~hh" )
+{
+    nsrInit();
+}
+--> 
+</script> 
+</body>
+</html>

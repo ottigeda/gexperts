@@ -1,0 +1,81 @@
+1	tkUnit	unit
+1	tkSpace	 
+1	tkIdentifier	MultiLineString
+1	tkSemiColon	;
+2	tkCRLF	\r\n
+3	tkCRLF	\r\n
+3	tkInterface	interface
+4	tkCRLF	\r\n
+5	tkCRLF	\r\n
+5	tkProcedure	procedure
+5	tkSpace	 
+5	tkIdentifier	Method1
+5	tkSemiColon	;
+6	tkCRLF	\r\n
+6	tkProcedure	procedure
+6	tkSpace	 
+6	tkIdentifier	Method2
+6	tkSemiColon	;
+7	tkCRLF	\r\n
+7	tkProcedure	procedure
+7	tkSpace	 
+7	tkIdentifier	Method3
+7	tkSemiColon	;
+8	tkCRLF	\r\n
+9	tkCRLF	\r\n
+9	tkImplementation	implementation
+10	tkCRLF	\r\n
+11	tkCRLF	\r\n
+11	tkProcedure	procedure
+11	tkSpace	 
+11	tkIdentifier	Method1
+11	tkSemiColon	;
+12	tkCRLF	\r\n
+12	tkBegin	begin
+13	tkCRLF	\r\n
+13	tkEnd	end
+13	tkSemiColon	;
+14	tkCRLF	\r\n
+15	tkCRLF	\r\n
+15	tkProcedure	procedure
+15	tkSpace	 
+15	tkIdentifier	Method2
+15	tkSemiColon	;
+16	tkCRLF	\r\n
+16	tkVar	var
+17	tkCRLF	\r\n
+17	tkSpace	  
+17	tkIdentifier	SQL
+17	tkColon	:
+17	tkSpace	 
+17	tkString	string
+17	tkSemiColon	;
+18	tkCRLF	\r\n
+18	tkBegin	begin
+19	tkCRLF	\r\n
+19	tkSpace	  
+19	tkIdentifier	SQL
+19	tkSpace	 
+19	tkAssign	:=
+19	tkSpace	 
+22	tkString	'''\r\n    select count(*) as CNT\r\n    from SOME_TABLE\r\n    '''
+22	tkSemiColon	;
+23	tkCRLF	\r\n
+23	tkEnd	end
+23	tkSemiColon	;
+24	tkCRLF	\r\n
+25	tkCRLF	\r\n
+25	tkProcedure	procedure
+25	tkSpace	 
+25	tkIdentifier	Method3
+25	tkSemiColon	;
+26	tkCRLF	\r\n
+26	tkBegin	begin
+27	tkCRLF	\r\n
+27	tkEnd	end
+27	tkSemiColon	;
+28	tkCRLF	\r\n
+29	tkCRLF	\r\n
+29	tkEnd	end
+29	tkPoint	.
+30	tkCRLF	\r\n

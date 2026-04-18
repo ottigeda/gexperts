@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-28T09:56:07.933+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd" status="Next2Edit">
+  <title translate="true">Code Editor Enhancements</title>
+  <keywords>
+    <keyword translate="true">Code Editor Enhancements</keyword>
+    <keyword translate="true">Editor Enhancements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Code Editor Enhancements</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The GExperts editor enhancements can improve the functionality of the IDE editor in the following ways:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ;"><text styleclass="Bulleted List" translate="true">Make the code editor tabs multiline instead of utilizing horizontal scrolling</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ;"><text styleclass="Bulleted List" translate="true">Turn on/off hot tracking for the editor tabs (see TCustomTabControl.HotTrack)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ;"><text styleclass="Bulleted List" translate="true">Show the code editor tabs in a raised or flat button style</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ;"><text styleclass="Bulleted List" translate="true">Enable and then position the GExperts </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Editor_Toolbar" styleclass="Bulleted List" translate="true">editor toolbar</link><text styleclass="Bulleted List" translate="true"> to the top, left, right, or bottom of the code editor window</text></li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-19px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:29px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:29px left ;"><text styleclass="Bulleted List" translate="true">In Delphi 6/7, you can configure </text><text styleclass="Normal" translate="true">whether the middle mouse button can be used to close tabs (starting with Delphi 2006, this feature is built into the IDE)</text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Configuration - Editor Enhacements.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Image Caption" translate="true">  </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: Starting with Delphi 2005, the IDE&apos;s editor tabs do not support the multiline capability and the other related customizations.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:33:27.047+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true"> </text></para>
+  </body>
+</topic>

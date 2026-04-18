@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ToDoGridFunctionality</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+   <meta name="description" content="ToDo Grid Rules of syntax analysis">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
+   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+   <link type="text/css" href="default.css" rel="stylesheet">
+   <link type="text/css" href="custom.css" rel="stylesheet">
+   <script type="text/javascript" src="nsh.js"></script>
+
+<script type="text/javascript">   
+// Toggle Toggler 
+
+var toggleCount=false;
+var switchState;
+
+function toggleToggles() {
+
+    if (!toggleCount) {
+     toggleCount = true;
+     HMToggleExpandAll(true);
+     switchState = true;
+     }
+   
+     else if (switchState) {
+        HMToggleExpandAll(false);
+        switchState = false;
+        }
+        
+     else  {
+        HMToggleExpandAll(true);
+        switchState = true;
+        } 
+    }
+</script>
+   
+<!-- non-scrolling headers for CHM and browser-based help, local styles-->
+<style TYPE="text/css" media="screen"> 
+   body {    
+      margin:0; 
+      padding:0; 
+      overflow: auto; 
+      background: #FFFFFF; 
+   } 
+   #idheader { 
+      width:100%; 
+      height:auto; 
+      padding: 0; 
+      margin: 0; 
+} 
+    #idheaderbg  {
+    background: #6F6F6F; 
+}
+
+   #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+   #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+   #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+   #callout-table a {text-decoration: none; color: blue;}
+   #callout-table a:visited {text-decoration: none; color: blue;}
+   #overview-table a {text-decoration: none; color: black;}
+   #overview-table a:visited {text-decoration: none; color: black;}
+   #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}
+   </style>
+   
+<style TYPE="text/css" MEDIA="print">
+<!--
+/* Hide navigation links and add space between header
+     and text in the printed version. Not valid for eBooks. */
+#idnav { display:none;	 }
+.topichead { padding: 5px 5px 20px 5px; }
+-->
+</style>   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "todogrid10rules.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+
+<div id="idheader">
+<div id="idheaderbg">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+       style="margin: 0px; background: url(header_bg.jpg);">
+
+  <tr valign="bottom">
+    <td align="left" valign="bottom" class="topichead"><!--
+   <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
+   &raquo;No topics above this level&laquo;
+   </p>-->
+   <h1 class="p_Heading1" style="margin: 4px 0 0 6px;"><span class="f_Heading1" style="font-size: 14pt; font-family: Verdana,Geneva,Arial,sans-serif;">ToDo Grid </span></h1>
+<h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span class="f_Heading1" style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #efa175;">Rules of syntax analysis </span></h1>
+
+    </td>
+    <td align="right" width="120" valign="middle" class="topichead" id="idnav">
+    
+     <img src="btn_prev_d.gif" border="0"
+        ><a href="introduction.html"
+        onmouseover="document.images.main.src='btn_home_h.gif'" 
+        onmouseout="document.images.main.src='btn_home_n.gif'"><img name=main src="btn_home_n.gif" border=0 alt="Return to chapter overview"
+        ></a><img src="btn_next_d.gif" border="0">
+    </td>
+  </tr>
+  <tr><td colspan="2" style="height: 3px; background: url(header_bg_shadow.gif)"></td></tr>
+</table>
+</div>
+
+<!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+
+</div>  
+
+
+
+<div id="idcontent"><div id="innerdiv"> 
+<!--ZOOMRESTART-->
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#ebfafa; border:none; border-spacing:0;">
+<thead>
+<tr>
+<th style="vertical-align:middle; width:200px; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">this page .. </span></p>
+</th>
+<th style="vertical-align:middle; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">see also .. </span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#overview" class="topiclink">Overview</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid00general.html" class="topiclink">General</a> </span></h1>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 18px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#whatisatodo" class="topiclink">What is a ToDo?</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span class="f_Heading1" style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #efa175;">Rules of syntax analysis</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></h1>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 18px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#howtoinserttodo" class="topiclink">How to insert ToDo</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid20options.html" class="topiclink">Configuration (Options)</a> </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#rules" class="topiclink">Rules of syntax analysis</a></span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;">&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 19px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#structureoftodo" class="topiclink">Structure of ToDo</a></span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;">&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 19px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#datascan" class="topiclink">Datascan</a></span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;">&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid10rules.html#suggestions" class="topiclink">Suggestions for efficient use</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;">&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; border:none; border-spacing:0;" role="presentation">
+<tr>
+<td style="vertical-align:middle; background-color:#FFCCFF; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 2px 0 3px 0;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #ff0000;">ToDo Grid Expert is not yet available in GExperts </span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal"><a id="overview" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Overview </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The configuration allows you to adapt the examination of the files very individually to the respective situation (examination of C files is currently not available). Detailed information about the way of scanning and parsing your source files is explained in this page. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 0 6px 0 6px;"><a id="whatisatodo" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="width:100%; border:none; border-spacing:0; border-collapse:collapse;">
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">What is a ToDo? </span></p>
+</td>
+<td style="vertical-align:top; width:20px; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal" style="text-align: right;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In the context of &quot;ToDo Grid&quot; a </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">ToDo is any individual text within the source code that complies with the following rules. To</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> separate this text from the code to be compiled, the text is marked as a comment. You can use // for single line ToDo and (* *) or { } for multi line ToDo. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">After the start of the comment section, an inserted keyword (token) identifies and specifies the following text. The definition of the token is essentially free; however, if you're working within a group of programmers, there will be rules that must be observed. Thanks to the ability to individually activate / deactivate the tokens to be considered for scanning, adaptation to the specific work situation is very easy. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 0 6px 0 6px;"><a id="howtoinserttodo" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="width:100%; border:none; border-spacing:0; border-collapse:collapse;">
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">How to insert</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; color: #808080;"> (and remove)</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;"> ToDo </span></p>
+</td>
+<td style="vertical-align:top; width:20px; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal" style="text-align: right;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Of course, the entries can be entered manually, but it is faster if you use pre-made templates. To insert pre-made entries, you can use the &quot;source code templates&quot; available in the IDE, which can be accessed via Ctrl+J. Alternatively, you can also use the &quot;Code Librarian&quot; expert. In both cases, regular ToDo texts must be created first, which can then be quickly inserted later. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In a multi line ToDo, the token should be placed on the line where the comment begins. </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The number of lines read and evaluated in a multi line ToDo is limited; no more than 5 lines should be used. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In order to keep the time required for scanning the files as short as possible, ToDo that are no longer needed should also be removed from the source - a perhaps unspectacular task, but one that should nevertheless be carried out regularly (even within a working group)! </span></p>
+<p class="p_Normal"><a id="rules" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Rules of syntax analysis </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The following rules are intended as a general background, which can be consulted if the scan results do not meet your expectations. With individual use, a personal approach will quickly develop, so that these comprehensive rules will be followed almost automatically. However, it's definitely worth reading through ... </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 0 6px 0 6px;"><a id="structureoftodo" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="width:100%; border:none; border-spacing:0; border-collapse:collapse;">
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Structure of ToDo </span></p>
+</td>
+<td style="vertical-align:top; width:20px; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal" style="text-align: right;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The scan function of &quot;ToDo Grid&quot; allows a large number of structural variations of the ToDo entries. This is particularly important when editing external source code whose formatting cannot be sufficiently influenced. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In general, ToDo entries should be as short and clear as possible. No long texts should be stored here, it is recommended to use single-line ToDo entries. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 12px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The simplest ToDo entry consists of a token and a description text, for example: </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 8px 32px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;">//TODO : This is to be done </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Spaces may be inserted between the comment introduction and the token, but it is recommended not to do so</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 3px 6px 0 6px;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">token</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> is </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; text-decoration: underline;">not</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> recognized case-sensitive. As already mentioned, the definition of tokens is essentially free (this is done in the configuration). However, if you're working within a group of programmers, there will be rules that must be observed.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">separation</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> between token and text can be done by spaces or a colon. Multiple spaces are allowed, but for space reasons, this should not be overdone. If a number is at the beginning of the description text, it </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; text-decoration: underline;">must</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> be separated by a colon (otherwise the number will be considered as priority). </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">description</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> should be as short and concise as possible. If the scan does not find a description in an otherwise valid ToDo entry, the message &quot;No description found&quot; is displayed in the string grid.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 12px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">More complex ToDo can optionally contain additional categories and owners, for example: </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 8px 32px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;">//TODO -c</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">Category</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;"> -o</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">Owner</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;"> : This is to be done </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Of course, each parameter can be specified alone. The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">category</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> is introduced by the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; font-weight: bold; color: #800000;">-</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;">c</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> parameter, the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">owner</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> is introduced by the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; font-weight: bold; color: #800000;">-</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;">o</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> parameter. Any number of (or no) spaces can be inserted before, between, and after the parameters. To ensure good readability, it is recommended to insert a space before, between and after the parameters.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; height:37px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 3px 6px 0 6px;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; height:37px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">terms</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> are generally freely definable, but may not contain any spaces or hyphens and must be placed immediately after the parameter. For ease of analysis, the definition set of categories and owners should be as small as possible.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The application optionally provides the ability to assign category and owner to a token (see configuration). In case of a </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">conflict</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> between the term used in the source and the token assignment, the term used in the source is displayed in the string grid.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; height:37px; padding:0; border:none"><p class="p_Normal">&nbsp;</p>
+</td>
+<td style="vertical-align:top; height:37px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">If the parameters -c and -o are specified multiple times, only the first occurrence is evaluated; the order of the two parameters is not relevant.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 12px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Last but not least, each ToDo entry can be given a priority. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 8px 32px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;">//TODO </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; color: #800000;">N</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;"> -c</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">Category</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;"> -o</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">Owner</span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #800000;"> : This is to be done</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> (with </span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #800000;">N</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">=1..5) </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">priority</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> can be specified by a single-digit number after the token. There must be one or more spaces between the token and the number. If there is no space between the token and the number, the number is considered part of the token. It is recommended to add a space before and after the number.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 3px 6px 0 6px;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The digits 1..5 are considered the 5 </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">priority levels</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> declared by the application. The digits 0 and 6..9 are mapped to 5, which means &quot;Lowest&quot; priority.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal">&nbsp;</p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 3px 6px 3px 6px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The application optionally provides the ability to assign a priority to a token (see configuration). In case of a </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">conflict</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> between the value used in the source and the token assignment, the value used in the source is displayed in the string grid.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p></td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 0 6px 0 6px;"><a id="datascan" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="width:100%; border:none; border-spacing:0; border-collapse:collapse;">
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Datascan </span></p>
+</td>
+<td style="vertical-align:top; width:20px; padding:0; border:solid thin #000000; border-top:none; border-right:none; border-left:none;"><p class="p_Normal" style="text-align: right;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">directories</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> to </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">be</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> included in the scan are defined in the configuration.</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">It's particularly noteworthy that a large number of directories can be defined there, but the currently relevant set can be selected by simply marking the appropriate items. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 19px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Of the lists imported from the IDE, files with the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">extensions</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; background-color: #e2e2e2;"> dpr </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">, </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; background-color: #e2e2e2;"> pas </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">, </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; background-color: #e2e2e2;"> inc </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> and </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; background-color: #e2e2e2;"> todo </span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> are checked for the presence of tokens. This setting cannot be changed and corresponds to the &quot;ToDo List&quot; expert. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In addition to the file lists imported from the IDE, any </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">additional directories</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> can be stored in the configuration. For each entry you can specify whether sub directories should also be read. Here, too, the currently relevant set can be selected by simply marking the appropriate items. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 19px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">For the additional directories any </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">extensions</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> to be considered can be defined. And here, too, the currently relevant set can be selected by simply marking the appropriate items. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">tokens</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> used to check the files are also defined in the configuration. And of course, you can select the currently relevant set by simply marking the corresponding elements. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Since the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">speed</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> of the syntax analysis is largely determined by the number of comparisons, only the actually relevant set of directories, file extensions and tokens should be activated for the scan. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">After each scan, the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">status bar</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> displays the number of files examined, their line count, and the total duration of the scan. </span></p>
+<p class="p_Normal"><a id="suggestions" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Suggestions for efficient use </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="todogrid10rules.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">If your personal work situation does not impose any mandatory rules or at least allows temporary arrangements, you should use the extended features of &quot;ToDo Grid&quot; as creatively as possible. The &quot;control center&quot; for this is the configuration window; detailed information can be found under <a href="todogrid20options.html#tokens2scan" class="topiclink">Configuration, Tokens to scan</a>. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">As already stated above, ToDo entries and especially the description text </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">should be as short and clear as possible</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> - long texts are inappropriate! It is recommended to use single-line ToDo entries. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Not all possible </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">variations of tokens and additional information</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> may be the right solution for your individual case - check what your needs really are. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The application allows the definition of a large </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">number of tokens</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">, but this should not tempt you to create an unnecessary number of tokens - &quot;brevity is the soul of wit&quot;. The ability to create a large number of tokens is primarily intended to cover different work areas and to only activate the relevant amount at any given time. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Critically evaluate whether specifying a category / owner makes sense. Only a limited amount can be filtered properly in the string grid. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 26px; margin: 3px 6px 0 12px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The selection of </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">categories</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> to use must, of course, meet individual requirements, but here, too, the rule is to use as few categories as possible.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 26px; margin: 3px 6px 0 12px;"><span class="f_Normal" style="font-size:8pt; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Initials should be used to indicate the </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">owners</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> if possible.</span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">You should examine even more critically whether setting </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">priorities</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> makes sense. If there are entries years old with the &quot;Critical&quot; rating, the use of priorities may seem questionable. In any case, you should think about which differentiation of priorities makes sense in light of your processing options. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The application offers significantly expanded possibilities to </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">assign additional attributes</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> to a token. Optionally, </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">priority</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">, </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">category</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">, and </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">owner</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> can be encoded directly into the token. This generally creates a particularly space-saving ToDo entry and allows a very fast insertion into the source. However, it should be noted that the entry in the source is no longer readable as usual and all participants must have the &quot;ToDo Grid&quot; expert available in order to receive the necessary decoding in the display. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In older Delphi versions, bookmarks are not saved by the IDE and the &quot;Editor Bookmarks&quot; expert doesn't do this either - that can be quite annoying! The &quot;ToDo Grid&quot; expert can help here by using the ToDo entry as a </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">jump target</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">. But please don't forget to remove these targets when they are no longer needed! </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">It is recommending to </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">standardizing the insertion and structure</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> of ToDo entries. For this purpose, you can use the source code templates in the IDE (accessible via Ctrl+J) or the &quot;Code Librarian Expert&quot; from GExperts. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 12px 6px 0 6px;"> </p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript"> 
+<!-- 
+var lastSlashPos = document.URL.lastIndexOf("/") >
+document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") :
+document.URL.lastIndexOf("\\");
+if( document.URL.substring( lastSlashPos + 1, lastSlashPos + 4
+).toLowerCase() != "~hh" )
+{
+    nsrInit();
+}
+--> 
+</script> 
+</body>
+</html>

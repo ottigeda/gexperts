@@ -1,0 +1,45 @@
+1	tkUnit	unit
+1	tkSpace	 
+1	tkIdentifier	Comments
+1	tkSemiColon	;
+2	tkCRLF	\r\n
+3	tkCRLF	\r\n
+3	tkInterface	interface
+4	tkCRLF	\r\n
+5	tkCRLF	\r\n
+5	tkImplementation	implementation
+6	tkCRLF	\r\n
+7	tkCRLF	\r\n
+7	tkProcedure	procedure
+7	tkSpace	 
+7	tkIdentifier	Test
+7	tkSemiColon	;
+8	tkCRLF	\r\n
+8	tkBegin	begin
+9	tkCRLF	\r\n
+9	tkSpace	  
+9	tkSlashesComment	// Line comment
+10	tkCRLF	\r\n
+10	tkSpace	  
+10	tkBorComment	{ Borland comment }
+11	tkCRLF	\r\n
+11	tkSpace	  
+11	tkAnsiComment	(* ANSI comment *)
+12	tkCRLF	\r\n
+12	tkSpace	  
+12	tkBorComment	{ Multi-line
+13	tkCRLFCo	\r\n
+13	tkBorComment	    Borland comment }
+14	tkCRLF	\r\n
+14	tkSpace	  
+14	tkAnsiComment	(* Multi-line
+15	tkCRLFCo	\r\n
+15	tkAnsiComment	     ANSI comment *)
+16	tkCRLF	\r\n
+16	tkEnd	end
+16	tkSemiColon	;
+17	tkCRLF	\r\n
+18	tkCRLF	\r\n
+18	tkEnd	end
+18	tkPoint	.
+19	tkCRLF	\r\n

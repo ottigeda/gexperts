@@ -1,0 +1,1 @@
+start "" "c:\Delphi\13\bin\BCompareLite.exe" "%~dp0Delphi2007\GExpertsDelphi2007.dpr" %1
