@@ -6,9 +6,17 @@ setlocal
 
 cd /d "%~dp0"
 
+rem Read version from Projects\GExperts_version.ini
+for /f "tokens=1,2 delims==" %%a in ('findstr /b /c:"MajorVer=" /c:"MinorVer=" /c:"Release=" "Projects\GExperts_version.ini"') do (
+  if /i "%%a"=="MajorVer" set _major=%%b
+  if /i "%%a"=="MinorVer" set _minor=%%b
+  if /i "%%a"=="Release" set _release=%%b
+)
+set _version=%_major%.%_minor%.%_release%
+
 echo.
 echo ============================================================
-echo  GExperts Full Release Build
+echo  GExperts Full Release Build - Version %_version%
 echo ============================================================
 echo.
 echo This script will:
