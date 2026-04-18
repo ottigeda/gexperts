@@ -86,6 +86,27 @@ RELEASE_DIR="BuildInstall/Output/${SUBDIR}"
 echo "Version: $VERSION"
 echo "Date:    $TODAY"
 
+# Sanity check: if the changelog for the NEXT version already exists, something
+# is wrong — either an earlier release run failed to bump Release= in
+# version.ini (as happened before r5344), or changelog entries have been added
+# to the wrong file. Warn and let the user decide whether to continue.
+SANITY_NEXT_RELEASE=$((RELEASE + 1))
+SANITY_NEXT_VERSION="${MAJOR_VER}.${MINOR_VER}.${SANITY_NEXT_RELEASE}"
+SANITY_NEXT_CHANGES="Documentation/CHANGES-${SANITY_NEXT_VERSION}.md"
+if [[ -f "$SANITY_NEXT_CHANGES" ]]; then
+  echo ""
+  echo "WARNING: Changelog for the next version already exists:"
+  echo "         $SANITY_NEXT_CHANGES"
+  echo "This usually means ${VERSION} was already released and version.ini"
+  echo "was not bumped, or changelog entries are going into the wrong file."
+  read -r -p "Continue anyway? [y/N]: " confirm
+  if [[ "${confirm,,}" != "y" ]]; then
+    echo "Aborted."
+    exit 1
+  fi
+fi
+unset SANITY_NEXT_RELEASE SANITY_NEXT_VERSION SANITY_NEXT_CHANGES
+
 # Extract expected installer prefixes from MakeInstallers.cmd
 # Logic mirrors the :makeinst subroutine: if a second arg is given it is the
 # prefix, otherwise the first arg doubles as the prefix.
@@ -420,12 +441,7 @@ NEXT_RELEASE=$((RELEASE + 1))
 NEXT_VERSION="${MAJOR_VER}.${MINOR_VER}.${NEXT_RELEASE}"
 NEXT_CHANGES="Documentation/CHANGES-${NEXT_VERSION}.md"
 
-if [[ -f "$NEXT_CHANGES" ]]; then
-  echo "Already exists: $NEXT_CHANGES (skipping)"
-elif $DRY_RUN; then
-  echo "[DRY RUN] Would create: $NEXT_CHANGES"
-  echo "[DRY RUN] svn.exe add Documentation/CHANGES-${NEXT_VERSION}.md"
-else
+write_next_changelog() {
   cat > "$NEXT_CHANGES" <<__CHANGELOG__
 # GExperts ${NEXT_VERSION} Changes
 
@@ -439,6 +455,30 @@ Changes since version ${VERSION} (released ${TODAY})
 
 - Thomas Mueller (twm)
 __CHANGELOG__
+}
+
+NEXT_CHANGES_EXISTED=false
+NEXT_CHANGES_OVERWRITTEN=false
+
+if [[ -f "$NEXT_CHANGES" ]]; then
+  NEXT_CHANGES_EXISTED=true
+  if $DRY_RUN; then
+    echo "[DRY RUN] Exists: $NEXT_CHANGES — would prompt user whether to overwrite"
+  else
+    read -r -p "Changelog already exists: $NEXT_CHANGES — overwrite? [y/N]: " confirm
+    if [[ "${confirm,,}" == "y" ]]; then
+      write_next_changelog
+      NEXT_CHANGES_OVERWRITTEN=true
+      echo "Overwritten: $NEXT_CHANGES"
+    else
+      echo "Kept existing: $NEXT_CHANGES"
+    fi
+  fi
+elif $DRY_RUN; then
+  echo "[DRY RUN] Would create: $NEXT_CHANGES"
+  echo "[DRY RUN] svn.exe add Documentation/CHANGES-${NEXT_VERSION}.md"
+else
+  write_next_changelog
   echo "Created: $NEXT_CHANGES"
   svn.exe add "Documentation/CHANGES-${NEXT_VERSION}.md"
   echo "Added to SVN."
@@ -459,11 +499,21 @@ else
     echo "[DRY RUN] Would update $VERSION_INI: Release=${RELEASE} → Release=${NEXT_RELEASE}"
     echo "[DRY RUN] svn.exe commit -m \"Release ${VERSION}: bump version to ${NEXT_VERSION}, add changelog for next release\""
   else
-    # sed -i can fail on NTFS mounts in WSL; use temp-file workaround instead
-    sed "s/^Release=${RELEASE}$/Release=${NEXT_RELEASE}/" "$VERSION_INI" \
-      > /tmp/gx_version_bump_$$.ini
-    cp /tmp/gx_version_bump_$$.ini "$VERSION_INI"
-    rm /tmp/gx_version_bump_$$.ini
+    # sed -i can fail on NTFS mounts in WSL; use temp-file workaround instead.
+    # Match optional trailing CR so the substitution works on CRLF files and
+    # preserves the original line ending.
+    CR=$'\r'
+    TMP_INI="/tmp/gx_version_bump_$$.ini"
+    sed -E "s/^Release=${RELEASE}(${CR}?)\$/Release=${NEXT_RELEASE}\\1/" \
+      "$VERSION_INI" > "$TMP_INI"
+    if diff -q "$VERSION_INI" "$TMP_INI" > /dev/null; then
+      rm -f "$TMP_INI"
+      echo "ERROR: Failed to bump Release in $VERSION_INI (no matching line found)"
+      echo "       Expected to find: Release=${RELEASE}"
+      exit 1
+    fi
+    cp "$TMP_INI" "$VERSION_INI"
+    rm -f "$TMP_INI"
     echo "Updated $VERSION_INI: Release=${RELEASE} → Release=${NEXT_RELEASE}"
 
     svn.exe commit \
