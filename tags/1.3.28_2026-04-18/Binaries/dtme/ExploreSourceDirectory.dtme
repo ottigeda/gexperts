@@ -1,0 +1,5 @@
+[Delphi Tool Menu Entry]
+Title=Explore &Source Directory
+Path=explorer.exe
+WorkingDir=
+Params=/e,/select, $EDNAME

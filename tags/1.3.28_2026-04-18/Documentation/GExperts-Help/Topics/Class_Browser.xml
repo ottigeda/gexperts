@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:29:42.498+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Class Browser</title>
+  <keywords>
+    <keyword translate="true">Class Browser</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Class Browser</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The class browser enables you to view the classes in your project or in external directories, such as the VCL classes. &#160;External class groups can be added using the add button on the toolbar or by selecting Add from the File menu. &#160;Your project classes are automatically added to the class browser when you open a project in the IDE. You can refresh the display of classes by pressing the refresh button.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Classes can be viewed as a flat list or tree-structured hierarchy. &#160;You can choose which method you prefer using the View menu. &#160;To find a specific class, choose Find. &#160;The details shown for the selected class include the class members, the inheritance tree (this works best after you have added the RTL and VCL directories to your class database), and the interface code for the selected class member.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Two reports are available from the File menu. &#160;The first report prints the currently selected class and its methods. &#160;The second prints a hierarchical report based on the selected class. &#160;Both reports have print preview capability.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">There is a filter toolbar to select which member types (properties, methods, etc.) and what visibility classes (Private, Protected, etc.) are listed in the Members tab. &#160;An options dialog provides access to the default filter settings, font settings, a setting to enable recursive parsing for classes, and other options.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can jump to the source code for a class or method in the code editor by right clicking on the object and selecting the Goto menu option.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="Class Browser.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:33:02.289+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+  </body>
+</topic>

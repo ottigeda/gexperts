@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic status="Done RZ" modified="2025-07-26T22:19:56.979+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">EditorBookmarksEdit</title>
+  <body>
+    <header>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">Editor Bookmarks </text></para>
+      <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">Add and edit bookmarks </text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="NavigationTable" rowcount="5" colcount="2">
+      <thead style="vertical-align:middle">
+        <td style="width:200px; height:22px;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
+        </td>
+        <td style="height:22px;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks00General" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">General</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AddBookmark" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Add bookmark</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">Add and edit bookmarks</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="EditBookmark" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Edit bookmark</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks20Select" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Select function or procedure</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks30Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
+      <tr style="vertical-align:middle">
+        <td style="height:24px;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
+        </td>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">If activated in the options, you may use the good old edit window, well known from the former version of the expert. This edit window will be opened when you click on the first toolbutton to </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">add</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> a new bookmark. Furthermore, an additional button will be visible in the toolbar, which can be used to </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">edit</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> bookmarks that have already been created. </text></para>
+    <para styleclass="Normal"><anchor id="AddBookmark" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
+      <tr style="vertical-align:middle">
+        <td style="height:24px;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Add bookmark </text></para>
+        </td>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:30px; margin-left:6px;"><image src="EditorBookmarks10Edit10.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">After opening the adding window, the preselection is set so that the next free bookmark is placed in the caret line of the active unit. If that is ok, the selection can be accepted with the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Save button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Return</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> and the window will be closed immediately. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can change the default setting individually: </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The preset selection can also be changed individually by selecting a specific </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">bookmark number</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">. If the selected number has already been used, the previous bookmark is deleted and the number is used for the new position. </text></li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Optionally, the preset </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">line number</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> can also be changed. In this way, bookmarks can be assigned to lines that are outside the visible area - how practical this option is, remains to be seen. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Any </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">module</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> can also be selected from the list of project files, but the bookmark only will be set in files that are already open in the IDE editor. This option is certainly only for users with a photographic memory who know exactly what they are doing even without eye contact - this approach is not recommended. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">With the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Cancel button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Escape</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you may close the window without adding bookmark. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can access help by pressing the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 key</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or by clicking on the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 symbol</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> bottom left. </text></li>
+    </list>
+    <para styleclass="Normal"><anchor id="EditBookmark" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
+      <tr style="vertical-align:middle">
+        <td style="height:24px;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Edit bookmark </text></para>
+        </td>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:30px; margin-left:6px;"><image src="EditorBookmarks10Edit20.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Of course, the edit window can only be opened for bookmarks that already exist. Editing means being able to change the line number or module for the bookmark. Changes are accepted with the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Save button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Return</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> and the window will be closed immediately. </text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">By changing the </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">line number</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you can assign the bookmark to every desired line number, even to lines that are outside the visible area - how practical this option is, remains to be seen. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Any </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">module</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> can also be selected from the list of project files, but the bookmark only will be set in files that are already open in the IDE editor. This option is certainly only for users with a photographic memory who know exactly what they are doing even without eye contact ... </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">delete</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> existing bookmarks individually or in their entirety directly with the delete buttons of the main window toolbar. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">With the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Cancel button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Escape</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you may close the window without adding bookmark. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can access help by pressing the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 key</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or by clicking on the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 symbol</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> bottom left. </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><draft-comment id="ANNOT69FA80" width="353px" height="64px" modified="2025-06-02T00:37:22.666+02:00" styleclass="Comment"><![CDATA[No DistanceAfter because Topic is not included in TOC
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" translate="true">&#32;</text></para>
+  </body>
+</topic>
